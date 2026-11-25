@@ -1,0 +1,25 @@
+namespace: timestone-roadmap
+# Served through shared-gateway's roadmap-b-hero-rehab-https listener; the
+# certificate lives in 2143-Labs/argo workloads/gateway.
+host: roadmap.b.hero.rehab
+# HTTPRoute name; it lives in `default` so the class-A middlewares resolve.
+routeName: timestone-roadmap
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: "1.30-alpine"
+resources:
+  requests: {cpu: 5m, memory: 16Mi}
+  limits: {cpu: 100m, memory: 64Mi}
+refresh:
+  image: python:3.15-alpine
+  intervalSeconds: 900
+  vikunjaUrl: http://vikunja.default.svc
+  projectId: 19
+  rosterId: 329
+  resources:
+    requests: {cpu: 5m, memory: 32Mi}
+    limits: {cpu: 200m, memory: 128Mi}
+vikunja:
+  # OpenBao key (consumers mount) holding {"hash": "<link share hash>"}. Empty = no
+  # ExternalSecret, the sidecar fails every run, and the baked page serves.
+  shareKey: ""

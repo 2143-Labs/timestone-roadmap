@@ -1,0 +1,2257 @@
+{
+ "cards": {
+  "1114": {
+   "done": false,
+   "needs_repro": false
+  },
+  "1115": {
+   "done": false,
+   "needs_repro": true
+  },
+  "1116": {
+   "done": false,
+   "needs_repro": true
+  },
+  "2572": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2573": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2574": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2575": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2576": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2577": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2578": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2579": {
+   "done": false,
+   "needs_repro": false
+  },
+  "315": {
+   "done": false,
+   "needs_repro": false
+  },
+  "318": {
+   "done": false,
+   "needs_repro": false
+  },
+  "326": {
+   "done": false,
+   "needs_repro": false
+  },
+  "329": {
+   "done": false,
+   "needs_repro": false
+  },
+  "331": {
+   "done": false,
+   "needs_repro": false
+  },
+  "333": {
+   "done": false,
+   "needs_repro": true
+  },
+  "692": {
+   "done": false,
+   "needs_repro": false
+  },
+  "693": {
+   "done": false,
+   "needs_repro": true
+  },
+  "695": {
+   "done": false,
+   "needs_repro": false
+  },
+  "696": {
+   "done": false,
+   "needs_repro": true
+  },
+  "698": {
+   "done": false,
+   "needs_repro": false
+  },
+  "703": {
+   "done": false,
+   "needs_repro": false
+  },
+  "709": {
+   "done": false,
+   "needs_repro": true
+  },
+  "710": {
+   "done": false,
+   "needs_repro": true
+  },
+  "711": {
+   "done": false,
+   "needs_repro": true
+  },
+  "712": {
+   "done": false,
+   "needs_repro": false
+  },
+  "713": {
+   "done": false,
+   "needs_repro": true
+  },
+  "714": {
+   "done": false,
+   "needs_repro": false
+  },
+  "715": {
+   "done": false,
+   "needs_repro": false
+  },
+  "716": {
+   "done": false,
+   "needs_repro": false
+  },
+  "717": {
+   "done": false,
+   "needs_repro": false
+  },
+  "718": {
+   "done": false,
+   "needs_repro": true
+  },
+  "719": {
+   "done": false,
+   "needs_repro": false
+  },
+  "720": {
+   "done": false,
+   "needs_repro": false
+  },
+  "721": {
+   "done": false,
+   "needs_repro": false
+  },
+  "730": {
+   "done": false,
+   "needs_repro": false
+  },
+  "731": {
+   "done": false,
+   "needs_repro": false
+  },
+  "734": {
+   "done": false,
+   "needs_repro": true
+  },
+  "758": {
+   "done": false,
+   "needs_repro": false
+  },
+  "759": {
+   "done": false,
+   "needs_repro": false
+  },
+  "760": {
+   "done": false,
+   "needs_repro": false
+  },
+  "763": {
+   "done": false,
+   "needs_repro": true
+  },
+  "765": {
+   "done": false,
+   "needs_repro": true
+  },
+  "766": {
+   "done": false,
+   "needs_repro": false
+  },
+  "768": {
+   "done": false,
+   "needs_repro": false
+  },
+  "769": {
+   "done": false,
+   "needs_repro": true
+  },
+  "776": {
+   "done": false,
+   "needs_repro": false
+  },
+  "778": {
+   "done": false,
+   "needs_repro": false
+  },
+  "779": {
+   "done": false,
+   "needs_repro": false
+  },
+  "780": {
+   "done": false,
+   "needs_repro": false
+  },
+  "781": {
+   "done": false,
+   "needs_repro": false
+  },
+  "782": {
+   "done": false,
+   "needs_repro": false
+  },
+  "783": {
+   "done": false,
+   "needs_repro": false
+  },
+  "796": {
+   "done": false,
+   "needs_repro": false
+  },
+  "797": {
+   "done": false,
+   "needs_repro": true
+  },
+  "798": {
+   "done": false,
+   "needs_repro": true
+  },
+  "799": {
+   "done": false,
+   "needs_repro": false
+  },
+  "804": {
+   "done": false,
+   "needs_repro": false
+  },
+  "805": {
+   "done": false,
+   "needs_repro": false
+  },
+  "808": {
+   "done": false,
+   "needs_repro": false
+  },
+  "826": {
+   "done": false,
+   "needs_repro": false
+  },
+  "827": {
+   "done": false,
+   "needs_repro": false
+  },
+  "833": {
+   "done": false,
+   "needs_repro": true
+  },
+  "835": {
+   "done": false,
+   "needs_repro": false
+  },
+  "836": {
+   "done": false,
+   "needs_repro": false
+  },
+  "838": {
+   "done": false,
+   "needs_repro": false
+  },
+  "846": {
+   "done": false,
+   "needs_repro": false
+  },
+  "859": {
+   "done": false,
+   "needs_repro": false
+  },
+  "860": {
+   "done": false,
+   "needs_repro": false
+  }
+ },
+ "characters": [
+  {
+   "id": 334,
+   "issues": [
+    {
+     "done": false,
+     "id": 405,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 420,
+     "needs_repro": false,
+     "type": "effect"
+    }
+   ],
+   "name": "Akuma"
+  },
+  {
+   "id": 335,
+   "issues": [
+    {
+     "done": false,
+     "id": 433,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 511,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 512,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 513,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 514,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 515,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 516,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 629,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 647,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 1471,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 2486,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Amaterasu"
+  },
+  {
+   "id": 336,
+   "issues": [
+    {
+     "done": true,
+     "id": 517,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 518,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 519,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 520,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 521,
+     "needs_repro": false,
+     "type": "verify"
+    },
+    {
+     "done": true,
+     "id": 1444,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1478,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Arthur"
+  },
+  {
+   "id": 337,
+   "issues": [
+    {
+     "done": false,
+     "id": 628,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 645,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1451,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Captain America"
+  },
+  {
+   "id": 338,
+   "issues": [
+    {
+     "done": false,
+     "id": 431,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 484,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 485,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 486,
+     "needs_repro": false,
+     "type": "verify"
+    },
+    {
+     "done": false,
+     "id": 487,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 638,
+     "needs_repro": false,
+     "type": "audio"
+    },
+    {
+     "done": true,
+     "id": 1445,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1472,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1503,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Chris"
+  },
+  {
+   "id": 339,
+   "issues": [
+    {
+     "done": false,
+     "id": 627,
+     "needs_repro": true,
+     "type": "visibility"
+    }
+   ],
+   "name": "Chun-Li"
+  },
+  {
+   "id": 340,
+   "issues": [
+    {
+     "done": false,
+     "id": 534,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 535,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 536,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 537,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 605,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 606,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 635,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "C. Viper"
+  },
+  {
+   "id": 341,
+   "issues": [
+    {
+     "done": false,
+     "id": 404,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 411,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 476,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 477,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 478,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 479,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 480,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 481,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 482,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 483,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1331,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1452,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Dante"
+  },
+  {
+   "id": 342,
+   "issues": [
+    {
+     "done": false,
+     "id": 592,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 593,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 594,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 595,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 600,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1475,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Deadpool"
+  },
+  {
+   "id": 343,
+   "issues": [
+    {
+     "done": false,
+     "id": 434,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 624,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 644,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1443,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1482,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Doctor Doom"
+  },
+  {
+   "id": 344,
+   "issues": [
+    {
+     "done": false,
+     "id": 428,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 464,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 465,
+     "needs_repro": true,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 466,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 604,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 622,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": true,
+     "id": 1313,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Doctor Strange"
+  },
+  {
+   "id": 345,
+   "issues": [
+    {
+     "done": false,
+     "id": 427,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 454,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 455,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 456,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 457,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 458,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 459,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 616,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 620,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": true,
+     "id": 1459,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Dormammu"
+  },
+  {
+   "id": 346,
+   "issues": [
+    {
+     "done": false,
+     "id": 544,
+     "needs_repro": true,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 545,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 546,
+     "needs_repro": true,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 547,
+     "needs_repro": false,
+     "type": "state"
+    }
+   ],
+   "name": "Felicia"
+  },
+  {
+   "id": 347,
+   "issues": [
+    {
+     "done": false,
+     "id": 421,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 1137,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "Firebrand"
+  },
+  {
+   "id": 348,
+   "issues": [
+    {
+     "done": false,
+     "id": 414,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": true,
+     "id": 500,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 501,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 502,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 503,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 504,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 505,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 506,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 610,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 611,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 612,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": true,
+     "id": 1446,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1469,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Frank West"
+  },
+  {
+   "id": 349,
+   "issues": [
+    {
+     "done": false,
+     "id": 894,
+     "needs_repro": true,
+     "type": "verify"
+    }
+   ],
+   "name": "Ghost Rider"
+  },
+  {
+   "id": 350,
+   "issues": [
+    {
+     "done": false,
+     "id": 631,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 642,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1479,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Haggar"
+  },
+  {
+   "id": 351,
+   "issues": [
+    {
+     "done": false,
+     "id": 471,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 472,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 473,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 474,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 475,
+     "needs_repro": false,
+     "type": "desync"
+    }
+   ],
+   "name": "Hawkeye"
+  },
+  {
+   "id": 352,
+   "issues": [
+    {
+     "done": false,
+     "id": 406,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 460,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 461,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 462,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 463,
+     "needs_repro": false,
+     "type": "verify"
+    }
+   ],
+   "name": "Hsien-Ko"
+  },
+  {
+   "id": 353,
+   "issues": [
+    {
+     "done": false,
+     "id": 895,
+     "needs_repro": true,
+     "type": "verify"
+    }
+   ],
+   "name": "Hulk"
+  },
+  {
+   "id": 354,
+   "issues": [
+    {
+     "done": false,
+     "id": 413,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 603,
+     "needs_repro": false,
+     "type": "state"
+    }
+   ],
+   "name": "Iron Fist"
+  },
+  {
+   "id": 355,
+   "issues": [
+    {
+     "done": false,
+     "id": 563,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 614,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 643,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1448,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1468,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Iron Man"
+  },
+  {
+   "id": 356,
+   "issues": [
+    {
+     "done": false,
+     "id": 527,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 1138,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "Jill"
+  },
+  {
+   "id": 357,
+   "issues": [
+    {
+     "done": false,
+     "id": 418,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 621,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 633,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Magneto"
+  },
+  {
+   "id": 358,
+   "issues": [
+    {
+     "done": false,
+     "id": 424,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 528,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 529,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 530,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 531,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 532,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 533,
+     "needs_repro": false,
+     "type": "crash"
+    }
+   ],
+   "name": "M.O.D.O.K."
+  },
+  {
+   "id": 359,
+   "issues": [
+    {
+     "done": false,
+     "id": 409,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 417,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 609,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1494,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Morrigan"
+  },
+  {
+   "id": 360,
+   "issues": [
+    {
+     "done": false,
+     "id": 623,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 1139,
+     "needs_repro": true,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1324,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1450,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1536,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Nemesis"
+  },
+  {
+   "id": 361,
+   "issues": [
+    {
+     "done": false,
+     "id": 423,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 467,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 468,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 469,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 470,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 634,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Nova"
+  },
+  {
+   "id": 362,
+   "issues": [
+    {
+     "done": false,
+     "id": 584,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 585,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 586,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 587,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 588,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 589,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 590,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 591,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 613,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1498,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Phoenix"
+  },
+  {
+   "id": 363,
+   "issues": [
+    {
+     "done": false,
+     "id": 539,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 540,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 541,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 542,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 615,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 630,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": true,
+     "id": 1231,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1449,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1480,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Phoenix Wright"
+  },
+  {
+   "id": 364,
+   "issues": [
+    {
+     "done": false,
+     "id": 436,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 437,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 438,
+     "needs_repro": true,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 439,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 440,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 441,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 442,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 443,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 444,
+     "needs_repro": true,
+     "type": "verify"
+    },
+    {
+     "done": true,
+     "id": 445,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 618,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 646,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1232,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1345,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1453,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1483,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 2491,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": false,
+     "id": 2573,
+     "needs_repro": false,
+     "type": "verify"
+    }
+   ],
+   "name": "Rocket Raccoon"
+  },
+  {
+   "id": 365,
+   "issues": [
+    {
+     "done": false,
+     "id": 419,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 1302,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Ryu"
+  },
+  {
+   "id": 366,
+   "issues": [
+    {
+     "done": false,
+     "id": 626,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Sentinel"
+  },
+  {
+   "id": 367,
+   "issues": [
+    {
+     "done": false,
+     "id": 559,
+     "needs_repro": false,
+     "type": "freeze"
+    },
+    {
+     "done": false,
+     "id": 1140,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "She-Hulk"
+  },
+  {
+   "id": 368,
+   "issues": [
+    {
+     "done": false,
+     "id": 555,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 556,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 557,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 558,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 617,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 625,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Shuma-Gorath"
+  },
+  {
+   "id": 369,
+   "issues": [
+    {
+     "done": false,
+     "id": 408,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 496,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 497,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 498,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 499,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1316,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1319,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Spencer"
+  },
+  {
+   "id": 370,
+   "issues": [
+    {
+     "done": false,
+     "id": 422,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 543,
+     "needs_repro": true,
+     "type": "state"
+    },
+    {
+     "done": true,
+     "id": 1322,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Spider-Man"
+  },
+  {
+   "id": 371,
+   "issues": [
+    {
+     "done": false,
+     "id": 429,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 560,
+     "needs_repro": false,
+     "type": "freeze"
+    },
+    {
+     "done": false,
+     "id": 636,
+     "needs_repro": false,
+     "type": "state"
+    }
+   ],
+   "name": "Storm"
+  },
+  {
+   "id": 372,
+   "issues": [
+    {
+     "done": false,
+     "id": 432,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 447,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 448,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 449,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 450,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 451,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 452,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": true,
+     "id": 453,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1447,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1514,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Strider"
+  },
+  {
+   "id": 373,
+   "issues": [
+    {
+     "done": false,
+     "id": 412,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 632,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Super-Skrull"
+  },
+  {
+   "id": 374,
+   "issues": [
+    {
+     "done": false,
+     "id": 896,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "Taskmaster"
+  },
+  {
+   "id": 375,
+   "issues": [
+    {
+     "done": false,
+     "id": 426,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 1141,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "Thor"
+  },
+  {
+   "id": 376,
+   "issues": [
+    {
+     "done": false,
+     "id": 507,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 508,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 509,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 510,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1317,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1477,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Trish"
+  },
+  {
+   "id": 377,
+   "issues": [
+    {
+     "done": false,
+     "id": 522,
+     "needs_repro": true,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 523,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 524,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 525,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 526,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": true,
+     "id": 1476,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Tron"
+  },
+  {
+   "id": 378,
+   "issues": [
+    {
+     "done": false,
+     "id": 407,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 425,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 488,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 489,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 490,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 491,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 492,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 493,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 494,
+     "needs_repro": false,
+     "type": "freeze"
+    },
+    {
+     "done": false,
+     "id": 495,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 607,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 608,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": true,
+     "id": 1346,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1442,
+     "needs_repro": false,
+     "type": null
+    },
+    {
+     "done": true,
+     "id": 1481,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Vergil"
+  },
+  {
+   "id": 379,
+   "issues": [
+    {
+     "done": false,
+     "id": 435,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 548,
+     "needs_repro": true,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 549,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": true,
+     "id": 1325,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Viewtiful Joe"
+  },
+  {
+   "id": 380,
+   "issues": [
+    {
+     "done": false,
+     "id": 410,
+     "needs_repro": false,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 601,
+     "needs_repro": true,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 602,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": true,
+     "id": 1415,
+     "needs_repro": false,
+     "type": null
+    }
+   ],
+   "name": "Wesker"
+  },
+  {
+   "id": 381,
+   "issues": [
+    {
+     "done": false,
+     "id": 897,
+     "needs_repro": true,
+     "type": null
+    }
+   ],
+   "name": "Wolverine"
+  },
+  {
+   "id": 382,
+   "issues": [
+    {
+     "done": false,
+     "id": 898,
+     "needs_repro": true,
+     "type": "verify"
+    }
+   ],
+   "name": "X-23"
+  },
+  {
+   "id": 383,
+   "issues": [
+    {
+     "done": false,
+     "id": 430,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 550,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 551,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 552,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 553,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 554,
+     "needs_repro": true,
+     "type": "input"
+    },
+    {
+     "done": false,
+     "id": 596,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 597,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 619,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Zero"
+  }
+ ],
+ "exported_at": "2026-11-25T05:19Z",
+ "latest_release": {
+  "date": "2026-11-25",
+  "tag": "v0.6.8"
+ },
+ "releases": [
+  "v0.6.8",
+  "v0.6.7",
+  "v0.6.6",
+  "v0.6.5",
+  "v0.6.4",
+  "v0.6.3",
+  "v0.6.2",
+  "v0.6.1",
+  "v0.6.0",
+  "v0.5.1",
+  "v0.5.0",
+  "v0.4.2",
+  "v0.4.1",
+  "v0.4.0",
+  "v0.3.23",
+  "v0.3.22",
+  "v0.3.21",
+  "v0.3.20",
+  "v0.3.18",
+  "v0.3.17",
+  "v0.3.16",
+  "v0.3.15",
+  "v0.3.14",
+  "v0.3.13",
+  "v0.3.12",
+  "v0.3.11",
+  "v0.3.10",
+  "v0.3.8",
+  "v0.3.7",
+  "v0.3.6",
+  "v0.3.5",
+  "v0.3.4",
+  "v0.3.3",
+  "v0.3.2",
+  "v0.3.1",
+  "v0.3.0",
+  "v0.2.9",
+  "v0.2.8",
+  "v0.2.7",
+  "v0.2.7-dev-pr1",
+  "v0.2.4-dev-pr1"
+ ],
+ "stats": {
+  "verifying_open": 155
+ }
+}

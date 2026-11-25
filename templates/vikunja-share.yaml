@@ -1,0 +1,25 @@
+{{- /* Read-only link share hash for Vikunja project 19, used by the refresh
+       sidecar. Rendered only when vikunja.shareKey is set (apps/timestone-roadmap.yaml
+       in 2143-Labs/argo). Without it the sidecar fails each run and the baked page serves. */}}
+{{- with .Values.vikunja.shareKey }}
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: timestone-roadmap-vikunja
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: timestone-roadmap
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: openbao
+    kind: ClusterSecretStore
+  target:
+    name: timestone-roadmap-vikunja
+    creationPolicy: Owner
+  data:
+    - secretKey: hash
+      remoteRef:
+        key: {{ . }}
+        property: hash
+{{- end }}

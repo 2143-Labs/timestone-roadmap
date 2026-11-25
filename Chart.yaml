@@ -1,0 +1,6 @@
+apiVersion: v2
+name: timestone-roadmap
+description: Player-facing Timestone roadmap; a sidecar rebuilds it from the board every 15 minutes.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

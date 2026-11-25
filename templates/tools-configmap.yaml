@@ -1,0 +1,15 @@
+# Exporter, builder and curated content for the `refresh` sidecar.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: timestone-roadmap-tools
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: timestone-roadmap
+data:
+  export_board.py: |
+{{ .Files.Get "tools/export_board.py" | indent 4 }}
+  build.py: |
+{{ .Files.Get "tools/build.py" | indent 4 }}
+  roadmap.json: |
+{{ .Files.Get "content/roadmap.json" | indent 4 }}

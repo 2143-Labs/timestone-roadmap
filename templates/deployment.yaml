@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timestone-roadmap
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: timestone-roadmap
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: timestone-roadmap
+  template:
+    metadata:
+      labels:
+        app: timestone-roadmap
+      annotations:
+        # Rolls the pod when the page, nginx config, tools or content change; the ConfigMap names are stable.
+        checksum/site: {{ printf "%s%s%s%s%s" (.Files.Glob "site/*.html").AsConfig (.Files.Get "files/nginx.conf") (.Files.Get "tools/export_board.py") (.Files.Get "tools/build.py") (.Files.Get "content/roadmap.json") | sha256sum | quote }}
+    spec:
+      affinity:
+        nodeAffinity:
+          # workload-type=general selects the normal nodes. The hostname term is
+          # temporary (2026-10-19): node big intermittently drops cross-node pod
+          # traffic and in-pod DNS while reporting Ready. Remove it once fixed.
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload-type
+                    operator: In
+                    values:
+                      - general
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - big
+      containers:
+        - name: nginx
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: site
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: live
+              mountPath: /data
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: http
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /index.html
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+        # Rebuilds /data/index.html from the board (link share) and GitHub releases
+        # every refresh.intervalSeconds. On failure it logs one line and the old page stays.
+        - name: refresh
+          image: "{{ .Values.refresh.image }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+          command: ["sh", "-c"]
+          args:
+            - |
+              while :; do
+                if python3 -B /app/export_board.py --content /app/roadmap.json \
+                     --share-hash-file /etc/vikunja-share/hash --base-url {{ .Values.refresh.vikunjaUrl }} \
+                     --project {{ .Values.refresh.projectId }} --roster {{ .Values.refresh.rosterId }} \
+                     --prev /data/board.json --out /data/board.json \
+                   && python3 -B /app/build.py --content /app/roadmap.json \
+                     --board /data/board.json --out /data/index.html; then
+                  echo "refresh ok $(date -u +%FT%TZ)"
+                fi
+                sleep {{ .Values.refresh.intervalSeconds }}
+              done
+          volumeMounts:
+            - name: live
+              mountPath: /data
+            - name: tools
+              mountPath: /app
+              readOnly: true
+            - name: vikunja-share
+              mountPath: /etc/vikunja-share
+              readOnly: true
+          resources:
+{{ toYaml .Values.refresh.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: live
+          emptyDir: {}
+        - name: tools
+          configMap:
+            name: timestone-roadmap-tools
+        - name: vikunja-share
+          secret:
+            secretName: timestone-roadmap-vikunja
+            optional: true
+        - name: site
+          configMap:
+            name: timestone-roadmap
+        - name: tmp
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+        - name: nginx-conf
+          configMap:
+            name: timestone-roadmap-nginx
+            items:
+              - key: nginx.conf
+                path: nginx.conf
