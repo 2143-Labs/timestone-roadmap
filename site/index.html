@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timestone roadmap</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:1300px;padding:1rem;background:#1b1d22;color:#e6e6e6;font:16px/1.5 system-ui,sans-serif}
+a{color:#4aa3ff}
+h1{margin:.2rem 0}
+h2{grid-column:1/-1;margin:1.5rem 0 0}
+h2 small{font-weight:normal;color:#9aa0a6;font-size:.8rem}
+h3{margin:0 0 .4rem;font-size:1.1rem}
+header p{margin:.3rem 0}
+nav a{margin-right:1rem}
+.stamp{color:#9aa0a6;font-size:.9rem}
+.card{background:#262a31;border-radius:6px;padding:1rem}
+.card p{margin:.2rem 0 .6rem;color:#c4c7cc}
+.size{float:right;font-size:.75rem;font-weight:normal;color:#9aa0a6;border:1px solid #444a53;border-radius:4px;padding:0 .4rem}
+.roadmap{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:700px){.roadmap{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.roadmap{grid-template-columns:repeat(3,1fr)}}
+.roadmap>section{display:contents}
+.roadmap>section.wide{display:block;grid-column:1/-1}
+ul{padding-left:0}
+.card li,.legend li{list-style:none;margin:.25rem 0}
+.card li::before,.legend li::before{content:"○ ";color:#9aa0a6}
+li.done::before{content:"✔ ";color:#4caf50}
+li.verifying::before{content:"◷ ";color:#f0b429}
+li.now::before{content:"▶ ";color:#4aa3ff}
+li.open::before{content:"○ ";color:#9aa0a6}
+li.no::before{content:"✕ ";color:#e5534b}
+.card li.done{text-decoration:line-through;opacity:.5}
+.legend{display:flex;flex-wrap:wrap;gap:.2rem 1.5rem;font-size:.9rem}
+.card ol.plain li,.card ul.plain li{list-style:revert;margin-left:1.5rem}
+.card .plain li::before{content:none}
+.toggle{position:absolute;opacity:0}
+.toggle+label{display:inline-block;margin:.8rem 0;padding:.4rem .9rem;border:1px solid #4aa3ff;border-radius:6px;cursor:pointer;user-select:none}
+#show-done:checked+label::after{content:" ✓"}
+#show-done:focus-visible+label{outline:2px solid #4aa3ff}
+#show-done:not(:checked)~main li.done,#show-done:not(:checked)~main .shipped{display:none}
+.banner{background:#3a2f12;border-left:4px solid #f0b429;padding:.5rem .8rem;border-radius:4px}
+.levels p{margin:.2rem 0}
+.tiles{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:.8rem}
+.tile{border-left:4px solid;background:#262a31;border-radius:4px;padding:.4rem .6rem;display:flex;flex-direction:column}
+.tile span{font-size:.85rem}
+.tile small{color:#9aa0a6;font-size:.75rem}
+.ready{border-color:#4caf50}.playable{border-color:#8bc34a}.desync{border-color:#f0b429}.crash{border-color:#e5534b}.untested{border-color:#9aa0a6}
+b.ready{color:#4caf50}b.playable{color:#8bc34a}b.desync{color:#f0b429}b.crash{color:#e5534b}b.untested{color:#9aa0a6}
+footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Timestone roadmap</h1>
+<p>Rollback netcode for Ultimate Marvel vs. Capcom 3 (Steam)</p>
+<p><strong>Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.</strong></p>
+<p>Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.</p>
+<nav><a href="https://github.com/tilderain/Timestone/releases">Download</a><a href="https://discord.gg/BvDNwPzwy4">Discord</a><a href="https://github.com/tilderain/Timestone">Source</a></nav>
+<p class="stamp">Last updated 2026-11-25 05:19 UTC · latest release v0.6.8 (2026-11-25)</p>
+</header>
+<ul class="legend"><li class="now">Being worked on now</li><li class="open">Planned, not started</li><li class="verifying">Fix is in a release, waiting for players to confirm it</li><li class="done">Shipped (hidden until you press Show shipped)</li><li class="no">Not planned</li></ul>
+<input type="checkbox" id="show-done" class="toggle">
+<label for="show-done">Show shipped work (35)</label>
+<main class="roadmap">
+<section id="now">
+<h2>Now <small>(Currently working on this)</small></h2>
+<article class="card">
+<h3>Fewer desyncs and crashes <span class="size">large job</span></h3>
+<p>The biggest job. Each character&#x27;s known problems are in the character table further down.</p>
+<ul>
+<li class="now">Fix the character-specific desyncs and crashes listed in the character table</li>
+<li class="verifying">155 fixes are already in recent releases and need confirming in real matches. If you still hit one, report it on Discord</li>
+<li class="now">Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails</li>
+</ul>
+</article>
+<article class="card">
+<h3>Smoother long sessions <span class="size">large job</span></h3>
+<p>Performance over a long night of sets.</p>
+<ul>
+<li class="now">Long sets and rematches dropping from 60 to 30 FPS</li>
+<li class="verifying">Effects costing more to rewind than they used to (fix released, confirming)</li>
+</ul>
+</article>
+<article class="card">
+<h3>Lobbies and social <span class="size">medium job</span></h3>
+<p>Building on the in-game lobby from v0.6.</p>
+<ul>
+<li class="verifying">Private rooms with a password or a generated room code (fix released, confirming)</li>
+<li class="verifying">Join by pasting a Steam lobby link, plus an invite button (fix released, confirming)</li>
+<li class="now">Turn Galactus on or off per room</li>
+<li class="now">Room skill level and a casual or serious tag</li>
+<li class="verifying">A join sound and a &quot;player joined&quot; notice that stays on screen (fix released, confirming)</li>
+<li class="verifying">Wired or Wi-Fi icon, jitter, and ping shown in game (fix released, confirming)</li>
+<li class="now">Discord Rich Presence: show your room and match in Discord, with off, basic and full privacy settings. Built and in testing; not in a release yet</li>
+</ul>
+</article>
+<article class="card">
+<h3>Replays <span class="size">small job</span></h3>
+<p>The game already keeps a log of each match&#x27;s inputs while you play. It cannot be saved yet.</p>
+<ul>
+<li class="now">Save a match as a replay file and watch it again</li>
+</ul>
+</article>
+</section>
+<section id="next">
+<h2>Next <small>(Starts after the current work)</small></h2>
+<article class="card">
+<h3>Ranked matchmaking <span class="size">large job</span></h3>
+<p>The ranking server already exists; the in-game side has not started.</p>
+<ul>
+<li class="open">Separate ranked and unranked queues, with a rating and a leaderboard</li>
+<li class="open">Both players&#x27; results checked, with replays to settle disagreements</li>
+<li class="open">Ladder rules, such as first-to-4 sets</li>
+<li class="open">Reports, anti-cheat and anti-smurf measures</li>
+</ul>
+</article>
+<article class="card">
+<h3>Controllers and inputs <span class="size">medium job</span></h3>
+<ul>
+<li class="verifying">Pads not detected online (PS4, Brook UFB and others) (fix released, confirming)</li>
+<li class="open">Reconnect a controller after it disconnects</li>
+<li class="verifying">Button bindings resetting when a match starts (fix released, confirming)</li>
+<li class="open">Inputs freezing for a second or two in long online sets</li>
+<li class="open">Steam Deck: external controller order and player 2 input</li>
+</ul>
+</article>
+<article class="card">
+<h3>Training mode <span class="size">medium job</span></h3>
+<ul>
+<li class="open">Start training mode from Timestone directly</li>
+<li class="open">Practise with online input delay and simulated rollback</li>
+<li class="open">Save states and custom starting positions</li>
+</ul>
+</article>
+</section>
+<section id="later">
+<h2>Later <small>(Wanted, not scheduled)</small></h2>
+<article class="card">
+<h3>Launcher and HUD polish <span class="size">medium job</span></h3>
+<ul>
+<li class="verifying">Portraits and health bars follow the team order (fix released, confirming)</li>
+<li class="verifying">Timer and meter display glitches (fix released, confirming)</li>
+<li class="verifying">Launcher layout on small screens and high-DPI displays (fix released, confirming)</li>
+<li class="verifying">Names and chat in non-English text everywhere (fix released, confirming)</li>
+<li class="verifying">Copy and paste in text fields (in v0.6.7, confirming)</li>
+<li class="open">Steam Deck: chat no longer grabbing launcher controls</li>
+<li class="open">Steam overlay and Recent Players</li>
+<li class="verifying">Updater reliability: errors, relaunch loops, antivirus blocks (fix released, confirming)</li>
+<li class="open">Window size, position and fullscreen problems</li>
+<li class="verifying">A fighting-game-style launcher look: portraits, colour dots, theme (fix released, confirming)</li>
+</ul>
+</article>
+<article class="card">
+<h3>Mods and cosmetics <span class="size">medium job</span></h3>
+<ul>
+<li class="open">Work alongside other UMVC3 mods such as Community Edition and colour expansions</li>
+<li class="verifying">Alternate costumes and colours in normal play (fix released, confirming)</li>
+<li class="verifying">Your own stage and cosmetic swaps, seen only by you (fix released, confirming)</li>
+<li class="open">Classic music options</li>
+</ul>
+</article>
+<article class="card">
+<h3>Install and updates <span class="size">small job</span></h3>
+<ul>
+<li class="verifying">Installer that finds the game in Steam (Windows, Linux, Steam Deck) (in v0.6.7, confirming)</li>
+<li class="open">A beta channel for testers</li>
+<li class="open">Antivirus false alarms (Smart App Control, Bitdefender)</li>
+</ul>
+</article>
+<article class="card">
+<h3>Watching <span class="size">small job</span></h3>
+<ul>
+<li class="open">Take over a replay and play on from any point</li>
+<li class="open">A public winner-stays-on broadcast</li>
+</ul>
+</article>
+</section>
+<section id="not-planned">
+<h2>Not planned <small>(Asked for, but we are not doing these)</small></h2>
+<article class="card">
+<h3>Not planned</h3>
+<ul>
+<li class="no">Voice chat. Use Discord</li>
+<li class="no">Free text chat during a match. Quick chat stays</li>
+<li class="no">A maximum-ping filter, for now</li>
+<li class="no">Community-run rollback or tournament servers</li>
+<li class="no">Hiding character picks</li>
+<li class="no">Frame rates above 60. The game runs at 60</li>
+<li class="no">Different delay or rollback per player. Everyone shares one fixed 8-frame window since v0.6.2</li>
+</ul>
+</article>
+</section>
+<section id="shipped" class="shipped">
+<h2>Shipped</h2>
+<article class="card shipped">
+<h3>Rollback itself</h3>
+<ul>
+<li class="done">First working rewind (2026-05-24)</li>
+<li class="done">Prediction instead of waiting for the other player&#x27;s input (2026-05-27)</li>
+<li class="done">Random numbers and the camera rewind correctly (2026-07-29)</li>
+<li class="done">Projectiles are rewound in place <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
+<li class="done">Saving the game state takes under 1 ms, down from 3.5 ms <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
+<li class="done">Both players share one frame clock with a fixed 8-frame rollback window <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>Online over Steam</h3>
+<ul>
+<li class="done">Play over Steam with no port forwarding (2026-08-14)</li>
+<li class="done">Input delay set automatically</li>
+<li class="done">Ping, jitter and packet loss shown</li>
+<li class="done">Controllers end up in the right player slot <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.22">v0.3.22</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>In-game lobby</h3>
+<ul>
+<li class="done">Lobby inside the game: first-to 1 to 10 sets, queues, winner stays, Endless <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
+<li class="done">Chat, quick chat, kick and ban, room music, every colour, Steam avatars <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
+<li class="done">10 room presets and stage picks <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+<li class="done">RANDOM team member <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></li>
+<li class="done">16-player rooms, non-English chat and input methods, host can change settings in the room <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a></li>
+<li class="done">Room matches use the game&#x27;s own character select and result screens; RANDOM ALL; paste into text fields <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>Spectating</h3>
+<ul>
+<li class="done">Watch matches live, and join mid-match <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
+<li class="done">Watch while you wait in the queue <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
+<li class="done">F3 overlay and an Esc list of who is watching <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+<li class="done">Spectators no longer stall the players <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+<li class="done">Spectators can join at the first character select <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>Character fixes</h3>
+<ul>
+<li class="done">Rollback fixes for 27 characters, including Doom&#x27;s missiles, Chris&#x27;s grenades, Vergil&#x27;s swords, Arthur&#x27;s axe, Dormammu&#x27;s Inferno, Iron Man&#x27;s Repulsor, Deadpool&#x27;s Pineapple, Tron&#x27;s Servbots, Trish, Haggar&#x27;s pipe and Wesker</li>
+<li class="done">Crash fixes for Ryu, Strider, Dark Phoenix, Doctor Strange, Morrigan and Amaterasu</li>
+<li class="done">Phoenix Wright&#x27;s dog <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.10">v0.3.10</a></li>
+<li class="done">Amaterasu&#x27;s Heavy Paper, Felicia&#x27;s Kitty Helper, Frank West&#x27;s cart <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
+<li class="done">Doctor Strange&#x27;s Graces restored on rollback <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>Picture and sound follow the rewind</h3>
+<ul>
+<li class="done">Super cut-ins, life bars, K.O. banners, the timer, music and voices all rewind correctly <a href="https://github.com/tilderain/Timestone/releases/tag/v0.5.0">v0.5.0</a></li>
+<li class="done">X-Factor looks right after a rollback <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>Launcher, display and updates</h3>
+<ul>
+<li class="done">Resolution and VSync settings in game <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.23">v0.3.23</a></li>
+<li class="done">Self-updater that checks every download <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
+<li class="done">Direct3D 9Ex graphics mode <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a></li>
+<li class="done">Installer that finds the game in Steam, for Windows, Linux and Steam Deck <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+</ul>
+</article>
+<article class="card shipped">
+<h3>When something breaks</h3>
+<ul>
+<li class="done">Crash reports and a freeze watchdog</li>
+<li class="done">Lag capture to diagnose slow matches <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
+<li class="done">Performance window <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+</ul>
+</article>
+</section>
+<section id="characters" class="wide">
+<h2>Characters</h2>
+<p class="banner">Nobody has confirmed any character in real matches yet. This table comes from bug reports and code review, so treat every row as unverified.</p>
+<div class="levels">
+<p><b class="ready">●</b> Tournament-ready: 0 · Confirmed clean in real matches</p>
+<p><b class="playable">◐</b> Playable: 10 · Only visual or sound glitches known</p>
+<p><b class="desync">▲</b> Known desyncs: 14 · Some moves can desync a match</p>
+<p><b class="crash">■</b> Can crash: 21 · Some moves can crash or freeze the game</p>
+<p><b class="untested">○</b> Untested: 5 · No reports yet, good or bad</p>
+</div>
+<div class="tiles">
+<div class="tile playable"><b>◐ Akuma</b><span>Playable</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Amaterasu</b><span>Known desyncs</span><small>9 open · 2 fixed · 6 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Arthur</b><span>Known desyncs</span><small>3 open · 3 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ C. Viper</b><span>Can crash</span><small>7 open · 0 fixed</small></div>
+<div class="tile desync"><b>▲ Captain America</b><span>Known desyncs</span><small>2 open · 1 fixed · 1 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Chris</b><span>Known desyncs</span><small>3 open · 5 fixed · 1 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Chun-Li</b><span>Playable</span><small>1 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Dante</b><span>Known desyncs</span><small>10 open · 2 fixed · 3 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Deadpool</b><span>Can crash</span><small>5 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Doctor Doom</b><span>Known desyncs</span><small>3 open · 2 fixed · 3 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Doctor Strange</b><span>Can crash</span><small>5 open · 2 fixed · 3 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Dormammu</b><span>Can crash</span><small>8 open · 2 fixed · 4 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Felicia</b><span>Known desyncs</span><small>4 open · 0 fixed · 2 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Firebrand</b><span>Playable</span><small>1 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Frank West</b><span>Can crash</span><small>10 open · 3 fixed · 3 awaiting confirmation</small></div>
+<div class="tile untested"><b>○ Ghost Rider</b><span>Untested</span><small>0 open · 0 fixed</small></div>
+<div class="tile desync"><b>▲ Haggar</b><span>Known desyncs</span><small>2 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Hawkeye</b><span>Known desyncs</span><small>5 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Hsien-Ko</b><span>Can crash</span><small>4 open · 0 fixed</small></div>
+<div class="tile untested"><b>○ Hulk</b><span>Untested</span><small>0 open · 0 fixed</small></div>
+<div class="tile desync"><b>▲ Iron Fist</b><span>Known desyncs</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Iron Man</b><span>Can crash</span><small>3 open · 2 fixed · 1 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Jill</b><span>Known desyncs</span><small>1 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ M.O.D.O.K.</b><span>Can crash</span><small>6 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Magneto</b><span>Playable</span><small>3 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Morrigan</b><span>Can crash</span><small>3 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Nemesis</b><span>Playable</span><small>1 open · 3 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Nova</b><span>Can crash</span><small>6 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Phoenix</b><span>Can crash</span><small>9 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Phoenix Wright</b><span>Known desyncs</span><small>6 open · 3 fixed · 3 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Rocket Raccoon</b><span>Can crash</span><small>10 open · 6 fixed · 6 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Ryu</b><span>Playable</span><small>1 open · 1 fixed</small></div>
+<div class="tile playable"><b>◐ Sentinel</b><span>Playable</span><small>1 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ She-Hulk</b><span>Can crash</span><small>1 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Shuma-Gorath</b><span>Can crash</span><small>6 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Spencer</b><span>Can crash</span><small>5 open · 2 fixed · 2 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Spider-Man</b><span>Known desyncs</span><small>2 open · 1 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Storm</b><span>Can crash</span><small>3 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Strider</b><span>Can crash</span><small>7 open · 3 fixed · 1 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Super-Skrull</b><span>Playable</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
+<div class="tile untested"><b>○ Taskmaster</b><span>Untested</span><small>0 open · 0 fixed</small></div>
+<div class="tile playable"><b>◐ Thor</b><span>Playable</span><small>1 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Trish</b><span>Can crash</span><small>4 open · 2 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Tron</b><span>Can crash</span><small>5 open · 1 fixed · 1 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Vergil</b><span>Can crash</span><small>12 open · 3 fixed · 4 awaiting confirmation</small></div>
+<div class="tile playable"><b>◐ Viewtiful Joe</b><span>Playable</span><small>3 open · 1 fixed · 2 awaiting confirmation</small></div>
+<div class="tile desync"><b>▲ Wesker</b><span>Known desyncs</span><small>3 open · 1 fixed · 1 awaiting confirmation</small></div>
+<div class="tile untested"><b>○ Wolverine</b><span>Untested</span><small>0 open · 0 fixed</small></div>
+<div class="tile untested"><b>○ X-23</b><span>Untested</span><small>0 open · 0 fixed</small></div>
+<div class="tile crash"><b>■ Zero</b><span>Can crash</span><small>9 open · 0 fixed · 1 awaiting confirmation</small></div>
+</div>
+</section>
+<section id="history" class="wide">
+<h2>Background</h2>
+<article class="card">
+<h3>How we got here</h3>
+<ol class="plain">
+<li>2026-05-24: First rewind</li>
+<li>2026-05-27: Prediction</li>
+<li>2026-07-29: Random numbers rewind safely</li>
+<li>2026-08-14: Online over Steam</li>
+<li>2026-08-28: v0.2.2, first public build</li>
+<li>2026-11-11: v0.4.0</li>
+<li>2026-11-17: v0.6.0: in-game lobby and spectating</li>
+<li>2026-11-22: v0.6.5</li>
+<li>2026-11-23: v0.6.6: 16-player rooms</li>
+<li>2026-11-24: v0.6.7: installer</li>
+</ol>
+</article>
+<article class="card">
+<h3>Changed or removed</h3>
+<ul class="plain">
+<li>Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window.</li>
+<li>The RenderingThread option was removed.</li>
+<li>Rocket Raccoon&#x27;s tail physics are switched off online to avoid desyncs. This can change how some of his attacks connect.</li>
+<li>Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord.</li>
+</ul>
+</article>
+</section>
+</main>
+<footer><p>Statuses refresh from our task board every 15 minutes. The text is updated by hand when a release ships. Questions or bug reports: Discord.</p></footer>
+</body>
+</html>
