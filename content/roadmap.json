@@ -28,7 +28,7 @@
           "blurb": "The biggest job. Each character's known problems are in the character table further down.",
           "items": [
             {"text": "Fix the character-specific desyncs and crashes listed in the character table", "cards": [315, 329]},
-            {"text": "{verifying_open} fixes are already in recent releases and need confirming in real matches. If you still hit one, report it on Discord", "cards": [333], "state": "verifying"},
+            {"text": "{verifying_open} fixes and open bugs are marked for re-testing in recent releases. If you still hit one, report it on Discord", "cards": [333], "state": "verifying"},
             {"text": "Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails", "cards": [331, 2572, 2573, 2574, 2575, 2576, 2577, 2578, 2579, 326, 692]}
           ]
         },
@@ -46,13 +46,13 @@
           "size": "M",
           "blurb": "Building on the in-game lobby from v0.6.",
           "items": [
-            {"text": "Private rooms with a password or a generated room code", "cards": [763]},
-            {"text": "Join by pasting a Steam lobby link, plus an invite button", "cards": [765, 1114]},
+            {"text": "Private rooms with a password or a generated room code", "cards": [763], "state": "now"},
+            {"text": "Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)", "cards": [765, 1114], "state": "now"},
             {"text": "Turn Galactus on or off per room", "cards": [766]},
             {"text": "Room skill level and a casual or serious tag", "cards": [768]},
-            {"text": "A join sound and a \"player joined\" notice that stays on screen", "cards": [769]},
-            {"text": "Wired or Wi-Fi icon, jitter, and ping shown in game", "cards": [1115]},
-            {"text": "Discord Rich Presence: show your room and match in Discord, with off, basic and full privacy settings. Built and in testing; not in a release yet", "cards": [833], "state": "now"}
+            {"text": "A join sound and a \"player joined\" notice that stays on screen", "cards": [769], "state": "now"},
+            {"text": "Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)", "cards": [1115], "state": "now"},
+            {"text": "Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for v0.6.9; not in a release yet", "cards": [833], "state": "now"}
           ]
         },
         {
@@ -73,7 +73,7 @@
         {
           "title": "Ranked matchmaking",
           "size": "L",
-          "blurb": "The ranking server already exists; the in-game side has not started.",
+          "blurb": "The ranking server is built, though its live server needs updating; the in-game side has not started.",
           "items": [
             {"text": "Separate ranked and unranked queues, with a rating and a leaderboard", "cards": [778, 779]},
             {"text": "Both players' results checked, with replays to settle disagreements", "cards": [780]},
@@ -114,13 +114,12 @@
           "items": [
             {"text": "Portraits and health bars follow the team order", "cards": [709]},
             {"text": "Timer and meter display glitches", "cards": [710]},
-            {"text": "Launcher layout on small screens and high-DPI displays", "cards": [711]},
-            {"text": "Names and chat in non-English text everywhere", "cards": [713]},
-            {"text": "Copy and paste in text fields", "cards": [716], "shipped_in": "v0.6.7"},
+            {"text": "Launcher layout on small screens and high-DPI displays", "cards": [711], "state": "open"},
+            {"text": "Remaining non-English text edge cases (Unicode names, chat and input methods shipped in v0.6.6)", "cards": [713]},
             {"text": "Steam Deck: chat no longer grabbing launcher controls", "cards": [712]},
             {"text": "Steam overlay and Recent Players", "cards": [714, 715]},
             {"text": "Updater reliability: errors, relaunch loops, antivirus blocks", "cards": [717, 718]},
-            {"text": "Window size, position and fullscreen problems", "cards": [719, 720, 721]},
+            {"text": "Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in v0.6.9)", "cards": [719, 720, 721]},
             {"text": "A fighting-game-style launcher look: portraits, colour dots, theme", "cards": [1116]}
           ]
         },
@@ -130,7 +129,7 @@
           "items": [
             {"text": "Work alongside other UMVC3 mods such as Community Edition and colour expansions", "cards": [796, 318]},
             {"text": "Alternate costumes and colours in normal play", "cards": [797]},
-            {"text": "Your own stage and cosmetic swaps, seen only by you", "cards": [798]},
+            {"text": "Your own stage and cosmetic swaps, seen only by you", "cards": [798], "state": "open"},
             {"text": "Classic music options", "cards": [799]}
           ]
         },
@@ -138,7 +137,6 @@
           "title": "Install and updates",
           "size": "S",
           "items": [
-            {"text": "Installer that finds the game in Steam (Windows, Linux, Steam Deck)", "cards": [835], "shipped_in": "v0.6.7"},
             {"text": "A beta channel for testers", "cards": [836]},
             {"text": "Antivirus false alarms (Smart App Control, Bitdefender)", "cards": [730]}
           ]
@@ -202,7 +200,10 @@
         {"text": "10 room presets and stage picks", "version": "v0.6.4"},
         {"text": "RANDOM team member", "version": "v0.6.5"},
         {"text": "16-player rooms, non-English chat and input methods, host can change settings in the room", "version": "v0.6.6"},
-        {"text": "Room matches use the game's own character select and result screens; RANDOM ALL; paste into text fields", "version": "v0.6.7"}
+        {"text": "Room matches use the game's own character select and result screens; RANDOM ALL; paste into text fields", "version": "v0.6.7"},
+        {"text": "Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash", "version": "v0.6.8"},
+        {"text": "Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown", "version": "v0.6.9"},
+        {"text": "Set score display (Settings screen and F4) and improved RANDOM ALL picks", "version": "v0.6.9"}
       ]
     },
     {
@@ -212,7 +213,8 @@
         {"text": "Watch while you wait in the queue", "version": "v0.6.0"},
         {"text": "F3 overlay and an Esc list of who is watching", "version": "v0.6.4"},
         {"text": "Spectators no longer stall the players", "version": "v0.6.4"},
-        {"text": "Spectators can join at the first character select", "version": "v0.6.7"}
+        {"text": "Spectators can join at the first character select", "version": "v0.6.7"},
+        {"text": "Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts", "version": "v0.6.9"}
       ]
     },
     {
@@ -238,6 +240,7 @@
         {"text": "Resolution and VSync settings in game", "version": "v0.3.23"},
         {"text": "Self-updater that checks every download", "version": "v0.6.0"},
         {"text": "Direct3D 9Ex graphics mode", "version": "v0.6.3"},
+        {"text": "Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats", "version": "v0.6.9"},
         {"text": "Installer that finds the game in Steam, for Windows, Linux and Steam Deck", "version": "v0.6.7"}
       ]
     },
@@ -246,7 +249,8 @@
       "items": [
         {"text": "Crash reports and a freeze watchdog", "version": null},
         {"text": "Lag capture to diagnose slow matches", "version": "v0.4.0"},
-        {"text": "Performance window", "version": "v0.6.4"}
+        {"text": "Performance window", "version": "v0.6.4"},
+        {"text": "Cleaner logs with machine, controller, route and per-game rollback summaries", "version": "v0.6.9"}
       ]
     }
   ],
@@ -260,12 +264,14 @@
     {"date": "2026-11-17", "text": "v0.6.0: in-game lobby and spectating"},
     {"date": "2026-11-22", "text": "v0.6.5"},
     {"date": "2026-11-23", "text": "v0.6.6: 16-player rooms"},
-    {"date": "2026-11-24", "text": "v0.6.7: installer"}
+    {"date": "2026-11-24", "text": "v0.6.7: installer"},
+    {"date": "2026-11-25", "text": "v0.6.8: room-match stability and sound crash fix"},
+    {"date": "2026-11-25", "text": "v0.6.9: Settings screen, short lobby links, spectator overlay and score display"}
   ],
   "caveats": [
     "Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window.",
-    "The RenderingThread option was removed.",
-    "Rocket Raccoon's tail physics are switched off online to avoid desyncs. This can change how some of his attacks connect.",
+    "The RenderingThread option was removed in v0.6.3.",
+    "Rocket Raccoon's tail physics have been switched off online since v0.5.0 to avoid desyncs. This can change how some of his attacks connect.",
     "Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord."
   ],
   "characters": {

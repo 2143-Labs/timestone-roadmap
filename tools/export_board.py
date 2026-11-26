@@ -26,7 +26,12 @@ class ExportError(Exception):
     pass
 
 
-def _request(url, data=None, headers=None):
+def _request_meta(url, data=None, headers=None):
+    """Request `url`; return (parsed json, etag).
+
+    The json is None when the server answers 304 Not Modified, so callers that
+    send If-None-Match can reuse what they already have.
+    """
     h = {"User-Agent": "timestone-roadmap"}
     h.update(headers or {})
     body = None
@@ -36,12 +41,23 @@ def _request(url, data=None, headers=None):
     req = urllib.request.Request(url, data=body, headers=h, method="POST" if body else "GET")
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
-            return json.load(r)
+            rh = getattr(r, "headers", None)
+            return json.load(r), (rh.get("ETag") if rh is not None else None)
     except urllib.error.HTTPError as e:
+        try:
+            if e.code == 304:
+                rh = getattr(e, "headers", None)
+                return None, (rh.get("ETag") if rh is not None else None)
+        finally:
+            e.close()
         path = re.sub(r"/shares/[^/]+", "/shares/<hash>", urllib.parse.urlsplit(url).path)
         raise ExportError(f"HTTP {e.code} from {path}") from None
     except (urllib.error.URLError, OSError, ValueError) as e:
         raise ExportError(f"{type(e).__name__}: {e}") from None
+
+
+def _request(url, data=None, headers=None):
+    return _request_meta(url, data=data, headers=headers)[0]
 
 
 def fetch_share(base, hash_file, project):
@@ -67,22 +83,90 @@ def fetch_share(base, hash_file, project):
     return lists[0], lists[1]
 
 
-def fetch_releases(prev_path):
+def _version_key(tag):
+    m = re.fullmatch(r"v(\d+(?:\.\d+)*)", tag or "")
+    return tuple(int(p) for p in m.group(1).split(".")) if m else None
+
+
+def _is_newer(tag, date, latest):
+    """True when (tag, date) is newer than the latest_release dict `latest`."""
+    key, cur = _version_key(tag), _version_key((latest or {}).get("tag"))
+    old_date = (latest or {}).get("date") or ""
+    if key is not None and cur is not None:
+        return key > cur or (key == cur and date > old_date)
+    return date > old_date
+
+
+def board_release(tasks):
+    """Newest done `Release v*` card on the board, as (tag, date) or None.
+
+    Vikunja is the fallback source of truth when GitHub is rate limited.
+    """
+    best = None
+    for t in tasks or []:
+        title = (t.get("title") or "").strip()
+        if not t.get("done") or not title.startswith("Release v"):
+            continue
+        tag = title.split()[1].rstrip(":,;")
+        if _version_key(tag) is None:
+            continue
+        date = str(t.get("end_date") or t.get("start_date") or "")[:10]
+        if best is None or _is_newer(tag, date, {"tag": best[0], "date": best[1]}):
+            best = (tag, date)
+    return best
+
+
+def fetch_releases(prev_path, tasks=None):
+    """Return (tags, latest_release, etag) from GitHub, with fallbacks.
+
+    Sends GITHUB_TOKEN when it is set and If-None-Match when the previous
+    snapshot carries an ETag, so an unchanged release list costs no rate limit.
+    On a 304 the previous snapshot is reused silently. On any other failure the
+    previous snapshot is reused with a warning, and a newer `Release v*` card on
+    the board (Vikunja #1170 and friends) is merged in.
+    """
+    prev = None
+    if prev_path and os.path.exists(prev_path):
+        try:
+            with open(prev_path) as f:
+                prev = json.load(f)
+        except (OSError, ValueError):
+            prev = None
+    if not isinstance(prev, dict):
+        prev = None
+    headers = {"Accept": "application/vnd.github+json"}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    etag = (prev or {}).get("releases_etag")
+    if etag:
+        headers["If-None-Match"] = etag
     try:
-        rel = _request(RELEASES_URL, headers={"Accept": "application/vnd.github+json"})
+        rel, got_etag = _request_meta(RELEASES_URL, headers=headers)
+        if rel is None:  # 304 Not Modified: nothing changed, no warning
+            if not prev or "releases" not in prev or "latest_release" not in prev:
+                raise ExportError("HTTP 304 without a usable previous snapshot")
+            return prev["releases"], prev["latest_release"], got_etag or etag
         tags = [r["tag_name"] for r in rel]
         final = [r for r in rel if not r.get("draft") and not r.get("prerelease") and r.get("published_at")]
         if not final:
             raise ExportError("no published releases")
         newest = max(final, key=lambda r: r["published_at"])
-        return tags, {"tag": newest["tag_name"], "date": newest["published_at"][:10]}
-    except (ExportError, KeyError, TypeError) as e:
-        if prev_path and os.path.exists(prev_path):
-            with open(prev_path) as f:
-                prev = json.load(f)
-            print(f"warn: GitHub releases unavailable ({e}); reusing previous", file=sys.stderr)
-            return prev["releases"], prev["latest_release"]
-        raise ExportError(f"GitHub releases: {e}") from None
+        return tags, {"tag": newest["tag_name"], "date": newest["published_at"][:10]}, got_etag
+    except (ExportError, KeyError, TypeError, AttributeError) as e:
+        if not prev or not prev.get("releases"):
+            raise ExportError(f"GitHub releases: {e}") from None
+        print(f"warn: GitHub releases unavailable ({e}); reusing previous", file=sys.stderr)
+        tags = list(prev["releases"])
+        latest = dict(prev.get("latest_release") or {"tag": tags[0], "date": ""})
+        newer = board_release(tasks)
+        if newer:
+            tag, date = newer
+            if tag not in tags:
+                tags.append(tag)
+            if _is_newer(tag, date, latest):
+                latest = {"tag": tag, "date": date or latest.get("date", "")}
+        return tags, latest, prev.get("releases_etag")
 
 
 def content_cards(content):
@@ -96,7 +180,7 @@ def subtask_ids(task):
     return [s["id"] for s in ((task.get("related_tasks") or {}).get("subtask") or [])]
 
 
-def export(content, tasks, roster, releases, latest):
+def export(content, tasks, roster, releases, latest, releases_etag=None):
     idx = {t["id"]: t for t in tasks}
     nr = {t["id"] for t in tasks if not t["done"] and any(l["id"] == NEEDS_REPRO for l in (t.get("labels") or []))}
     cards = {}
@@ -123,7 +207,7 @@ def export(content, tasks, roster, releases, latest):
             issues.append({"id": iid, "done": bool(t["done"]), "type": m.group(1) if m else None,
                            "needs_repro": iid in nr})
         characters.append({"id": chid, "name": ch["title"].removeprefix("Character: "), "issues": issues})
-    return {
+    snap = {
         "exported_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
         "latest_release": latest,
         "releases": releases,
@@ -131,6 +215,9 @@ def export(content, tasks, roster, releases, latest):
         "cards": cards,
         "characters": characters,
     }
+    if releases_etag:
+        snap["releases_etag"] = releases_etag
+    return snap
 
 
 def main(argv=None):
@@ -161,8 +248,8 @@ def main(argv=None):
         tasks = open_t + done_t
         if len(tasks) < a.min_tasks:
             raise ExportError(f"only {len(tasks)} tasks (< {a.min_tasks}); share scope wrong?")
-        releases, latest = fetch_releases(a.prev)
-        snap = export(content, tasks, a.roster, releases, latest)
+        releases, latest, etag = fetch_releases(a.prev, tasks=tasks)
+        snap = export(content, tasks, a.roster, releases, latest, etag)
     except (ExportError, OSError, ValueError, KeyError) as e:
         print(f"export failed: {e}", file=sys.stderr)
         sys.exit(1)

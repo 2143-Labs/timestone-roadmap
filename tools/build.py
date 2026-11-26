@@ -2,6 +2,7 @@
 """Build the roadmap page from the curated content and a board snapshot.
 
 Usage: build.py [--content content/roadmap.json] [--board data/board.json] [--out site/index.html]
+                [--strict-releases]
 
 Fails (exit 1, old page untouched) on anything that would put wrong or
 internal information on the public page. An unchanged snapshot gives a
@@ -50,6 +51,10 @@ def item_state(section_id, item, cards):
         return "now", ""
     if item.get("state") == "verifying":
         return "verifying", ""
+    # Curated items whose cards are only partly done: stay plain open instead of
+    # claiming a fix is released and awaiting confirmation.
+    if item.get("state") == "open":
+        return "open", ""
     if item.get("shipped_in"):
         return "verifying", f" (in {item['shipped_in']}, confirming)"
     if any(not c["done"] and c["needs_repro"] for c in flags):
@@ -147,7 +152,19 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 """.strip()
 
 
-def render(content, board):
+def release_mentioned(content, tag):
+    """True when `tag` is listed as a shipped version (or in the timeline)."""
+    for g in content.get("shipped") or []:
+        for it in g.get("items") or []:
+            if it.get("version") == tag:
+                return True
+    for t in content.get("timeline") or []:
+        if t.get("version") == tag or str(t.get("text") or "").startswith(tag):
+            return True
+    return False
+
+
+def render(content, board, strict_releases=False):
     releases = set(board["releases"])
     out = []
     w = out.append
@@ -157,6 +174,10 @@ def render(content, board):
       f"<style>\n{CSS}\n</style>\n</head>\n<body>\n")
 
     lr = board["latest_release"]
+    if not release_mentioned(content, lr["tag"]):
+        if strict_releases:
+            fail(f"latest release {lr['tag']} not mentioned in shipped")
+        print(f"warn: latest release {lr['tag']} is not listed in shipped", file=sys.stderr)
     w("<header>\n")
     w(f"<h1>{esc(content['title'])}</h1>\n<p>{esc(content['tagline'])}</p>\n")
     w(f"<p><strong>{esc(content['goal'])}</strong></p>\n<p>{esc(content['notice'])}</p>\n")
@@ -265,6 +286,8 @@ def main(argv=None):
     ap.add_argument("--content", default="content/roadmap.json")
     ap.add_argument("--board", default="data/board.json")
     ap.add_argument("--out", default="site/index.html")
+    ap.add_argument("--strict-releases", action="store_true",
+                    help="fail when the latest release is not listed in the shipped section")
     a = ap.parse_args(argv)
     try:
         with open(a.content) as f:
@@ -274,7 +297,7 @@ def main(argv=None):
     except (OSError, ValueError) as e:
         fail(str(e))
     try:
-        page = render(content, board)
+        page = render(content, board, a.strict_releases)
         levels = [character_level(c, content["characters"])[0] for c in board["characters"]]
     except (KeyError, TypeError) as e:
         fail(f"malformed input: {e!r}")
