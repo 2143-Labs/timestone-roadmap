@@ -40,6 +40,15 @@ host is covered: the lobby join links on `mm.b.hero.rehab` are not behind Anubis
 1. Edit `content/roadmap.json`.
 2. Run `python3 tools/build.py && python3 -m unittest tools/test_build.py`.
 3. Commit `content/` and `site/index.html` and open a PR. Merging to `main` deploys it.
+4. To check the deployed page, read it from inside the pod; `curl` from outside gets the
+   Anubis challenge:
+   `kubectl --context closet-as-admin -n timestone-roadmap exec deploy/timestone-roadmap -c refresh -- python3 -c 'import urllib.request as u; print(u.urlopen("http://127.0.0.1:8080/").read().decode())'`
+
+A group's `size` (small / medium / large job) is a judgment of the work left for the
+whole feature as players will see it, not a sum of card points. A card estimate can
+cover a narrower scope than the item text: Replays (card 758, 8 points) is a large job
+because saving, offline playback, a Gallery menu entry and version handling are all
+still to build. Put a group under Now only while someone is working on it.
 
 ## Refresh the baked copy
 
