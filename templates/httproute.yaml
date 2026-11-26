@@ -1,6 +1,8 @@
 # Lives in `default` so the class-A gate filters resolve (Traefik ExtensionRef
 # middlewares are namespace-local). The backend is in the release namespace,
-# allowed by the ReferenceGrant next to this file.
+# allowed by the ReferenceGrant next to this file: Anubis (templates/anubis.yaml)
+# when anubis.enabled, otherwise the page itself. Anubis serves its challenge
+# assets under /.within.website/, which the / rule already covers.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -38,6 +40,6 @@ spec:
             kind: Middleware
             name: crowdsec-bouncer
       backendRefs:
-        - name: timestone-roadmap
+        - name: {{ if .Values.anubis.enabled }}anubis{{ else }}timestone-roadmap{{ end }}
           namespace: {{ .Values.namespace }}
           port: 80

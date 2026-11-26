@@ -1,8 +1,13 @@
+# Lets the HTTPRoute in default reach this namespace's page{{ if .Values.anubis.enabled }} and Anubis{{ end }}
+# Services, and nothing else here. Wave -1 so it exists before the route
+# switches to anubis.
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-timestone-roadmap-route
   namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   from:
     - group: gateway.networking.k8s.io
@@ -12,3 +17,8 @@ spec:
     - group: ""
       kind: Service
       name: timestone-roadmap
+    {{- if .Values.anubis.enabled }}
+    - group: ""
+      kind: Service
+      name: anubis
+    {{- end }}
