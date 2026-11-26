@@ -1,0 +1,213 @@
+{{- /*
+Anubis in front of the page (2143-Labs/argo docs/public-edge.md, "Anubis in
+front of an app", chart-embedded variant; same shape as
+helm_modules/game-edge/templates/_anubis.tpl). The HTTPRoute in `default`
+points at Service anubis; Anubis proxies to Service timestone-roadmap. The
+route keeps its gates: Anubis is the backend, not a gate.
+
+Policy: Anubis's own bot rules first (well-known crawlers ALLOWed from their
+published ranges, AI crawlers DENYed), then every other client is challenged.
+The page carries no Open Graph tags of its own, so `override` gives link
+unfurlers (Discord, Slack), which cannot solve a challenge, a fixed card with no
+backend fetch. `ttl` and `og:title` are startup-fatal when missing.
+
+No failover: Traefik's kubernetescrd provider runs without allowCrossNamespace,
+so a TraefikService in `default` cannot name this namespace's Service; with
+Anubis down the page answers 503. Sync waves: signing key and policy -2, Anubis
+-1, the HTTPRoute 0, so the route switches only after Anubis is ready.
+Set anubis.enabled=false to route straight to the page again.
+
+Persistent HS512 signing key, generated once in-cluster, so a restart does not
+make every visitor solve the challenge again. CreatedOnce = never rotated;
+deleting the Secret makes ESO generate a new one.
+*/}}
+{{- define "timestone-roadmap.anubisPolicy" }}
+bots:
+  - import: (data)/meta/default-config.yaml
+  - name: challenge-everyone-else
+    path_regex: .*
+    action: CHALLENGE
+    challenge:
+      algorithm: fast
+      difficulty: 4
+dnsbl: false
+openGraph:
+  enabled: true
+  considerHost: true
+  ttl: 24h
+  override:
+    "og:type": "website"
+    "og:site_name": {{ .Values.anubis.embed.title | quote }}
+    "og:title": {{ .Values.anubis.embed.title | quote }}
+    "og:description": {{ .Values.anubis.embed.description | quote }}
+    "description": {{ .Values.anubis.embed.description | quote }}
+    "og:url": {{ printf "https://%s/" .Values.host | quote }}
+    "twitter:card": "summary"
+status_codes:
+  CHALLENGE: 200
+  DENY: 403
+{{- end }}
+{{- if .Values.anubis.enabled }}
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: anubis-signing-key
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  length: 128
+  digits: 32
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: anubis-signing-key
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  refreshPolicy: CreatedOnce
+  target:
+    name: anubis-signing-key
+    creationPolicy: Owner
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: anubis-signing-key
+---
+# Must be a block scalar (`|`): a mapping value makes Argo's apply reject the
+# ConfigMap even though `helm template` succeeds.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: anubis-policy
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+data:
+  policy.yaml: |
+{{- include "timestone-roadmap.anubisPolicy" . | trim | nindent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anubis
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  labels:
+    app: anubis
+spec:
+  # One replica: the default in-memory store keeps issued challenges per pod,
+  # so a second replica would fail roughly half of all challenge submissions.
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: anubis
+  template:
+    metadata:
+      labels:
+        app: anubis
+      annotations:
+        # The policy is mounted, not read through the API: roll on change.
+        checksum/policy: {{ include "timestone-roadmap.anubisPolicy" . | trim | sha256sum }}
+    spec:
+      enableServiceLinks: false
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: workload-type
+                    operator: In
+                    values:
+                      - general
+      volumes:
+        - name: policy
+          configMap:
+            name: anubis-policy
+      containers:
+        - name: anubis
+          image: "{{ .Values.anubis.image }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BIND
+              value: ":8080"
+            - name: METRICS_BIND
+              value: ":9090"
+            - name: POLICY_FNAME
+              value: /etc/anubis/policy.yaml
+            - name: TARGET
+              value: "http://timestone-roadmap.{{ .Values.namespace }}.svc:80"
+            - name: REDIRECT_DOMAINS
+              value: {{ .Values.host | quote }}
+            - name: HS512_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: anubis-signing-key
+                  key: password
+          volumeMounts:
+            - name: policy
+              mountPath: /etc/anubis
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: metrics
+              containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anubis
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  labels:
+    app: anubis
+spec:
+  type: ClusterIP
+  selector:
+    app: anubis
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+{{- end }}

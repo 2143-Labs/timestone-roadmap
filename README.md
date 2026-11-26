@@ -28,6 +28,13 @@ an hour, shared by everything behind the home IP) it reuses the last known relea
 Live refresh changes states, counts and the character grid only. New items or
 wording need a PR.
 
+Visitors reach nginx through Anubis (`templates/anubis.yaml`): the route keeps its
+rate-limit and CrowdSec gates and points at the `anubis` Service, which shows a
+short proof-of-work challenge about once a week per browser, blocks known AI crawlers, and gives
+link unfurlers (Discord, Slack) a fixed preview card. `anubis.enabled=false` routes
+straight to nginx again. With the Anubis pod down the page answers 503. Only this
+host is covered: the lobby join links on `mm.b.hero.rehab` are not behind Anubis.
+
 ## Edit the text
 
 1. Edit `content/roadmap.json`.

@@ -23,3 +23,12 @@ vikunja:
   # OpenBao key (consumers mount) holding {"hash": "<link share hash>"}. Empty = no
   # ExternalSecret, the sidecar fails every run, and the baked page serves.
   shareKey: ""
+# Anubis bot challenge in front of the page (templates/anubis.yaml). false = the
+# route points straight at the page again.
+anubis:
+  enabled: true
+  image: ghcr.io/techarohq/anubis:v1.28.2
+  # Link-preview card on the challenge page (unfurlers cannot solve challenges).
+  embed:
+    title: Timestone roadmap
+    description: "What's coming next for Timestone, the UMVC3 rollback mod: fixes, features, and character status."
