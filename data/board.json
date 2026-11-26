@@ -44,6 +44,42 @@
    "done": false,
    "needs_repro": false
   },
+  "2667": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2668": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2669": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2672": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2673": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2677": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2680": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2681": {
+   "done": false,
+   "needs_repro": false
+  },
+  "2682": {
+   "done": false,
+   "needs_repro": false
+  },
   "315": {
    "done": false,
    "needs_repro": false
@@ -236,6 +272,10 @@
    "done": false,
    "needs_repro": false
   },
+  "807": {
+   "done": false,
+   "needs_repro": false
+  },
   "808": {
    "done": false,
    "needs_repro": false
@@ -408,6 +448,12 @@
      "id": 1478,
      "needs_repro": false,
      "type": null
+    },
+    {
+     "done": false,
+     "id": 2686,
+     "needs_repro": false,
+     "type": "audio"
     }
    ],
    "name": "Arthur"
@@ -756,6 +802,12 @@
      "id": 1313,
      "needs_repro": false,
      "type": null
+    },
+    {
+     "done": false,
+     "id": 2692,
+     "needs_repro": false,
+     "type": "desync"
     }
    ],
    "name": "Doctor Strange"
@@ -870,6 +922,12 @@
      "id": 1137,
      "needs_repro": true,
      "type": null
+    },
+    {
+     "done": false,
+     "id": 2688,
+     "needs_repro": false,
+     "type": "visibility"
     }
    ],
    "name": "Firebrand"
@@ -1074,6 +1132,12 @@
      "id": 895,
      "needs_repro": true,
      "type": "verify"
+    },
+    {
+     "done": false,
+     "id": 2679,
+     "needs_repro": true,
+     "type": "desync"
     }
    ],
    "name": "Hulk"
@@ -1092,6 +1156,12 @@
      "id": 603,
      "needs_repro": false,
      "type": "state"
+    },
+    {
+     "done": false,
+     "id": 2689,
+     "needs_repro": false,
+     "type": "visibility"
     }
    ],
    "name": "Iron Fist"
@@ -1392,6 +1462,12 @@
      "id": 1498,
      "needs_repro": false,
      "type": null
+    },
+    {
+     "done": false,
+     "id": 2687,
+     "needs_repro": false,
+     "type": "crash"
     }
    ],
    "name": "Phoenix"
@@ -1818,6 +1894,18 @@
      "id": 1514,
      "needs_repro": false,
      "type": null
+    },
+    {
+     "done": false,
+     "id": 2690,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 2691,
+     "needs_repro": false,
+     "type": "visibility"
     }
    ],
    "name": "Strider"
@@ -2195,7 +2283,7 @@
    "name": "Zero"
   }
  ],
- "exported_at": "2026-11-26T03:55Z",
+ "exported_at": "2026-11-26T05:47Z",
  "latest_release": {
   "date": "2026-11-25",
   "tag": "v0.6.9"
@@ -2244,8 +2332,8 @@
   "v0.2.7-dev-pr1",
   "v0.2.4-dev-pr1"
  ],
- "releases_etag": "W/\"c0563200b30920e12e16f1333e0a37f570c34a278baeba139dac78114ad12587\"",
+ "releases_etag": "W/\"a4ed98332802d4994e9004f1b9b6d77c5899445536114eb2280c5cb4e275dc5b\"",
  "stats": {
-  "verifying_open": 161
+  "verifying_open": 163
  }
 }
