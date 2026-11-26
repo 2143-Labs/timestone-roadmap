@@ -17,7 +17,7 @@ spec:
         app: timestone-roadmap
       annotations:
         # Rolls the pod when the page, nginx config, tools or content change; the ConfigMap names are stable.
-        checksum/site: {{ printf "%s%s%s%s%s" (.Files.Glob "site/*.html").AsConfig (.Files.Get "files/nginx.conf") (.Files.Get "tools/export_board.py") (.Files.Get "tools/build.py") (.Files.Get "content/roadmap.json") | sha256sum | quote }}
+        checksum/site: {{ printf "%s%s%s%s%s%s" (.Files.Glob "site/*.html").AsConfig (.Files.Get "files/nginx.conf") (.Files.Get "tools/export_board.py") (.Files.Get "tools/build.py") (.Files.Get "content/roadmap.json") (.Files.Get "data/board.json") | sha256sum | quote }}
     spec:
       affinity:
         nodeAffinity:
@@ -81,6 +81,9 @@ spec:
               type: RuntimeDefault
         # Rebuilds /data/index.html from the board (link share) and GitHub releases
         # every refresh.intervalSeconds. On failure it logs one line and the old page stays.
+        # A fresh /data starts from the baked snapshot, so --prev always exists: when the
+        # GitHub API is rate-limited (60/h, shared by the whole home WAN IP) the release
+        # list comes from the last good snapshot instead of failing the run.
         - name: refresh
           image: "{{ .Values.refresh.image }}"
           imagePullPolicy: IfNotPresent
@@ -90,6 +93,7 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
+              [ -f /data/board.json ] || cp /app/board.json /data/board.json
               while :; do
                 if python3 -B /app/export_board.py --content /app/roadmap.json \
                      --share-hash-file /etc/vikunja-share/hash --base-url {{ .Values.refresh.vikunjaUrl }} \

@@ -1,4 +1,5 @@
-# Exporter, builder and curated content for the `refresh` sidecar.
+# Exporter, builder and curated content for the `refresh` sidecar, plus the
+# baked snapshot (data/board.json) it starts from on an empty /data.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,3 +14,5 @@ data:
 {{ .Files.Get "tools/build.py" | indent 4 }}
   roadmap.json: |
 {{ .Files.Get "content/roadmap.json" | indent 4 }}
+  board.json: |
+{{ .Files.Get "data/board.json" | indent 4 }}

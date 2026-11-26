@@ -1,6 +1,5 @@
 .git/
 tools/test_build.py
-data/
 README.md
 __pycache__/
 *.tmp
