@@ -21,7 +21,9 @@ In the cluster, a `refresh` sidecar runs both tools every 15 minutes into a shar
 `/data` volume, using a read-only Vikunja link share. nginx serves `/data/index.html`;
 until the sidecar's first good build (cold start, or the share is missing or broken)
 it serves the copy baked into git at `site/index.html`. A failed run logs one line
-and leaves the last good page in place.
+and leaves the last good page in place. The sidecar starts from the baked
+`data/board.json`, so when the unauthenticated GitHub API is rate-limited (60 requests
+an hour, shared by everything behind the home IP) it reuses the last known releases.
 
 Live refresh changes states, counts and the character grid only. New items or
 wording need a PR.
