@@ -120,10 +120,6 @@
    "done": false,
    "needs_repro": false
   },
-  "716": {
-   "done": false,
-   "needs_repro": false
-  },
   "717": {
    "done": false,
    "needs_repro": false
@@ -255,10 +251,6 @@
   "833": {
    "done": false,
    "needs_repro": true
-  },
-  "835": {
-   "done": false,
-   "needs_repro": false
   },
   "836": {
    "done": false,
@@ -750,7 +742,7 @@
     {
      "done": false,
      "id": 604,
-     "needs_repro": false,
+     "needs_repro": true,
      "type": "desync"
     },
     {
@@ -2203,7 +2195,7 @@
    "name": "Zero"
   }
  ],
- "exported_at": "2026-11-26T01:23Z",
+ "exported_at": "2026-11-26T03:55Z",
  "latest_release": {
   "date": "2026-11-25",
   "tag": "v0.6.9"
@@ -2252,7 +2244,8 @@
   "v0.2.7-dev-pr1",
   "v0.2.4-dev-pr1"
  ],
+ "releases_etag": "W/\"c0563200b30920e12e16f1333e0a37f570c34a278baeba139dac78114ad12587\"",
  "stats": {
-  "verifying_open": 155
+  "verifying_open": 161
  }
 }

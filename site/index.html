@@ -59,11 +59,11 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <p><strong>Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.</strong></p>
 <p>Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.</p>
 <nav><a href="https://github.com/tilderain/Timestone/releases">Download</a><a href="https://discord.gg/BvDNwPzwy4">Discord</a><a href="https://github.com/tilderain/Timestone">Source</a></nav>
-<p class="stamp">Last updated 2026-11-26 01:23 UTC · latest release v0.6.9 (2026-11-25)</p>
+<p class="stamp">Last updated 2026-11-26 03:55 UTC · latest release v0.6.9 (2026-11-25)</p>
 </header>
 <ul class="legend"><li class="now">Being worked on now</li><li class="open">Planned, not started</li><li class="verifying">Fix is in a release, waiting for players to confirm it</li><li class="done">Shipped (hidden until you press Show shipped)</li><li class="no">Not planned</li></ul>
 <input type="checkbox" id="show-done" class="toggle">
-<label for="show-done">Show shipped work (35)</label>
+<label for="show-done">Show shipped work (41)</label>
 <main class="roadmap">
 <section id="now">
 <h2>Now <small>(Currently working on this)</small></h2>
@@ -72,7 +72,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <p>The biggest job. Each character&#x27;s known problems are in the character table further down.</p>
 <ul>
 <li class="now">Fix the character-specific desyncs and crashes listed in the character table</li>
-<li class="verifying">155 fixes are already in recent releases and need confirming in real matches. If you still hit one, report it on Discord</li>
+<li class="verifying">161 fixes and open bugs are marked for re-testing in recent releases. If you still hit one, report it on Discord</li>
 <li class="now">Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails</li>
 </ul>
 </article>
@@ -88,13 +88,13 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <h3>Lobbies and social <span class="size">medium job</span></h3>
 <p>Building on the in-game lobby from v0.6.</p>
 <ul>
-<li class="verifying">Private rooms with a password or a generated room code (fix released, confirming)</li>
-<li class="verifying">Join by pasting a Steam lobby link, plus an invite button (fix released, confirming)</li>
+<li class="now">Private rooms with a password or a generated room code</li>
+<li class="now">Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)</li>
 <li class="now">Turn Galactus on or off per room</li>
 <li class="now">Room skill level and a casual or serious tag</li>
-<li class="verifying">A join sound and a &quot;player joined&quot; notice that stays on screen (fix released, confirming)</li>
-<li class="verifying">Wired or Wi-Fi icon, jitter, and ping shown in game (fix released, confirming)</li>
-<li class="now">Discord Rich Presence: show your room and match in Discord, with off, basic and full privacy settings. Built and in testing; not in a release yet</li>
+<li class="now">A join sound and a &quot;player joined&quot; notice that stays on screen</li>
+<li class="now">Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)</li>
+<li class="now">Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for v0.6.9; not in a release yet</li>
 </ul>
 </article>
 <article class="card">
@@ -109,7 +109,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <h2>Next <small>(Starts after the current work)</small></h2>
 <article class="card">
 <h3>Ranked matchmaking <span class="size">large job</span></h3>
-<p>The ranking server already exists; the in-game side has not started.</p>
+<p>The ranking server is built, though its live server needs updating; the in-game side has not started.</p>
 <ul>
 <li class="open">Separate ranked and unranked queues, with a rating and a leaderboard</li>
 <li class="open">Both players&#x27; results checked, with replays to settle disagreements</li>
@@ -143,13 +143,12 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <ul>
 <li class="verifying">Portraits and health bars follow the team order (fix released, confirming)</li>
 <li class="verifying">Timer and meter display glitches (fix released, confirming)</li>
-<li class="verifying">Launcher layout on small screens and high-DPI displays (fix released, confirming)</li>
-<li class="verifying">Names and chat in non-English text everywhere (fix released, confirming)</li>
-<li class="verifying">Copy and paste in text fields (in v0.6.7, confirming)</li>
+<li class="open">Launcher layout on small screens and high-DPI displays</li>
+<li class="verifying">Remaining non-English text edge cases (Unicode names, chat and input methods shipped in v0.6.6) (fix released, confirming)</li>
 <li class="open">Steam Deck: chat no longer grabbing launcher controls</li>
 <li class="open">Steam overlay and Recent Players</li>
 <li class="verifying">Updater reliability: errors, relaunch loops, antivirus blocks (fix released, confirming)</li>
-<li class="open">Window size, position and fullscreen problems</li>
+<li class="open">Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in v0.6.9)</li>
 <li class="verifying">A fighting-game-style launcher look: portraits, colour dots, theme (fix released, confirming)</li>
 </ul>
 </article>
@@ -158,14 +157,13 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <ul>
 <li class="open">Work alongside other UMVC3 mods such as Community Edition and colour expansions</li>
 <li class="verifying">Alternate costumes and colours in normal play (fix released, confirming)</li>
-<li class="verifying">Your own stage and cosmetic swaps, seen only by you (fix released, confirming)</li>
+<li class="open">Your own stage and cosmetic swaps, seen only by you</li>
 <li class="open">Classic music options</li>
 </ul>
 </article>
 <article class="card">
 <h3>Install and updates <span class="size">small job</span></h3>
 <ul>
-<li class="verifying">Installer that finds the game in Steam (Windows, Linux, Steam Deck) (in v0.6.7, confirming)</li>
 <li class="open">A beta channel for testers</li>
 <li class="open">Antivirus false alarms (Smart App Control, Bitdefender)</li>
 </ul>
@@ -224,6 +222,9 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <li class="done">RANDOM team member <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></li>
 <li class="done">16-player rooms, non-English chat and input methods, host can change settings in the room <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a></li>
 <li class="done">Room matches use the game&#x27;s own character select and result screens; RANDOM ALL; paste into text fields <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+<li class="done">Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.8">v0.6.8</a></li>
+<li class="done">Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
+<li class="done">Set score display (Settings screen and F4) and improved RANDOM ALL picks <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
 </ul>
 </article>
 <article class="card shipped">
@@ -234,6 +235,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <li class="done">F3 overlay and an Esc list of who is watching <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
 <li class="done">Spectators no longer stall the players <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
 <li class="done">Spectators can join at the first character select <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
+<li class="done">Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
 </ul>
 </article>
 <article class="card shipped">
@@ -259,6 +261,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <li class="done">Resolution and VSync settings in game <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.23">v0.3.23</a></li>
 <li class="done">Self-updater that checks every download <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
 <li class="done">Direct3D 9Ex graphics mode <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a></li>
+<li class="done">Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
 <li class="done">Installer that finds the game in Steam, for Windows, Linux and Steam Deck <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
 </ul>
 </article>
@@ -268,6 +271,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <li class="done">Crash reports and a freeze watchdog</li>
 <li class="done">Lag capture to diagnose slow matches <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
 <li class="done">Performance window <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
+<li class="done">Cleaner logs with machine, controller, route and per-game rollback summaries <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
 </ul>
 </article>
 </section>
@@ -292,7 +296,7 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <div class="tile desync"><b>▲ Dante</b><span>Known desyncs</span><small>10 open · 2 fixed · 3 awaiting confirmation</small></div>
 <div class="tile crash"><b>■ Deadpool</b><span>Can crash</span><small>5 open · 1 fixed · 2 awaiting confirmation</small></div>
 <div class="tile desync"><b>▲ Doctor Doom</b><span>Known desyncs</span><small>3 open · 2 fixed · 3 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Doctor Strange</b><span>Can crash</span><small>5 open · 2 fixed · 3 awaiting confirmation</small></div>
+<div class="tile crash"><b>■ Doctor Strange</b><span>Can crash</span><small>5 open · 2 fixed · 4 awaiting confirmation</small></div>
 <div class="tile crash"><b>■ Dormammu</b><span>Can crash</span><small>8 open · 2 fixed · 4 awaiting confirmation</small></div>
 <div class="tile desync"><b>▲ Felicia</b><span>Known desyncs</span><small>4 open · 0 fixed · 2 awaiting confirmation</small></div>
 <div class="tile playable"><b>◐ Firebrand</b><span>Playable</span><small>1 open · 0 fixed · 1 awaiting confirmation</small></div>
@@ -349,14 +353,16 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 <li>2026-11-22: v0.6.5</li>
 <li>2026-11-23: v0.6.6: 16-player rooms</li>
 <li>2026-11-24: v0.6.7: installer</li>
+<li>2026-11-25: v0.6.8: room-match stability and sound crash fix</li>
+<li>2026-11-25: v0.6.9: Settings screen, short lobby links, spectator overlay and score display</li>
 </ol>
 </article>
 <article class="card">
 <h3>Changed or removed</h3>
 <ul class="plain">
 <li>Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window.</li>
-<li>The RenderingThread option was removed.</li>
-<li>Rocket Raccoon&#x27;s tail physics are switched off online to avoid desyncs. This can change how some of his attacks connect.</li>
+<li>The RenderingThread option was removed in v0.6.3.</li>
+<li>Rocket Raccoon&#x27;s tail physics have been switched off online since v0.5.0 to avoid desyncs. This can change how some of his attacks connect.</li>
 <li>Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord.</li>
 </ul>
 </article>
