@@ -56,14 +56,6 @@
             {"text": "Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)", "cards": [1115], "state": "now"},
             {"text": "Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for v0.6.9; not in a release yet", "cards": [833], "state": "now"}
           ]
-        },
-        {
-          "title": "Replays",
-          "size": "S",
-          "blurb": "The game already keeps a log of each match's inputs while you play. Planned direction: a Gallery menu replay viewer like the Vita version.",
-          "items": [
-            {"text": "Save a match as a replay file and watch it again from the Gallery menu", "cards": [758]}
-          ]
         }
       ]
     },
@@ -72,6 +64,14 @@
       "heading": "Next",
       "note": "(Starts after the current work)",
       "groups": [
+        {
+          "title": "Replays",
+          "size": "L",
+          "blurb": "The game already records each match's inputs while you play; that is how spectating works. Saving matches as files and watching them later from a Gallery menu entry, like the Vita version, has not started yet. Replays may only play back on the version they were recorded with.",
+          "items": [
+            {"text": "Save a match as a replay file and watch it again from the Gallery menu", "cards": [758]}
+          ]
+        },
         {
           "title": "Matchmaking and ranked",
           "size": "L",
@@ -150,7 +150,7 @@
         },
         {
           "title": "Watching",
-          "size": "S",
+          "size": "M",
           "items": [
             {"text": "Take over a replay and play on from any point", "cards": [759]},
             {"text": "A public winner-stays-on broadcast", "cards": [760]}
