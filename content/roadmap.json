@@ -46,8 +46,10 @@
           "size": "M",
           "blurb": "Building on the in-game lobby from v0.6.",
           "items": [
+            {"text": "Return to the room you came from after a set, and keep the lobby list current", "cards": [2680, 2681]},
             {"text": "Private rooms with a password or a generated room code", "cards": [763], "state": "now"},
             {"text": "Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)", "cards": [765, 1114], "state": "now"},
+            {"text": "Name each setup and give it its own set length, so a big room can mix beginner and long-set setups", "cards": [2669]},
             {"text": "Turn Galactus on or off per room", "cards": [766]},
             {"text": "Room skill level and a casual or serious tag", "cards": [768]},
             {"text": "A join sound and a \"player joined\" notice that stays on screen", "cards": [769], "state": "now"},
@@ -58,9 +60,9 @@
         {
           "title": "Replays",
           "size": "S",
-          "blurb": "The game already keeps a log of each match's inputs while you play. It cannot be saved yet.",
+          "blurb": "The game already keeps a log of each match's inputs while you play. Planned direction: a Gallery menu replay viewer like the Vita version.",
           "items": [
-            {"text": "Save a match as a replay file and watch it again", "cards": [758]}
+            {"text": "Save a match as a replay file and watch it again from the Gallery menu", "cards": [758]}
           ]
         }
       ]
@@ -71,10 +73,11 @@
       "note": "(Starts after the current work)",
       "groups": [
         {
-          "title": "Ranked matchmaking",
+          "title": "Matchmaking and ranked",
           "size": "L",
-          "blurb": "The ranking server is built, though its live server needs updating; the in-game side has not started.",
+          "blurb": "The ranking server is built, though its live server needs updating; the in-game side has not started. Lobbies stay the main way to play.",
           "items": [
+            {"text": "Unranked quick match: one button that drops you into an open room setup with someone waiting", "cards": [2668]},
             {"text": "Separate ranked and unranked queues, with a rating and a leaderboard", "cards": [778, 779]},
             {"text": "Both players' results checked, with replays to settle disagreements", "cards": [780]},
             {"text": "Ladder rules, such as first-to-4 sets", "cards": [782]},
@@ -85,6 +88,8 @@
           "title": "Controllers and inputs",
           "size": "M",
           "items": [
+            {"text": "Button check in team setup and character select before a match starts", "cards": [2667]},
+            {"text": "Pad working in menus but not in the match after leaving a room match", "cards": [2682]},
             {"text": "Pads not detected online (PS4, Brook UFB and others)", "cards": [693]},
             {"text": "Reconnect a controller after it disconnects", "cards": [695]},
             {"text": "Button bindings resetting when a match starts", "cards": [696]},
@@ -97,6 +102,7 @@
           "size": "M",
           "items": [
             {"text": "Start training mode from Timestone directly", "cards": [804]},
+            {"text": "Train in an empty lobby setup while waiting, or open a training room so someone can join and coach", "cards": [807]},
             {"text": "Practise with online input delay and simulated rollback", "cards": [805]},
             {"text": "Save states and custom starting positions", "cards": [808]}
           ]
@@ -120,6 +126,7 @@
             {"text": "Steam overlay and Recent Players", "cards": [714, 715]},
             {"text": "Updater reliability: errors, relaunch loops, antivirus blocks", "cards": [717, 718]},
             {"text": "Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in v0.6.9)", "cards": [719, 720, 721]},
+            {"text": "Menu polish: wrap-around navigation and rebindable hotkeys", "cards": [2672, 2673]},
             {"text": "A fighting-game-style launcher look: portraits, colour dots, theme", "cards": [1116]}
           ]
         },
@@ -161,11 +168,12 @@
           "items": [
             {"text": "Voice chat. Use Discord", "cards": [860]},
             {"text": "Free text chat during a match. Quick chat stays", "cards": [859]},
+            {"text": "Custom in-game display names. The game shows your Steam name", "cards": [2677]},
             {"text": "A maximum-ping filter, for now", "cards": [846]},
             {"text": "Community-run rollback or tournament servers", "cards": [838]},
             {"text": "Hiding character picks", "cards": [776]},
             {"text": "Frame rates above 60. The game runs at 60", "cards": [827]},
-            {"text": "Different delay or rollback per player. Everyone shares one fixed 8-frame window since v0.6.2", "cards": [826]}
+            {"text": "Different delay or rollback per player. Everyone shares one fixed 8-frame window since v0.6.2 (a delay-only option for private rooms is still open to consideration)", "cards": [826]}
           ]
         }
       ]
@@ -199,7 +207,7 @@
         {"text": "Chat, quick chat, kick and ban, room music, every colour, Steam avatars", "version": "v0.6.0"},
         {"text": "10 room presets and stage picks", "version": "v0.6.4"},
         {"text": "RANDOM team member", "version": "v0.6.5"},
-        {"text": "16-player rooms, non-English chat and input methods, host can change settings in the room", "version": "v0.6.6"},
+        {"text": "16-player rooms (full rooms stay listed), non-English chat and input methods, host can change settings in the room, leaving a queue asks first", "version": "v0.6.6"},
         {"text": "Room matches use the game's own character select and result screens; RANDOM ALL; paste into text fields", "version": "v0.6.7"},
         {"text": "Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash", "version": "v0.6.8"},
         {"text": "Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown", "version": "v0.6.9"},
@@ -239,6 +247,7 @@
       "items": [
         {"text": "Resolution and VSync settings in game", "version": "v0.3.23"},
         {"text": "Self-updater that checks every download", "version": "v0.6.0"},
+        {"text": "Audio, control and reserve-team settings saved properly at launch", "version": "v0.6.1"},
         {"text": "Direct3D 9Ex graphics mode", "version": "v0.6.3"},
         {"text": "Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats", "version": "v0.6.9"},
         {"text": "Installer that finds the game in Steam, for Windows, Linux and Steam Deck", "version": "v0.6.7"}
@@ -271,7 +280,9 @@
   "caveats": [
     "Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window.",
     "The RenderingThread option was removed in v0.6.3.",
+    "The Direct3D 9Ex graphics mode can still hitch for a second or two when loading on some PCs; optimization work is ongoing.",
     "Rocket Raccoon's tail physics have been switched off online since v0.5.0 to avoid desyncs. This can change how some of his attacks connect.",
+    "Cyrillic names cannot be displayed because the game's built-in font has no Cyrillic glyphs.",
     "Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord."
   ],
   "characters": {
