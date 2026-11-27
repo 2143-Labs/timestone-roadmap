@@ -11,18 +11,18 @@ Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.
 Git holds the wiring, the CSS and the guards, no prose.
 
 - `config/roadmap.json` is the wiring: which project, which two views, which bucket
-  and label ids, the legend wording, the size words, the character rules, the GitHub
-  repo release links point at. Ids are stable; column and label *names* are not used.
+  and label ids, the legend wording, the size words, the GitHub repo release links
+  point at. Ids are stable; column and label *names* are not used.
 - `tools/export_board.py` reads the project through a read-only link share and writes
   a trimmed snapshot (`data/board.json`, schema 2): the published boxes and lines with
   their text, the state flags, the character grid, release tags and two counts. Card
   ids never reach the page; titles and descriptions of box/line/page cards do, because
   they *are* the page text.
 - `tools/build.py` turns the snapshot plus the config into one static `site/index.html`.
-  It refuses to build on internal wording (story points, Impact, P0-P2, board links),
-  a malformed snapshot or a wrong tile count. A mistake on a single card unpublishes
-  that card with a `warn:` line instead, because editors work on the board and cannot
-  see a stalled build.
+  It refuses to build on internal wording (story points, Impact, P0-P2, board links)
+  or a malformed snapshot. A mistake on a single card unpublishes that card with a
+  `warn:` line instead, because editors work on the board and cannot see a stalled
+  build.
 
 In the cluster a `refresh` sidecar runs both tools every 15 minutes into a shared
 `/data` volume. nginx serves `/data/index.html`; until the sidecar's first good build
@@ -53,7 +53,9 @@ Nothing on the page is edited in git. Two Kanban/list views of project 19 do the
 | `Public: confirming` | line | force ◷ with no suffix |
 | `Public: not confirming` | line | suppress the automatic Needs-Repro ◷ |
 | `Public: size S` / `M` / `L` | box | the `small` / `medium` / `large job` badge |
-| `Public: verified ready` | `Character: …` card | tile becomes Tournament-ready |
+| `Public: character` | character card | publishes the tile; the card title is the name on it |
+| `Public: ready` | character card | tile becomes Tournament-ready |
+| `Public: ignore` | issue card | not counted for its character |
 
 - **Box** = card with `Public: box`, no parent task, in any column except `Draft`.
   Title = the box heading, description = the blurb (plain text, no markdown), size
@@ -69,8 +71,17 @@ Nothing on the page is edited in git. Two Kanban/list views of project 19 do the
   work), `Background` (each box is a card with its lines as a plain bulleted list),
   `Page text` (see below). Every other column is an ordinary section.
 - **Page text** boxes, keyed by their title: `Title`, `Tagline`, `Goal`, `Notice`,
-  `Footer`, `Characters banner` (the description is the text) and `Links`, whose
-  subtasks are one link each (title = label, description = the `https://` address).
+  `Footer`, `Characters heading` (the description is the `<h2>` text), `Characters
+  banner` (the description is the text) and `Links`, whose subtasks are one link each
+  (title = label, description = the `https://` address). Two of them carry the
+  character words: `Levels`, whose subtasks are the level rows in creation order
+  (title = level key, description = `<mark> | <label> | <caption>`), and `Types`,
+  whose subtasks map one `**Type:**` word to a level (title = the word, description =
+  the level key, or `none` to leave the word uncounted). Their subtasks need no label.
+- **Characters** are the cards wearing `Public: character`; their subtasks are their
+  issues, and the word after `**Type:**` picks the level through `Types`. A card with
+  `Public: ready` is Tournament-ready whatever its issues say; a card with no ranked
+  open issue reads Untested.
 - `{verifying_open}` inside a line is replaced by the number of open Needs-Repro cards.
 
 A new card is published only once it has its label and its box is outside `Draft`; cards

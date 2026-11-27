@@ -4,11 +4,11 @@
 Usage: build.py [--config config/roadmap.json] [--board data/board.json]
                 [--out site/index.html] [--strict-releases]
 
-Every word on the page comes from the board snapshot (boxes, lines, page text)
-except the legend wording, size words and character levels, which stay in the
-config. Fails (exit 1, old page untouched) on anything that would put wrong or
-internal information on the public page. An unchanged snapshot gives a
-byte-identical page.
+Every word on the page comes from the board snapshot (boxes, lines, page text,
+character levels and issue types) except the legend wording and the size words,
+which stay in the config. Fails (exit 1, old page untouched) on anything that
+would put wrong or internal information on the public page. An unchanged
+snapshot gives a byte-identical page.
 """
 import argparse
 import html
@@ -55,30 +55,28 @@ def line_state(kind, line, releases):
     return _fallback(kind), ""
 
 
-def character_level(char, cfg):
+# Which failure outranks which is a page rule, not board content; the level
+# words, marks and captions come from the board snapshot.
+SEVERITY = ("crash", "desync", "playable")
+
+
+def character_level(char, types):
     """Return (level, open, fixed, awaiting) for one character."""
-    rank = cfg["type_rank"]
-    skip = set(cfg.get("skip_cards") or [])
-    open_ranks, n_open, fixed, awaiting = set(), 0, 0, 0
+    open_keys, n_open, fixed, awaiting = set(), 0, 0, 0
     for issue in char["issues"]:
-        t = issue.get("type")
-        if t is not None and t not in rank:
-            fail(f"unknown issue type '{t}' on card {issue['id']}")
-        if issue["id"] in skip:
-            continue
         if issue["done"]:
             fixed += 1
             continue
         if issue.get("needs_repro"):
             awaiting += 1
-        r = rank.get(t) if t is not None else None
-        if r is not None:
+        key = types.get(issue.get("type"))
+        if key is not None:
             n_open += 1
-            open_ranks.add(r)
+            open_keys.add(key)
     if char.get("ready"):
         level = "ready"
     else:
-        level = next((lv for lv in cfg["severity"] if lv in open_ranks), "untested")
+        level = next((k for k in SEVERITY if k in open_keys), "untested")
     return level, n_open, fixed, awaiting
 
 
@@ -166,7 +164,6 @@ def render(cfg, board, strict_releases=False):
     releases = set(board.get("releases") or [])
     repo = (cfg.get("releases") or {}).get("repo")
     page = board["page"]
-    ch = cfg.get("characters")
     out = []
     w = out.append
     w('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
@@ -254,26 +251,30 @@ def render(cfg, board, strict_releases=False):
             b("</ul>\n</article>\n")
         b("</section>\n")
 
-    if ch:
-        chars = board.get("characters") or []
-        if len(chars) != ch["count"]:
-            fail(f"{len(chars)} characters, expected {ch['count']}")
-        levels = {lv["key"]: lv for lv in ch["levels"]}
+    levels = board.get("levels") or []
+    chars = board.get("characters") or []
+    types = board.get("types") or {}
+    if levels and chars:
+        by_key = {lv["key"]: lv for lv in levels}
         rows = []
         for c in sorted(chars, key=lambda c: c["name"].lower()):
-            level, n_open, fixed, awaiting = character_level(c, ch)
-            rows.append((c["name"], level, n_open, fixed, awaiting))
-        counts = {k: sum(1 for r in rows if r[1] == k) for k in levels}
-        b(f'<section id="characters" class="wide">\n<h2>{esc(ch["heading"])}</h2>\n')
+            level, n_open, fixed, awaiting = character_level(c, types)
+            lv = by_key.get(level)
+            if lv is None:
+                print(f"warn: level '{level}' has no card; tile rendered without a mark",
+                      file=sys.stderr)
+                lv = {"key": level, "mark": "", "label": level, "text": ""}
+            rows.append((c["name"], level, n_open, fixed, awaiting, lv))
+        counts = {lv["key"]: sum(1 for r in rows if r[1] == lv["key"]) for lv in levels}
+        b(f'<section id="characters" class="wide">\n<h2>{esc(page["characters_heading"])}</h2>\n')
         if page.get("characters_banner"):
             b(f'<p class="banner">{esc(page["characters_banner"])}</p>\n')
         b('<div class="levels">\n')
-        for lv in ch["levels"]:
+        for lv in levels:
             b(f'<p><b class="{esc(lv["key"])}">{esc(lv["mark"])}</b> {esc(lv["label"])}: '
               f'{counts[lv["key"]]} · {esc(lv["text"])}</p>\n')
         b('</div>\n<div class="tiles">\n')
-        for name, level, n_open, fixed, awaiting in rows:
-            lv = levels[level]
+        for name, level, n_open, fixed, awaiting, lv in rows:
             extra = f" · {awaiting} awaiting confirmation" if awaiting else ""
             b(f'<div class="tile {level}"><b>{esc(lv["mark"])} {esc(name)}</b>'
               f'<span>{esc(lv["label"])}</span><small>{n_open} open · {fixed} fixed{extra}</small></div>\n')
@@ -310,10 +311,6 @@ def render(cfg, board, strict_releases=False):
         fail(f"forbidden text '{m.group(0)}' near '{got[max(0, m.start() - 40):m.end() + 40]}'")
     if len(got.encode()) >= MAX_BYTES:
         fail(f"page is {len(got.encode())} bytes")
-    if ch:
-        n_tiles = got.count('class="tile ')
-        if n_tiles != ch["count"]:
-            fail(f"{n_tiles} tiles")
     return got
 
 
@@ -334,8 +331,8 @@ def main(argv=None):
         fail(str(e))
     try:
         page = render(cfg, board, a.strict_releases)
-        ch = cfg.get("characters")
-        levels = [character_level(c, ch)[0] for c in (board.get("characters") or [])] if ch else []
+        types = board.get("types") or {}
+        levels = [character_level(c, types)[0] for c in (board.get("characters") or [])]
     except (KeyError, TypeError) as e:
         fail(f"malformed input: {e!r}")
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
@@ -348,9 +345,9 @@ def main(argv=None):
     n_sh = sum(len(box["lines"]) for s in board["sections"] if s["kind"] == "shipped"
                for box in s["boxes"])
     line = f"ok: {n_up} upcoming, {n_sh} shipped"
-    if ch:
-        line += ", characters " + " ".join(f"{k}={levels.count(k)}"
-                                           for k in list(ch["severity"]) + ["untested", "ready"])
+    if board.get("levels"):
+        line += (f", characters tiles={len(board.get('characters') or [])} "
+                 + " ".join(f"{k}={levels.count(k)}" for k in SEVERITY + ("untested", "ready")))
     print(line)
 
 
