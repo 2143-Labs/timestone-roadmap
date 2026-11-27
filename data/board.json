@@ -1,318 +1,4 @@
 {
- "cards": {
-  "1114": {
-   "done": false,
-   "needs_repro": false
-  },
-  "1115": {
-   "done": false,
-   "needs_repro": true
-  },
-  "1116": {
-   "done": false,
-   "needs_repro": true
-  },
-  "2572": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2573": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2574": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2575": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2576": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2577": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2578": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2579": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2667": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2668": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2669": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2672": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2673": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2677": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2680": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2681": {
-   "done": false,
-   "needs_repro": false
-  },
-  "2682": {
-   "done": false,
-   "needs_repro": false
-  },
-  "315": {
-   "done": false,
-   "needs_repro": false
-  },
-  "318": {
-   "done": false,
-   "needs_repro": false
-  },
-  "326": {
-   "done": false,
-   "needs_repro": false
-  },
-  "329": {
-   "done": false,
-   "needs_repro": false
-  },
-  "331": {
-   "done": false,
-   "needs_repro": false
-  },
-  "333": {
-   "done": false,
-   "needs_repro": true
-  },
-  "692": {
-   "done": false,
-   "needs_repro": false
-  },
-  "693": {
-   "done": false,
-   "needs_repro": true
-  },
-  "695": {
-   "done": false,
-   "needs_repro": false
-  },
-  "696": {
-   "done": false,
-   "needs_repro": true
-  },
-  "698": {
-   "done": false,
-   "needs_repro": false
-  },
-  "703": {
-   "done": false,
-   "needs_repro": false
-  },
-  "709": {
-   "done": false,
-   "needs_repro": true
-  },
-  "710": {
-   "done": false,
-   "needs_repro": true
-  },
-  "711": {
-   "done": false,
-   "needs_repro": true
-  },
-  "712": {
-   "done": false,
-   "needs_repro": false
-  },
-  "713": {
-   "done": false,
-   "needs_repro": true
-  },
-  "714": {
-   "done": false,
-   "needs_repro": false
-  },
-  "715": {
-   "done": false,
-   "needs_repro": false
-  },
-  "717": {
-   "done": false,
-   "needs_repro": false
-  },
-  "718": {
-   "done": false,
-   "needs_repro": true
-  },
-  "719": {
-   "done": false,
-   "needs_repro": false
-  },
-  "720": {
-   "done": false,
-   "needs_repro": false
-  },
-  "721": {
-   "done": false,
-   "needs_repro": false
-  },
-  "730": {
-   "done": false,
-   "needs_repro": false
-  },
-  "731": {
-   "done": false,
-   "needs_repro": false
-  },
-  "734": {
-   "done": false,
-   "needs_repro": true
-  },
-  "758": {
-   "done": false,
-   "needs_repro": false
-  },
-  "759": {
-   "done": false,
-   "needs_repro": false
-  },
-  "760": {
-   "done": false,
-   "needs_repro": false
-  },
-  "763": {
-   "done": false,
-   "needs_repro": true
-  },
-  "765": {
-   "done": false,
-   "needs_repro": true
-  },
-  "766": {
-   "done": false,
-   "needs_repro": false
-  },
-  "768": {
-   "done": false,
-   "needs_repro": false
-  },
-  "769": {
-   "done": false,
-   "needs_repro": true
-  },
-  "776": {
-   "done": false,
-   "needs_repro": false
-  },
-  "778": {
-   "done": false,
-   "needs_repro": false
-  },
-  "779": {
-   "done": false,
-   "needs_repro": false
-  },
-  "780": {
-   "done": false,
-   "needs_repro": false
-  },
-  "781": {
-   "done": false,
-   "needs_repro": false
-  },
-  "782": {
-   "done": false,
-   "needs_repro": false
-  },
-  "783": {
-   "done": false,
-   "needs_repro": false
-  },
-  "796": {
-   "done": false,
-   "needs_repro": false
-  },
-  "797": {
-   "done": false,
-   "needs_repro": true
-  },
-  "798": {
-   "done": false,
-   "needs_repro": true
-  },
-  "799": {
-   "done": false,
-   "needs_repro": false
-  },
-  "804": {
-   "done": false,
-   "needs_repro": false
-  },
-  "805": {
-   "done": false,
-   "needs_repro": false
-  },
-  "807": {
-   "done": false,
-   "needs_repro": false
-  },
-  "808": {
-   "done": false,
-   "needs_repro": false
-  },
-  "826": {
-   "done": false,
-   "needs_repro": false
-  },
-  "827": {
-   "done": false,
-   "needs_repro": false
-  },
-  "833": {
-   "done": false,
-   "needs_repro": true
-  },
-  "836": {
-   "done": false,
-   "needs_repro": false
-  },
-  "838": {
-   "done": false,
-   "needs_repro": false
-  },
-  "846": {
-   "done": false,
-   "needs_repro": false
-  },
-  "859": {
-   "done": false,
-   "needs_repro": false
-  },
-  "860": {
-   "done": false,
-   "needs_repro": false
-  }
- },
  "characters": [
   {
    "id": 334,
@@ -330,7 +16,8 @@
      "type": "effect"
     }
    ],
-   "name": "Akuma"
+   "name": "Akuma",
+   "ready": false
   },
   {
    "id": 335,
@@ -402,7 +89,8 @@
      "type": null
     }
    ],
-   "name": "Amaterasu"
+   "name": "Amaterasu",
+   "ready": false
   },
   {
    "id": 336,
@@ -456,7 +144,8 @@
      "type": "audio"
     }
    ],
-   "name": "Arthur"
+   "name": "Arthur",
+   "ready": false
   },
   {
    "id": 337,
@@ -480,7 +169,8 @@
      "type": null
     }
    ],
-   "name": "Captain America"
+   "name": "Captain America",
+   "ready": false
   },
   {
    "id": 338,
@@ -540,7 +230,8 @@
      "type": null
     }
    ],
-   "name": "Chris"
+   "name": "Chris",
+   "ready": false
   },
   {
    "id": 339,
@@ -552,7 +243,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Chun-Li"
+   "name": "Chun-Li",
+   "ready": false
   },
   {
    "id": 340,
@@ -600,7 +292,8 @@
      "type": "visibility"
     }
    ],
-   "name": "C. Viper"
+   "name": "C. Viper",
+   "ready": false
   },
   {
    "id": 341,
@@ -678,7 +371,8 @@
      "type": null
     }
    ],
-   "name": "Dante"
+   "name": "Dante",
+   "ready": false
   },
   {
    "id": 342,
@@ -720,7 +414,8 @@
      "type": null
     }
    ],
-   "name": "Deadpool"
+   "name": "Deadpool",
+   "ready": false
   },
   {
    "id": 343,
@@ -756,7 +451,8 @@
      "type": null
     }
    ],
-   "name": "Doctor Doom"
+   "name": "Doctor Doom",
+   "ready": false
   },
   {
    "id": 344,
@@ -810,7 +506,8 @@
      "type": "desync"
     }
    ],
-   "name": "Doctor Strange"
+   "name": "Doctor Strange",
+   "ready": false
   },
   {
    "id": 345,
@@ -876,7 +573,8 @@
      "type": null
     }
    ],
-   "name": "Dormammu"
+   "name": "Dormammu",
+   "ready": false
   },
   {
    "id": 346,
@@ -906,7 +604,8 @@
      "type": "state"
     }
    ],
-   "name": "Felicia"
+   "name": "Felicia",
+   "ready": false
   },
   {
    "id": 347,
@@ -930,7 +629,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Firebrand"
+   "name": "Firebrand",
+   "ready": false
   },
   {
    "id": 348,
@@ -1014,7 +714,8 @@
      "type": null
     }
    ],
-   "name": "Frank West"
+   "name": "Frank West",
+   "ready": false
   },
   {
    "id": 349,
@@ -1026,7 +727,8 @@
      "type": "verify"
     }
    ],
-   "name": "Ghost Rider"
+   "name": "Ghost Rider",
+   "ready": false
   },
   {
    "id": 350,
@@ -1050,7 +752,8 @@
      "type": null
     }
    ],
-   "name": "Haggar"
+   "name": "Haggar",
+   "ready": false
   },
   {
    "id": 351,
@@ -1086,7 +789,8 @@
      "type": "desync"
     }
    ],
-   "name": "Hawkeye"
+   "name": "Hawkeye",
+   "ready": false
   },
   {
    "id": 352,
@@ -1122,7 +826,8 @@
      "type": "verify"
     }
    ],
-   "name": "Hsien-Ko"
+   "name": "Hsien-Ko",
+   "ready": false
   },
   {
    "id": 353,
@@ -1140,7 +845,8 @@
      "type": "desync"
     }
    ],
-   "name": "Hulk"
+   "name": "Hulk",
+   "ready": false
   },
   {
    "id": 354,
@@ -1164,7 +870,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Iron Fist"
+   "name": "Iron Fist",
+   "ready": false
   },
   {
    "id": 355,
@@ -1200,7 +907,8 @@
      "type": null
     }
    ],
-   "name": "Iron Man"
+   "name": "Iron Man",
+   "ready": false
   },
   {
    "id": 356,
@@ -1218,7 +926,8 @@
      "type": null
     }
    ],
-   "name": "Jill"
+   "name": "Jill",
+   "ready": false
   },
   {
    "id": 357,
@@ -1242,7 +951,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Magneto"
+   "name": "Magneto",
+   "ready": false
   },
   {
    "id": 358,
@@ -1290,7 +1000,8 @@
      "type": "crash"
     }
    ],
-   "name": "M.O.D.O.K."
+   "name": "M.O.D.O.K.",
+   "ready": false
   },
   {
    "id": 359,
@@ -1320,7 +1031,8 @@
      "type": null
     }
    ],
-   "name": "Morrigan"
+   "name": "Morrigan",
+   "ready": false
   },
   {
    "id": 360,
@@ -1356,7 +1068,8 @@
      "type": null
     }
    ],
-   "name": "Nemesis"
+   "name": "Nemesis",
+   "ready": false
   },
   {
    "id": 361,
@@ -1398,7 +1111,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Nova"
+   "name": "Nova",
+   "ready": false
   },
   {
    "id": 362,
@@ -1470,7 +1184,8 @@
      "type": "crash"
     }
    ],
-   "name": "Phoenix"
+   "name": "Phoenix",
+   "ready": false
   },
   {
    "id": 363,
@@ -1530,7 +1245,8 @@
      "type": null
     }
    ],
-   "name": "Phoenix Wright"
+   "name": "Phoenix Wright",
+   "ready": false
   },
   {
    "id": 364,
@@ -1644,7 +1360,8 @@
      "type": "verify"
     }
    ],
-   "name": "Rocket Raccoon"
+   "name": "Rocket Raccoon",
+   "ready": false
   },
   {
    "id": 365,
@@ -1662,7 +1379,8 @@
      "type": null
     }
    ],
-   "name": "Ryu"
+   "name": "Ryu",
+   "ready": false
   },
   {
    "id": 366,
@@ -1674,7 +1392,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Sentinel"
+   "name": "Sentinel",
+   "ready": false
   },
   {
    "id": 367,
@@ -1692,7 +1411,8 @@
      "type": null
     }
    ],
-   "name": "She-Hulk"
+   "name": "She-Hulk",
+   "ready": false
   },
   {
    "id": 368,
@@ -1734,7 +1454,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Shuma-Gorath"
+   "name": "Shuma-Gorath",
+   "ready": false
   },
   {
    "id": 369,
@@ -1782,7 +1503,8 @@
      "type": null
     }
    ],
-   "name": "Spencer"
+   "name": "Spencer",
+   "ready": false
   },
   {
    "id": 370,
@@ -1806,7 +1528,8 @@
      "type": null
     }
    ],
-   "name": "Spider-Man"
+   "name": "Spider-Man",
+   "ready": false
   },
   {
    "id": 371,
@@ -1830,7 +1553,8 @@
      "type": "state"
     }
    ],
-   "name": "Storm"
+   "name": "Storm",
+   "ready": false
   },
   {
    "id": 372,
@@ -1908,7 +1632,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Strider"
+   "name": "Strider",
+   "ready": false
   },
   {
    "id": 373,
@@ -1926,7 +1651,8 @@
      "type": "visibility"
     }
    ],
-   "name": "Super-Skrull"
+   "name": "Super-Skrull",
+   "ready": false
   },
   {
    "id": 374,
@@ -1938,7 +1664,8 @@
      "type": null
     }
    ],
-   "name": "Taskmaster"
+   "name": "Taskmaster",
+   "ready": false
   },
   {
    "id": 375,
@@ -1956,7 +1683,8 @@
      "type": null
     }
    ],
-   "name": "Thor"
+   "name": "Thor",
+   "ready": false
   },
   {
    "id": 376,
@@ -1998,7 +1726,8 @@
      "type": null
     }
    ],
-   "name": "Trish"
+   "name": "Trish",
+   "ready": false
   },
   {
    "id": 377,
@@ -2040,7 +1769,8 @@
      "type": null
     }
    ],
-   "name": "Tron"
+   "name": "Tron",
+   "ready": false
   },
   {
    "id": 378,
@@ -2136,7 +1866,8 @@
      "type": null
     }
    ],
-   "name": "Vergil"
+   "name": "Vergil",
+   "ready": false
   },
   {
    "id": 379,
@@ -2166,7 +1897,8 @@
      "type": null
     }
    ],
-   "name": "Viewtiful Joe"
+   "name": "Viewtiful Joe",
+   "ready": false
   },
   {
    "id": 380,
@@ -2196,7 +1928,8 @@
      "type": null
     }
    ],
-   "name": "Wesker"
+   "name": "Wesker",
+   "ready": false
   },
   {
    "id": 381,
@@ -2208,7 +1941,8 @@
      "type": null
     }
    ],
-   "name": "Wolverine"
+   "name": "Wolverine",
+   "ready": false
   },
   {
    "id": 382,
@@ -2220,7 +1954,8 @@
      "type": "verify"
     }
    ],
-   "name": "X-23"
+   "name": "X-23",
+   "ready": false
   },
   {
    "id": 383,
@@ -2280,13 +2015,36 @@
      "type": "visibility"
     }
    ],
-   "name": "Zero"
+   "name": "Zero",
+   "ready": false
   }
  ],
- "exported_at": "2026-11-26T05:47Z",
+ "exported_at": "2026-11-27T04:20Z",
  "latest_release": {
   "date": "2026-11-25",
   "tag": "v0.6.9"
+ },
+ "page": {
+  "characters_banner": "Nobody has confirmed any character in real matches yet. This table comes from bug reports and code review, so treat every row as unverified.",
+  "footer": "Statuses refresh from our task board every 15 minutes. The text is updated by hand when a release ships. Questions or bug reports: Discord.",
+  "goal": "Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.",
+  "links": [
+   {
+    "href": "https://github.com/tilderain/Timestone/releases",
+    "label": "Download"
+   },
+   {
+    "href": "https://discord.gg/BvDNwPzwy4",
+    "label": "Discord"
+   },
+   {
+    "href": "https://github.com/tilderain/Timestone",
+    "label": "Source"
+   }
+  ],
+  "notice": "Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.",
+  "tagline": "Rollback netcode for Ultimate Marvel vs. Capcom 3 (Steam)",
+  "title": "Timestone roadmap"
  },
  "releases": [
   "v0.6.9",
@@ -2332,7 +2090,1773 @@
   "v0.2.7-dev-pr1",
   "v0.2.4-dev-pr1"
  ],
- "releases_etag": "W/\"a4ed98332802d4994e9004f1b9b6d77c5899445536114eb2280c5cb4e275dc5b\"",
+ "releases_etag": "W/\"ed4643019a8e58a0ad0d039e83c2fc22655297899d73aa8edd1673a1473d084a\"",
+ "schema": 2,
+ "sections": [
+  {
+   "boxes": [
+    {
+     "blurb": "The biggest job. Each character's known problems are in the character table further down.",
+     "id": 2762,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2792,
+       "not_confirming": false,
+       "release": null,
+       "text": "Fix the character-specific desyncs and crashes listed in the character table"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": true,
+       "date": null,
+       "done": false,
+       "id": 2793,
+       "not_confirming": false,
+       "release": null,
+       "text": "{verifying_open} fixes and open bugs are marked for re-testing in recent releases. If you still hit one, report it on Discord"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2794,
+       "not_confirming": false,
+       "release": null,
+       "text": "Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails"
+      }
+     ],
+     "size": "large",
+     "title": "Fewer desyncs and crashes"
+    },
+    {
+     "blurb": "Performance over a long night of sets.",
+     "id": 2763,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2795,
+       "not_confirming": false,
+       "release": null,
+       "text": "Long sets and rematches dropping from 60 to 30 FPS"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2796,
+       "not_confirming": false,
+       "release": null,
+       "text": "Effects costing more to rewind than they used to"
+      }
+     ],
+     "size": "large",
+     "title": "Smoother long sessions"
+    },
+    {
+     "blurb": "Building on the in-game lobby from v0.6.",
+     "id": 2764,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2797,
+       "not_confirming": false,
+       "release": null,
+       "text": "Return to the room you came from after a set, and keep the lobby list current"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2798,
+       "not_confirming": true,
+       "release": null,
+       "text": "Private rooms with a password or a generated room code"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2799,
+       "not_confirming": true,
+       "release": null,
+       "text": "Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2800,
+       "not_confirming": false,
+       "release": null,
+       "text": "Name each setup and give it its own set length, so a big room can mix beginner and long-set setups"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2801,
+       "not_confirming": false,
+       "release": null,
+       "text": "Turn Galactus on or off per room"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2802,
+       "not_confirming": false,
+       "release": null,
+       "text": "Room skill level and a casual or serious tag"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2803,
+       "not_confirming": true,
+       "release": null,
+       "text": "A join sound and a \"player joined\" notice that stays on screen"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2804,
+       "not_confirming": true,
+       "release": null,
+       "text": "Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2805,
+       "not_confirming": true,
+       "release": null,
+       "text": "Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for v0.6.9; not in a release yet"
+      }
+     ],
+     "size": "medium",
+     "title": "Lobbies and social"
+    }
+   ],
+   "heading": "Now",
+   "id": "now",
+   "kind": "active",
+   "note": "(Currently working on this)"
+  },
+  {
+   "boxes": [
+    {
+     "blurb": "The game already records each match's inputs while you play; that is how spectating works. Saving matches as files and watching them later from a Gallery menu entry, like the Vita version, has not started yet. Replays may only play back on the version they were recorded with.",
+     "id": 2765,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2806,
+       "not_confirming": false,
+       "release": null,
+       "text": "Save a match as a replay file and watch it again from the Gallery menu"
+      }
+     ],
+     "size": "large",
+     "title": "Replays"
+    },
+    {
+     "blurb": "The ranking server is built, though its live server needs updating; the in-game side has not started. Lobbies stay the main way to play.",
+     "id": 2766,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2807,
+       "not_confirming": false,
+       "release": null,
+       "text": "Unranked quick match: one button that drops you into an open room setup with someone waiting"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2808,
+       "not_confirming": false,
+       "release": null,
+       "text": "Separate ranked and unranked queues, with a rating and a leaderboard"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2809,
+       "not_confirming": false,
+       "release": null,
+       "text": "Both players' results checked, with replays to settle disagreements"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2810,
+       "not_confirming": false,
+       "release": null,
+       "text": "Ladder rules, such as first-to-4 sets"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2811,
+       "not_confirming": false,
+       "release": null,
+       "text": "Reports, anti-cheat and anti-smurf measures"
+      }
+     ],
+     "size": "large",
+     "title": "Matchmaking and ranked"
+    },
+    {
+     "blurb": null,
+     "id": 2767,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2812,
+       "not_confirming": false,
+       "release": null,
+       "text": "Button check in team setup and character select before a match starts"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2813,
+       "not_confirming": false,
+       "release": null,
+       "text": "Pad working in menus but not in the match after leaving a room match"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2814,
+       "not_confirming": false,
+       "release": null,
+       "text": "Pads not detected online (PS4, Brook UFB and others)"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2815,
+       "not_confirming": false,
+       "release": null,
+       "text": "Reconnect a controller after it disconnects"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2816,
+       "not_confirming": false,
+       "release": null,
+       "text": "Button bindings resetting when a match starts"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2817,
+       "not_confirming": false,
+       "release": null,
+       "text": "Inputs freezing for a second or two in long online sets"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2818,
+       "not_confirming": false,
+       "release": null,
+       "text": "Steam Deck: external controller order and player 2 input"
+      }
+     ],
+     "size": "medium",
+     "title": "Controllers and inputs"
+    },
+    {
+     "blurb": null,
+     "id": 2768,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2819,
+       "not_confirming": false,
+       "release": null,
+       "text": "Start training mode from Timestone directly"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2820,
+       "not_confirming": false,
+       "release": null,
+       "text": "Train in an empty lobby setup while waiting, or open a training room so someone can join and coach"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2821,
+       "not_confirming": false,
+       "release": null,
+       "text": "Practise with online input delay and simulated rollback"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2822,
+       "not_confirming": false,
+       "release": null,
+       "text": "Save states and custom starting positions"
+      }
+     ],
+     "size": "medium",
+     "title": "Training mode"
+    }
+   ],
+   "heading": "Next",
+   "id": "next",
+   "kind": "upcoming",
+   "note": "(Starts after the current work)"
+  },
+  {
+   "boxes": [
+    {
+     "blurb": null,
+     "id": 2769,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2823,
+       "not_confirming": false,
+       "release": null,
+       "text": "Portraits and health bars follow the team order"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2824,
+       "not_confirming": false,
+       "release": null,
+       "text": "Timer and meter display glitches"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2825,
+       "not_confirming": true,
+       "release": null,
+       "text": "Launcher layout on small screens and high-DPI displays"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2826,
+       "not_confirming": false,
+       "release": null,
+       "text": "Remaining non-English text edge cases (Unicode names, chat and input methods shipped in v0.6.6)"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2827,
+       "not_confirming": false,
+       "release": null,
+       "text": "Steam Deck: chat no longer grabbing launcher controls"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2828,
+       "not_confirming": false,
+       "release": null,
+       "text": "Steam overlay and Recent Players"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2829,
+       "not_confirming": false,
+       "release": null,
+       "text": "Updater reliability: errors, relaunch loops, antivirus blocks"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2830,
+       "not_confirming": false,
+       "release": null,
+       "text": "Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in v0.6.9)"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2831,
+       "not_confirming": false,
+       "release": null,
+       "text": "Menu polish: wrap-around navigation and rebindable hotkeys"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2832,
+       "not_confirming": false,
+       "release": null,
+       "text": "A fighting-game-style launcher look: portraits, colour dots, theme"
+      }
+     ],
+     "size": "medium",
+     "title": "Launcher and HUD polish"
+    },
+    {
+     "blurb": null,
+     "id": 2770,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        },
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2833,
+       "not_confirming": false,
+       "release": null,
+       "text": "Work alongside other UMVC3 mods such as Community Edition and colour expansions"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2834,
+       "not_confirming": false,
+       "release": null,
+       "text": "Alternate costumes and colours in normal play"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": true
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2835,
+       "not_confirming": true,
+       "release": null,
+       "text": "Your own stage and cosmetic swaps, seen only by you"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2836,
+       "not_confirming": false,
+       "release": null,
+       "text": "Classic music options"
+      }
+     ],
+     "size": "medium",
+     "title": "Mods and cosmetics"
+    },
+    {
+     "blurb": null,
+     "id": 2771,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2837,
+       "not_confirming": false,
+       "release": null,
+       "text": "A beta channel for testers"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2838,
+       "not_confirming": false,
+       "release": null,
+       "text": "Antivirus false alarms (Smart App Control, Bitdefender)"
+      }
+     ],
+     "size": "small",
+     "title": "Install and updates"
+    },
+    {
+     "blurb": null,
+     "id": 2772,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2839,
+       "not_confirming": false,
+       "release": null,
+       "text": "Take over a replay and play on from any point"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2840,
+       "not_confirming": false,
+       "release": null,
+       "text": "A public winner-stays-on broadcast"
+      }
+     ],
+     "size": "medium",
+     "title": "Watching"
+    }
+   ],
+   "heading": "Later",
+   "id": "later",
+   "kind": "upcoming",
+   "note": "(Wanted, not scheduled)"
+  },
+  {
+   "boxes": [
+    {
+     "blurb": null,
+     "id": 2773,
+     "lines": [
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2841,
+       "not_confirming": false,
+       "release": null,
+       "text": "Voice chat. Use Discord"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2842,
+       "not_confirming": false,
+       "release": null,
+       "text": "Free text chat during a match. Quick chat stays"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2843,
+       "not_confirming": false,
+       "release": null,
+       "text": "Custom in-game display names. The game shows your Steam name"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2844,
+       "not_confirming": false,
+       "release": null,
+       "text": "A maximum-ping filter, for now"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2845,
+       "not_confirming": false,
+       "release": null,
+       "text": "Community-run rollback or tournament servers"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2846,
+       "not_confirming": false,
+       "release": null,
+       "text": "Hiding character picks"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2847,
+       "not_confirming": false,
+       "release": null,
+       "text": "Frame rates above 60. The game runs at 60"
+      },
+      {
+       "cards": [
+        {
+         "done": false,
+         "needs_repro": false
+        }
+       ],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2848,
+       "not_confirming": false,
+       "release": null,
+       "text": "Different delay or rollback per player. Everyone shares one fixed 8-frame window since v0.6.2 (a delay-only option for private rooms is still open to consideration)"
+      }
+     ],
+     "size": null,
+     "title": "Not planned"
+    }
+   ],
+   "heading": "Not planned",
+   "id": "not-planned",
+   "kind": "not_planned",
+   "note": "(Asked for, but we are not doing these)"
+  },
+  {
+   "boxes": [
+    {
+     "blurb": null,
+     "id": 2774,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": "2026-05-24",
+       "done": false,
+       "id": 2849,
+       "not_confirming": false,
+       "release": null,
+       "text": "First working rewind"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": "2026-05-27",
+       "done": false,
+       "id": 2850,
+       "not_confirming": false,
+       "release": null,
+       "text": "Prediction instead of waiting for the other player's input"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": "2026-07-29",
+       "done": false,
+       "id": 2851,
+       "not_confirming": false,
+       "release": null,
+       "text": "Random numbers and the camera rewind correctly"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2852,
+       "not_confirming": false,
+       "release": "v0.4.0",
+       "text": "Projectiles are rewound in place"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2853,
+       "not_confirming": false,
+       "release": "v0.4.0",
+       "text": "Saving the game state takes under 1 ms, down from 3.5 ms"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2854,
+       "not_confirming": false,
+       "release": "v0.6.2",
+       "text": "Both players share one frame clock with a fixed 8-frame rollback window"
+      }
+     ],
+     "size": null,
+     "title": "Rollback itself"
+    },
+    {
+     "blurb": null,
+     "id": 2775,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": "2026-08-14",
+       "done": false,
+       "id": 2855,
+       "not_confirming": false,
+       "release": null,
+       "text": "Play over Steam with no port forwarding"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2856,
+       "not_confirming": false,
+       "release": null,
+       "text": "Input delay set automatically"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2857,
+       "not_confirming": false,
+       "release": null,
+       "text": "Ping, jitter and packet loss shown"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2858,
+       "not_confirming": false,
+       "release": "v0.3.22",
+       "text": "Controllers end up in the right player slot"
+      }
+     ],
+     "size": null,
+     "title": "Online over Steam"
+    },
+    {
+     "blurb": null,
+     "id": 2776,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2859,
+       "not_confirming": false,
+       "release": "v0.6.0",
+       "text": "Lobby inside the game: first-to 1 to 10 sets, queues, winner stays, Endless"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2860,
+       "not_confirming": false,
+       "release": "v0.6.0",
+       "text": "Chat, quick chat, kick and ban, room music, every colour, Steam avatars"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2861,
+       "not_confirming": false,
+       "release": "v0.6.4",
+       "text": "10 room presets and stage picks"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2862,
+       "not_confirming": false,
+       "release": "v0.6.5",
+       "text": "RANDOM team member"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2863,
+       "not_confirming": false,
+       "release": "v0.6.6",
+       "text": "16-player rooms (full rooms stay listed), non-English chat and input methods, host can change settings in the room, leaving a queue asks first"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2864,
+       "not_confirming": false,
+       "release": "v0.6.7",
+       "text": "Room matches use the game's own character select and result screens; RANDOM ALL; paste into text fields"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2865,
+       "not_confirming": false,
+       "release": "v0.6.8",
+       "text": "Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2866,
+       "not_confirming": false,
+       "release": "v0.6.9",
+       "text": "Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2867,
+       "not_confirming": false,
+       "release": "v0.6.9",
+       "text": "Set score display (Settings screen and F4) and improved RANDOM ALL picks"
+      }
+     ],
+     "size": null,
+     "title": "In-game lobby"
+    },
+    {
+     "blurb": null,
+     "id": 2777,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2868,
+       "not_confirming": false,
+       "release": "v0.6.0",
+       "text": "Watch matches live, and join mid-match"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2869,
+       "not_confirming": false,
+       "release": "v0.6.0",
+       "text": "Watch while you wait in the queue"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2870,
+       "not_confirming": false,
+       "release": "v0.6.4",
+       "text": "F3 overlay and an Esc list of who is watching"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2871,
+       "not_confirming": false,
+       "release": "v0.6.4",
+       "text": "Spectators no longer stall the players"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2872,
+       "not_confirming": false,
+       "release": "v0.6.7",
+       "text": "Spectators can join at the first character select"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2873,
+       "not_confirming": false,
+       "release": "v0.6.9",
+       "text": "Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts"
+      }
+     ],
+     "size": null,
+     "title": "Spectating"
+    },
+    {
+     "blurb": null,
+     "id": 2778,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2874,
+       "not_confirming": false,
+       "release": null,
+       "text": "Rollback fixes for 27 characters, including Doom's missiles, Chris's grenades, Vergil's swords, Arthur's axe, Dormammu's Inferno, Iron Man's Repulsor, Deadpool's Pineapple, Tron's Servbots, Trish, Haggar's pipe and Wesker"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2875,
+       "not_confirming": false,
+       "release": null,
+       "text": "Crash fixes for Ryu, Strider, Dark Phoenix, Doctor Strange, Morrigan and Amaterasu"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2876,
+       "not_confirming": false,
+       "release": "v0.3.10",
+       "text": "Phoenix Wright's dog"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2877,
+       "not_confirming": false,
+       "release": "v0.4.0",
+       "text": "Amaterasu's Heavy Paper, Felicia's Kitty Helper, Frank West's cart"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2878,
+       "not_confirming": false,
+       "release": "v0.6.7",
+       "text": "Doctor Strange's Graces restored on rollback"
+      }
+     ],
+     "size": null,
+     "title": "Character fixes"
+    },
+    {
+     "blurb": null,
+     "id": 2779,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2879,
+       "not_confirming": false,
+       "release": "v0.5.0",
+       "text": "Super cut-ins, life bars, K.O. banners, the timer, music and voices all rewind correctly"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2880,
+       "not_confirming": false,
+       "release": "v0.6.4",
+       "text": "X-Factor looks right after a rollback"
+      }
+     ],
+     "size": null,
+     "title": "Picture and sound follow the rewind"
+    },
+    {
+     "blurb": null,
+     "id": 2780,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2881,
+       "not_confirming": false,
+       "release": "v0.3.23",
+       "text": "Resolution and VSync settings in game"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2882,
+       "not_confirming": false,
+       "release": "v0.6.0",
+       "text": "Self-updater that checks every download"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2883,
+       "not_confirming": false,
+       "release": "v0.6.1",
+       "text": "Audio, control and reserve-team settings saved properly at launch"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2884,
+       "not_confirming": false,
+       "release": "v0.6.3",
+       "text": "Direct3D 9Ex graphics mode"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2885,
+       "not_confirming": false,
+       "release": "v0.6.9",
+       "text": "Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2886,
+       "not_confirming": false,
+       "release": "v0.6.7",
+       "text": "Installer that finds the game in Steam, for Windows, Linux and Steam Deck"
+      }
+     ],
+     "size": null,
+     "title": "Launcher, display and updates"
+    },
+    {
+     "blurb": null,
+     "id": 2781,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2887,
+       "not_confirming": false,
+       "release": null,
+       "text": "Crash reports and a freeze watchdog"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2888,
+       "not_confirming": false,
+       "release": "v0.4.0",
+       "text": "Lag capture to diagnose slow matches"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2889,
+       "not_confirming": false,
+       "release": "v0.6.4",
+       "text": "Performance window"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2890,
+       "not_confirming": false,
+       "release": "v0.6.9",
+       "text": "Cleaner logs with machine, controller, route and per-game rollback summaries"
+      }
+     ],
+     "size": null,
+     "title": "When something breaks"
+    }
+   ],
+   "heading": "Shipped",
+   "id": "shipped",
+   "kind": "shipped",
+   "note": null
+  },
+  {
+   "boxes": [
+    {
+     "blurb": null,
+     "id": 2782,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2891,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-05-24: First rewind"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2892,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-05-27: Prediction"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2893,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-07-29: Random numbers rewind safely"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2894,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-08-14: Online over Steam"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2895,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-08-28: v0.2.2, first public build"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2896,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-11: v0.4.0"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2897,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-17: v0.6.0: in-game lobby and spectating"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2898,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-22: v0.6.5"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2899,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-23: v0.6.6: 16-player rooms"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2900,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-24: v0.6.7: installer"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2901,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-25: v0.6.8: room-match stability and sound crash fix"
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2902,
+       "not_confirming": false,
+       "release": null,
+       "text": "2026-11-25: v0.6.9: Settings screen, short lobby links, spectator overlay and score display"
+      }
+     ],
+     "size": null,
+     "title": "How we got here"
+    },
+    {
+     "blurb": null,
+     "id": 2783,
+     "lines": [
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2903,
+       "not_confirming": false,
+       "release": null,
+       "text": "Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window."
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2904,
+       "not_confirming": false,
+       "release": null,
+       "text": "The RenderingThread option was removed in v0.6.3."
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2905,
+       "not_confirming": false,
+       "release": null,
+       "text": "The Direct3D 9Ex graphics mode can still hitch for a second or two when loading on some PCs; optimization work is ongoing."
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2906,
+       "not_confirming": false,
+       "release": null,
+       "text": "Rocket Raccoon's tail physics have been switched off online since v0.5.0 to avoid desyncs. This can change how some of his attacks connect."
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2907,
+       "not_confirming": false,
+       "release": null,
+       "text": "Cyrillic names cannot be displayed because the game's built-in font has no Cyrillic glyphs."
+      },
+      {
+       "cards": [],
+       "confirming": false,
+       "date": null,
+       "done": false,
+       "id": 2908,
+       "not_confirming": false,
+       "release": null,
+       "text": "Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord."
+      }
+     ],
+     "size": null,
+     "title": "Changed or removed"
+    }
+   ],
+   "heading": "Background",
+   "id": "history",
+   "kind": "background",
+   "note": null
+  }
+ ],
  "stats": {
   "verifying_open": 163
  }
