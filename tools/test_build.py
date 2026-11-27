@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build  # noqa: E402
 import export_board  # noqa: E402
 
-BOX, LINE, CONF, NCONF, READY = 100, 101, 102, 103, 104
+BOX, LINE, CONF, NCONF = 100, 101, 102, 103
 SIZES = {110: "small", 111: "medium", 112: "large"}
 BUCKETS = {"draft": 1, "active": 2, "not_planned": 3, "shipped": 4, "background": 5, "page": 6}
 BUCKET_TITLES = {2: "Now (Currently working on this)", 3: "Not planned (Asked for)", 4: "Shipped",
@@ -31,25 +31,23 @@ CFG = {
     "legend": [{"class": "now", "text": "now"}],
 }
 
-CHAR_CFG = {
-    "roster": 900, "count": 2, "name_prefix": "Character: ", "ready_label": READY,
-    "type_pattern": "\\*\\*Type:\\*\\*\\s*([a-z]+)",
-    "severity": ["crash", "desync", "playable"],
-    "heading": "Characters",
-    "levels": [{"key": k, "mark": m, "label": k.title(), "text": k}
-               for k, m in (("ready", "●"), ("playable", "◐"), ("desync", "▲"),
-                            ("crash", "■"), ("untested", "○"))],
-    "type_rank": {"crash": "crash", "freeze": "crash", "desync": "desync",
-                  "effect": "playable", "verify": None},
-    "skip_cards": [99],
-}
+CHAR, READY, IGNORE = 120, 121, 122
+LEVELS = [{"key": "ready", "mark": "●", "label": "Tournament-ready", "text": "clean"},
+          {"key": "playable", "mark": "◐", "label": "Playable", "text": "visual"},
+          {"key": "desync", "mark": "▲", "label": "Known desyncs", "text": "desync"},
+          {"key": "crash", "mark": "■", "label": "Can crash", "text": "crash"},
+          {"key": "untested", "mark": "○", "label": "Untested", "text": "none"}]
+TYPES = {"crash": "crash", "freeze": "crash", "desync": "desync", "effect": "playable",
+         "verify": None}
+LABEL_TITLES = {BOX: "Public: box", LINE: "Public: line", CHAR: "Public: character",
+                READY: "Public: ready", IGNORE: "Public: ignore"}
 
 
 # --- board dump builders ---------------------------------------------------
 
 def task(tid, title, done=False, labels=(), desc="", end=None, rel=None):
     return {"id": tid, "title": title, "done": done,
-            "labels": [{"id": i} for i in labels] if labels else None,
+            "labels": [{"id": i, "title": LABEL_TITLES.get(i)} for i in labels] if labels else None,
             "description": desc, "end_date": end, "related_tasks": rel or {}}
 
 
@@ -163,27 +161,23 @@ class CharacterLevel(unittest.TestCase):
 
     def test_freeze_is_crash(self):
         c = self.char([self.issue(1, "freeze"), self.issue(2, "effect")])
-        self.assertEqual(build.character_level(c, CHAR_CFG)[0], "crash")
+        self.assertEqual(build.character_level(c, TYPES)[0], "crash")
 
     def test_effect_only_is_playable(self):
-        self.assertEqual(build.character_level(self.char([self.issue(1, "effect")]), CHAR_CFG)[0],
+        self.assertEqual(build.character_level(self.char([self.issue(1, "effect")]), TYPES)[0],
                          "playable")
 
     def test_verify_and_done_is_untested(self):
         c = self.char([self.issue(2, "verify"), self.issue(3, "crash", done=True)])
-        self.assertEqual(build.character_level(c, CHAR_CFG), ("untested", 0, 1, 0))
+        self.assertEqual(build.character_level(c, TYPES), ("untested", 0, 1, 0))
 
-    def test_unknown_type_fails(self):
-        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
-            build.character_level(self.char([self.issue(1, "weird")]), CHAR_CFG)
-
-    def test_skipped_cards_do_not_count(self):
-        c = self.char([self.issue(99, "crash", nr=True), self.issue(2, "effect")])
-        self.assertEqual(build.character_level(c, CHAR_CFG), ("playable", 1, 0, 0))
+    def test_unknown_type_is_uncounted(self):
+        self.assertEqual(build.character_level(self.char([self.issue(1, "weird")]), TYPES),
+                         ("untested", 0, 0, 0))
 
     def test_ready_flag(self):
         self.assertEqual(build.character_level(self.char([self.issue(1, "crash")], ready=True),
-                                               CHAR_CFG)[0], "ready")
+                                               TYPES)[0], "ready")
 
 
 # --- render ----------------------------------------------------------------
@@ -196,7 +190,7 @@ def snapshot():
         "releases": ["v1"],
         "stats": {"verifying_open": 7},
         "page": {"title": "T", "tagline": "tag", "goal": "goal", "notice": "notice", "footer": "f",
-                 "characters_banner": "banner",
+                 "characters_heading": "Characters", "characters_banner": "banner",
                  "links": [{"label": "Discord", "href": "https://example.invalid/"}]},
         "sections": [
             {"id": "now", "heading": "Now", "note": "(n)", "kind": "active", "boxes": [
@@ -223,11 +217,13 @@ def snapshot():
         "characters": [{"id": 900 + i, "name": f"C{i:02d}", "ready": False,
                         "issues": [{"id": 1000 + i, "done": False, "type": "effect",
                                     "needs_repro": False}]} for i in range(2)],
+        "levels": LEVELS,
+        "types": TYPES,
     }
 
 
 def render_cfg():
-    return dict(CFG, characters=CHAR_CFG)
+    return dict(CFG)
 
 
 def quiet(fn, *a, **kw):
@@ -553,6 +549,14 @@ class ExportPage(unittest.TestCase):
         self.assertNotIn("tagline", out["page"])
         self.assertIn("warn: page card 41", err)
 
+    def test_unlabelled_page_subtasks_publish(self):
+        cfg, data = self.page_board()
+        next(t for t in data["tasks"] if t["id"] == 51)["labels"] = None
+        with tempfile.TemporaryDirectory() as d:
+            out, _ = run_export(cfg, data, d)
+        self.assertEqual(out["page"]["links"],
+                         [{"label": "Discord", "href": "https://discord.gg/x"}])
+
     def test_unknown_page_title_warns(self):
         cfg, data = self.page_board()
         data["tasks"].append(task(53, "Sidebar", labels=[BOX], desc="x"))
@@ -564,46 +568,71 @@ class ExportPage(unittest.TestCase):
 
 class ExportCharacters(unittest.TestCase):
     def char_board(self):
-        cfg = dict(CFG, characters=dict(CHAR_CFG, count=2))
-        cfg["min_tasks"] = 0
+        cfg = dict(CFG)
         tasks = [
-            task(1, "Box A", labels=[BOX], desc="b"),
+            task(1, "Box A", labels=[BOX], desc="b", rel=rel(subtask=[2])),
             task(2, "line one", labels=[LINE], rel=rel(parenttask=[1])),
-            task(900, "Roster"),
-            task(901, "Character: Ryu", labels=[READY]),
-            task(902, "Character: Morrigan"),
-            task(903, "crash bug", desc="**Type:** crash"),
-            task(904, "effect bug", desc="**Type:** effect"),
             task(30, "Title", labels=[BOX], desc="Roadmap"),
-            task(906, "Release v1", done=True),
+            task(31, "Characters heading", labels=[BOX], desc="Characters"),
+            task(32, "Levels", labels=[BOX], rel=rel(subtask=[33, 34])),
+            task(33, "ready", desc="● |Tournament-ready |clean"),
+            task(34, "crash", desc="■ |Can crash |crashes"),
+            task(35, "Types", labels=[BOX], rel=rel(subtask=[36, 37, 38])),
+            task(36, "crash", desc="crash"),
+            task(37, "effect", desc="playable"),
+            task(38, "verify", desc="none"),
+            task(140, "Ryu", labels=[CHAR, READY], rel=rel(subtask=[141])),
+            task(141, "invisible during super", desc="**Type:** crash"),
+            task(142, "Morrigan", labels=[CHAR], rel=rel(subtask=[143, 144])),
+            task(143, "sound cuts out", desc="**Type:** effect"),
+            task(144, "reported elsewhere", labels=[IGNORE], desc="**Type:** crash"),
+            task(9, "Release v1", done=True),
         ]
-        tasks[2]["related_tasks"] = rel(subtask=[901, 902])
-        tasks[3]["related_tasks"] = rel(subtask=[903])
-        tasks[4]["related_tasks"] = rel(subtask=[904])
-        return cfg, dump(tasks, [box_item(1, 100, 2), box_item(30, 900, 6)])
+        box_view = [box_item(1, 100, 2), box_item(30, 900, 6), box_item(31, 910, 6),
+                    box_item(32, 920, 6), box_item(35, 930, 6)]
+        return cfg, dump(tasks, box_view)
 
-    def test_characters_exported_with_ready_flag(self):
+    def test_character_cards_are_discovered_by_label(self):
         cfg, data = self.char_board()
         with tempfile.TemporaryDirectory() as d:
-            out, _ = run_export(cfg, data, d)
-        self.assertEqual([c["name"] for c in out["characters"]], ["Ryu", "Morrigan"])
-        self.assertTrue(out["characters"][0]["ready"])
-        self.assertFalse(out["characters"][1]["ready"])
-        self.assertEqual(out["characters"][0]["issues"],
-                         [{"id": 903, "done": False, "type": "crash", "needs_repro": False}])
+            out, err = run_export(cfg, data, d)
+        self.assertEqual(err, "")
+        self.assertEqual([c["name"] for c in out["characters"]], ["Morrigan", "Ryu"])
+        morrigan, ryu = out["characters"]
+        self.assertFalse(morrigan["ready"])
+        self.assertTrue(ryu["ready"])
+        # the ignored issue is dropped before it leaves the exporter
+        self.assertEqual([i["id"] for i in morrigan["issues"]], [143])
+        self.assertEqual(ryu["issues"],
+                         [{"id": 141, "done": False, "type": "crash", "needs_repro": False}])
+        self.assertEqual([lv["key"] for lv in out["levels"]], ["ready", "crash"])
+        self.assertEqual(out["levels"][0], {"key": "ready", "mark": "●",
+                                            "label": "Tournament-ready", "text": "clean"})
+        self.assertEqual(out["types"], {"crash": "crash", "effect": "playable", "verify": None})
 
-    def test_roster_shape_is_fatal(self):
+    def test_no_levels_card_omits_characters(self):
         cfg, data = self.char_board()
-        data["tasks"] = [t for t in data["tasks"] if t["id"] != 904]
-        next(t for t in data["tasks"] if t["id"] == 901)["related_tasks"] = rel(subtask=[])
+        data["tasks"] = [t for t in data["tasks"] if t["id"] not in (32, 33, 34)]
+        data["box_view"] = [b for b in data["box_view"] if b["id"] != 32]
+        with tempfile.TemporaryDirectory() as d:
+            out, err = run_export(cfg, data, d)
+        self.assertNotIn("characters", out)
+        self.assertIn("no 'Levels' page card", err)
+
+    def test_missing_characters_heading_exits_1(self):
+        cfg, data = self.char_board()
+        data["tasks"] = [t for t in data["tasks"] if t["id"] != 31]
+        data["box_view"] = [b for b in data["box_view"] if b["id"] != 31]
         with tempfile.TemporaryDirectory() as d, self.assertRaises(SystemExit):
             run_export(cfg, data, d)
 
-    def test_no_characters_block_omits_key(self):
+    def test_no_character_cards_omits_key(self):
         cfg, data = small_board()
         with tempfile.TemporaryDirectory() as d:
             out, _ = run_export(cfg, data, d)
         self.assertNotIn("characters", out)
+        self.assertNotIn("levels", out)
+        self.assertNotIn("types", out)
 
 
 class ExportReleases(unittest.TestCase):

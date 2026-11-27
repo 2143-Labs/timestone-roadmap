@@ -148,6 +148,55 @@
    "ready": false
   },
   {
+   "id": 340,
+   "issues": [
+    {
+     "done": false,
+     "id": 534,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 535,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 536,
+     "needs_repro": false,
+     "type": "desync"
+    },
+    {
+     "done": false,
+     "id": 537,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 605,
+     "needs_repro": false,
+     "type": "state"
+    },
+    {
+     "done": false,
+     "id": 606,
+     "needs_repro": false,
+     "type": "crash"
+    },
+    {
+     "done": false,
+     "id": 635,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "C. Viper",
+   "ready": false
+  },
+  {
    "id": 337,
    "issues": [
     {
@@ -244,55 +293,6 @@
     }
    ],
    "name": "Chun-Li",
-   "ready": false
-  },
-  {
-   "id": 340,
-   "issues": [
-    {
-     "done": false,
-     "id": 534,
-     "needs_repro": false,
-     "type": "desync"
-    },
-    {
-     "done": false,
-     "id": 535,
-     "needs_repro": false,
-     "type": "desync"
-    },
-    {
-     "done": false,
-     "id": 536,
-     "needs_repro": false,
-     "type": "desync"
-    },
-    {
-     "done": false,
-     "id": 537,
-     "needs_repro": false,
-     "type": "crash"
-    },
-    {
-     "done": false,
-     "id": 605,
-     "needs_repro": false,
-     "type": "state"
-    },
-    {
-     "done": false,
-     "id": 606,
-     "needs_repro": false,
-     "type": "crash"
-    },
-    {
-     "done": false,
-     "id": 635,
-     "needs_repro": false,
-     "type": "visibility"
-    }
-   ],
-   "name": "C. Viper",
    "ready": false
   },
   {
@@ -618,12 +618,6 @@
     },
     {
      "done": false,
-     "id": 1137,
-     "needs_repro": true,
-     "type": null
-    },
-    {
-     "done": false,
      "id": 2688,
      "needs_repro": false,
      "type": "visibility"
@@ -719,14 +713,7 @@
   },
   {
    "id": 349,
-   "issues": [
-    {
-     "done": false,
-     "id": 894,
-     "needs_repro": true,
-     "type": "verify"
-    }
-   ],
+   "issues": [],
    "name": "Ghost Rider",
    "ready": false
   },
@@ -834,12 +821,6 @@
    "issues": [
     {
      "done": false,
-     "id": 895,
-     "needs_repro": true,
-     "type": "verify"
-    },
-    {
-     "done": false,
      "id": 2679,
      "needs_repro": true,
      "type": "desync"
@@ -918,40 +899,9 @@
      "id": 527,
      "needs_repro": false,
      "type": "desync"
-    },
-    {
-     "done": false,
-     "id": 1138,
-     "needs_repro": true,
-     "type": null
     }
    ],
    "name": "Jill",
-   "ready": false
-  },
-  {
-   "id": 357,
-   "issues": [
-    {
-     "done": false,
-     "id": 418,
-     "needs_repro": false,
-     "type": "effect"
-    },
-    {
-     "done": false,
-     "id": 621,
-     "needs_repro": true,
-     "type": "visibility"
-    },
-    {
-     "done": false,
-     "id": 633,
-     "needs_repro": false,
-     "type": "visibility"
-    }
-   ],
-   "name": "Magneto",
    "ready": false
   },
   {
@@ -1004,6 +954,31 @@
    "ready": false
   },
   {
+   "id": 357,
+   "issues": [
+    {
+     "done": false,
+     "id": 418,
+     "needs_repro": false,
+     "type": "effect"
+    },
+    {
+     "done": false,
+     "id": 621,
+     "needs_repro": true,
+     "type": "visibility"
+    },
+    {
+     "done": false,
+     "id": 633,
+     "needs_repro": false,
+     "type": "visibility"
+    }
+   ],
+   "name": "Magneto",
+   "ready": false
+  },
+  {
    "id": 359,
    "issues": [
     {
@@ -1042,12 +1017,6 @@
      "id": 623,
      "needs_repro": true,
      "type": "visibility"
-    },
-    {
-     "done": false,
-     "id": 1139,
-     "needs_repro": true,
-     "type": null
     },
     {
      "done": true,
@@ -1403,12 +1372,6 @@
      "id": 559,
      "needs_repro": false,
      "type": "freeze"
-    },
-    {
-     "done": false,
-     "id": 1140,
-     "needs_repro": true,
-     "type": null
     }
    ],
    "name": "She-Hulk",
@@ -1656,14 +1619,7 @@
   },
   {
    "id": 374,
-   "issues": [
-    {
-     "done": false,
-     "id": 896,
-     "needs_repro": true,
-     "type": null
-    }
-   ],
+   "issues": [],
    "name": "Taskmaster",
    "ready": false
   },
@@ -1675,12 +1631,6 @@
      "id": 426,
      "needs_repro": false,
      "type": "effect"
-    },
-    {
-     "done": false,
-     "id": 1141,
-     "needs_repro": true,
-     "type": null
     }
    ],
    "name": "Thor",
@@ -1933,27 +1883,13 @@
   },
   {
    "id": 381,
-   "issues": [
-    {
-     "done": false,
-     "id": 897,
-     "needs_repro": true,
-     "type": null
-    }
-   ],
+   "issues": [],
    "name": "Wolverine",
    "ready": false
   },
   {
    "id": 382,
-   "issues": [
-    {
-     "done": false,
-     "id": 898,
-     "needs_repro": true,
-     "type": "verify"
-    }
-   ],
+   "issues": [],
    "name": "X-23",
    "ready": false
   },
@@ -2019,14 +1955,47 @@
    "ready": false
   }
  ],
- "exported_at": "2026-11-27T04:20Z",
+ "exported_at": "2026-11-27T07:15Z",
  "latest_release": {
   "date": "2026-11-25",
   "tag": "v0.6.9"
  },
+ "levels": [
+  {
+   "key": "ready",
+   "label": "Tournament-ready",
+   "mark": "●",
+   "text": "Confirmed clean in real matches"
+  },
+  {
+   "key": "playable",
+   "label": "Playable",
+   "mark": "◐",
+   "text": "Only visual or sound glitches known"
+  },
+  {
+   "key": "desync",
+   "label": "Known desyncs",
+   "mark": "▲",
+   "text": "Some moves can desync a match"
+  },
+  {
+   "key": "crash",
+   "label": "Can crash",
+   "mark": "■",
+   "text": "Some moves can crash or freeze the game"
+  },
+  {
+   "key": "untested",
+   "label": "Untested",
+   "mark": "○",
+   "text": "No reports yet, good or bad"
+  }
+ ],
  "page": {
   "characters_banner": "Nobody has confirmed any character in real matches yet. This table comes from bug reports and code review, so treat every row as unverified.",
-  "footer": "Statuses refresh from our task board every 15 minutes. The text is updated by hand when a release ships. Questions or bug reports: Discord.",
+  "characters_heading": "Characters",
+  "footer": "This page is generated from our task board every 15 minutes. Questions or bug reports: Discord.",
   "goal": "Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.",
   "links": [
    {
@@ -2090,7 +2059,7 @@
   "v0.2.7-dev-pr1",
   "v0.2.4-dev-pr1"
  ],
- "releases_etag": "W/\"ed4643019a8e58a0ad0d039e83c2fc22655297899d73aa8edd1673a1473d084a\"",
+ "releases_etag": "W/\"a171763647c5a333617c793106102825748cf53d5dcb6bc37bc8c1e919d34c67\"",
  "schema": 2,
  "sections": [
   {
@@ -3859,5 +3828,16 @@
  ],
  "stats": {
   "verifying_open": 163
+ },
+ "types": {
+  "audio": "playable",
+  "crash": "crash",
+  "desync": "desync",
+  "effect": "playable",
+  "freeze": "crash",
+  "input": "desync",
+  "state": "desync",
+  "verify": null,
+  "visibility": "playable"
  }
 }

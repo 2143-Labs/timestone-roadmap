@@ -24,7 +24,12 @@ from datetime import datetime, timezone
 MARKUP_RE = re.compile(r"\*\*|__|`|\]\(|<[A-Za-z/!]|^\s*(?:#|[-*+] |\d+\. |>)", re.M)
 MD_ESC = re.compile(r"\\([\\`*_{}\[\]()#+\-.!|>~])")
 URL_RE = re.compile(r"https://[^\s<>()\[\]\"']+")
-PLAIN_PAGE_KEYS = ("title", "tagline", "goal", "notice", "footer")
+PLAIN_PAGE_KEYS = ("title", "tagline", "goal", "notice", "footer", "characters_heading")
+CHARACTER_LABEL = "Public: character"
+READY_LABEL = "Public: ready"
+IGNORE_LABEL = "Public: ignore"
+ISSUE_TYPE_RE = re.compile(r"\*\*Type:\*\*\s*([a-z]+)")
+LEVEL_CARD_RE = re.compile(r"^\s*(\S+)\s*\|\s*([^|]+?)\s*\|\s*(.+?)\s*$")
 
 
 class ExportError(Exception):
@@ -200,6 +205,10 @@ def label_ids(task):
     return {l["id"] for l in (task.get("labels") or [])}
 
 
+def titles(task):
+    return {l["title"] for l in (task.get("labels") or []) if l.get("title")}
+
+
 def subtask_ids(task):
     return [s["id"] for s in ((task.get("related_tasks") or {}).get("subtask") or [])]
 
@@ -259,11 +268,11 @@ def export(cfg, data, releases, latest, releases_etag=None):
 
     line_pos = {item["id"]: (item.get("position") or 0) for item in data["line_view"]}
 
-    def published_lines(box_id):
+    def published_lines(box_id, require_label=True):
         got = []
         for lid in rel(idx[box_id], "subtask"):
             line = idx[lid]
-            if line_label not in label_ids(line):
+            if require_label and line_label not in label_ids(line):
                 warn(f"line card {lid} has no line label; skipped")
                 continue
             if rel(line, "parenttask") != [box_id]:
@@ -314,7 +323,10 @@ def export(cfg, data, releases, latest, releases_etag=None):
         return {"id": t["id"], "title": (t.get("title") or "").strip(), "blurb": blurb,
                 "size": size, "lines": lines}
 
-    # Page text cards, keyed by title.
+    # Page text cards, keyed by title. Level and type definition cards are
+    # page-bucket subtasks without the line label, so they never reach the
+    # Public lines view.
+    levels, types = [], {}
     page = {}
     for tid in boxes:
         t = idx[tid]
@@ -323,13 +335,34 @@ def export(cfg, data, releases, latest, releases_etag=None):
         key = re.sub(r"\s+", "_", (t.get("title") or "").strip().lower())
         if key == "links":
             links = []
-            for lid in published_lines(tid):
+            for lid in published_lines(tid, require_label=False):
                 m = URL_RE.search(idx[lid].get("description") or "")
                 if not m:
                     warn(f"link card {lid} has no https URL; skipped")
                     continue
                 links.append({"label": (idx[lid].get("title") or "").strip(), "href": m.group(0)})
             page["links"] = links
+        elif key == "levels":
+            for lid in sorted(rel(t, "subtask")):
+                card, lk = idx[lid], (idx[lid].get("title") or "").strip().lower()
+                m = LEVEL_CARD_RE.match(card.get("description") or "")
+                if not lk or not m:
+                    warn(f"level card {lid} needs '<mark> | <label> | <caption>' in its description; skipped")
+                elif any(lv["key"] == lk for lv in levels):
+                    warn(f"level card {lid} repeats level '{lk}'; skipped")
+                else:
+                    levels.append({"key": lk, "mark": m.group(1), "label": m.group(2), "text": m.group(3)})
+        elif key == "types":
+            for lid in sorted(rel(t, "subtask")):
+                card = idx[lid]
+                word = (card.get("title") or "").strip().lower()
+                val = (card.get("description") or "").strip().lower()
+                if not word:
+                    warn(f"type card {lid} has no title; skipped")
+                elif word in types:
+                    warn(f"type card {lid} repeats type '{word}'; skipped")
+                else:
+                    types[word] = None if val in ("", "none") else val
         elif key in PLAIN_PAGE_KEYS + ("characters_banner",):
             value = plain(t.get("description"))
             if value is None:
@@ -372,30 +405,34 @@ def export(cfg, data, releases, latest, releases_etag=None):
     for s in sections:
         s.pop("_bucket", None)
 
+    # Characters: cards wearing the character label, their issues are their subtasks.
     characters = []
-    if cfg.get("characters"):
-        ccfg = cfg["characters"]
-        roster = ccfg["roster"]
-        if roster not in idx:
-            raise ExportError(f"roster card {roster} not on board")
-        char_ids = subtask_ids(idx[roster])
-        if len(char_ids) != ccfg["count"]:
-            raise ExportError(f"roster has {len(char_ids)} characters, expected {ccfg['count']}")
-        type_re = re.compile(ccfg["type_pattern"])
-        for chid in char_ids:
-            if chid not in idx:
-                raise ExportError(f"character card {chid} not on board")
-            ch = idx[chid]
-            issues = []
-            for iid in subtask_ids(ch):
-                if iid not in idx:
-                    raise ExportError(f"issue card {iid} not on board")
-                t = idx[iid]
-                m = type_re.search(t.get("description") or "")
-                issues.append({"id": iid, "done": bool(t["done"]), "type": m.group(1) if m else None,
-                               "needs_repro": iid in nr})
-            characters.append({"id": chid, "name": (ch.get("title") or "").removeprefix(ccfg["name_prefix"]),
-                               "ready": ccfg["ready_label"] in label_ids(ch), "issues": issues})
+    char_cards = sorted((t for t in idx.values() if CHARACTER_LABEL in titles(t)),
+                        key=lambda t: (t.get("title") or "").lower())
+    if char_cards and not levels:
+        warn("character cards exist but no 'Levels' page card; characters omitted")
+        char_cards = []
+    if char_cards and not types:
+        warn("no 'Types' page card; issue types are not counted")
+    unknown = set()
+    for ch in char_cards:
+        issues = []
+        for iid in subtask_ids(ch):
+            issue = idx.get(iid)
+            if issue is None or IGNORE_LABEL in titles(issue):
+                continue
+            m = ISSUE_TYPE_RE.search(issue.get("description") or "")
+            t = m.group(1) if m else None
+            if t is not None and t not in types:
+                unknown.add(t)
+            issues.append({"id": iid, "done": bool(issue["done"]), "type": t,
+                           "needs_repro": iid in nr})
+        characters.append({"id": ch["id"], "name": (ch.get("title") or "").strip(),
+                           "ready": READY_LABEL in titles(ch), "issues": issues})
+    for t in sorted(unknown):
+        warn(f"unknown issue type '{t}'; not counted")
+    if characters and "characters_heading" not in page:
+        raise ExportError("page text card 'Characters heading' missing or empty")
     if "title" not in page:
         raise ExportError("page text card 'Title' missing or empty")
 
@@ -408,8 +445,10 @@ def export(cfg, data, releases, latest, releases_etag=None):
         "page": page,
         "sections": sections,
     }
-    if cfg.get("characters"):
+    if characters:
         snap["characters"] = characters
+        snap["levels"] = levels
+        snap["types"] = types
     if releases_etag:
         snap["releases_etag"] = releases_etag
     return snap
