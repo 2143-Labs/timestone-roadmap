@@ -250,10 +250,10 @@ class Render(unittest.TestCase):
         self.assertEqual(page.count('class="tile '), 2)
         self.assertIn('<p class="banner">banner</p>', page)
         self.assertIn("<footer><p>f</p></footer>", page)
-        # body order: sections, shipped, characters, background
+        # body order: characters, sections, shipped, background
+        self.assertLess(page.index('id="characters"'), page.index('id="now"'))
         self.assertLess(page.index('id="now"'), page.index('id="shipped"'))
-        self.assertLess(page.index('id="shipped"'), page.index('id="characters"'))
-        self.assertLess(page.index('id="characters"'), page.index('id="history"'))
+        self.assertLess(page.index('id="shipped"'), page.index('id="history"'))
 
     def test_unknown_token_drops_the_line(self):
         cfg, board = render_cfg(), snapshot()
