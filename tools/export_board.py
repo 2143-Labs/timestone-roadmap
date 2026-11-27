@@ -205,7 +205,7 @@ def subtask_ids(task):
 
 
 def _heading_note(title):
-    m = re.fullmatch(r"(.*?)\s*(\([^()]*\))?", title or "")
+    m = re.fullmatch(r"(.*?)\s*(\([^()]*\))?", (title or "").strip())
     return (m.group(1), m.group(2)) if m else (title or "", None)
 
 

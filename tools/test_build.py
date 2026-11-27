@@ -390,6 +390,21 @@ class ExportSections(unittest.TestCase):
         self.assertEqual(out["stats"]["verifying_open"], 0)
         self.assertEqual(err, "")
 
+    def test_bucket_title_whitespace_is_stripped(self):
+        cfg, data = small_board(with_title=False)
+        data["tasks"].append(task(30, "Title", labels=[BOX], desc="Roadmap"))
+        data["box_view"].append(box_item(30, 900, 6))
+        data["tasks"].append(task(31, "Box D", labels=[BOX], rel=rel(subtask=[32])))
+        data["tasks"].append(task(32, "a next line", labels=[LINE], rel=rel(parenttask=[31])))
+        item = box_item(31, 400, 7)
+        item["buckets"][0]["title"] = "  Next (Starts after the current work)   "
+        data["box_view"].append(item)
+        with tempfile.TemporaryDirectory() as d:
+            out, _ = run_export(cfg, data, d)
+        nxt = next(s for s in out["sections"] if s["id"] == "next")
+        self.assertEqual(nxt["heading"], "Next")
+        self.assertEqual(nxt["note"], "(Starts after the current work)")
+
     def test_line_flags_and_date(self):
         cfg, data = small_board()
         data["tasks"].append(task(6, "Box C", labels=[BOX], rel=rel(subtask=[7])))
