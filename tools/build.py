@@ -199,6 +199,36 @@ def render(cfg, board, strict_releases=False):
     b = body.append
     n_done = 0
     b('<main class="roadmap">\n')
+    # The characters grid opens the page: it is the one block the board's
+    # column order does not place, so it sits here on purpose.
+    levels = board.get("levels") or []
+    chars = board.get("characters") or []
+    types = board.get("types") or {}
+    if levels and chars:
+        by_key = {lv["key"]: lv for lv in levels}
+        rows = []
+        for c in sorted(chars, key=lambda c: c["name"].lower()):
+            level, n_open, fixed, awaiting = character_level(c, types)
+            lv = by_key.get(level)
+            if lv is None:
+                print(f"warn: level '{level}' has no card; tile rendered without a mark",
+                      file=sys.stderr)
+                lv = {"key": level, "mark": "", "label": level, "text": ""}
+            rows.append((c["name"], level, n_open, fixed, awaiting, lv))
+        counts = {lv["key"]: sum(1 for r in rows if r[1] == lv["key"]) for lv in levels}
+        b(f'<section id="characters" class="wide">\n<h2>{esc(page["characters_heading"])}</h2>\n')
+        if page.get("characters_banner"):
+            b(f'<p class="banner">{esc(page["characters_banner"])}</p>\n')
+        b('<div class="levels">\n')
+        for lv in levels:
+            b(f'<p><b class="{esc(lv["key"])}">{esc(lv["mark"])}</b> {esc(lv["label"])}: '
+              f'{counts[lv["key"]]} · {esc(lv["text"])}</p>\n')
+        b('</div>\n<div class="tiles">\n')
+        for name, level, n_open, fixed, awaiting, lv in rows:
+            extra = f" · {awaiting} awaiting confirmation" if awaiting else ""
+            b(f'<div class="tile {level}"><b>{esc(lv["mark"])} {esc(name)}</b>'
+              f'<span>{esc(lv["label"])}</span><small>{n_open} open · {fixed} fixed{extra}</small></div>\n')
+        b("</div>\n</section>\n")
 
     def box_head(box, extra="card"):
         span = f' <span class="size">{esc(box["size"])} job</span>' if box.get("size") else ""
@@ -251,34 +281,6 @@ def render(cfg, board, strict_releases=False):
             b("</ul>\n</article>\n")
         b("</section>\n")
 
-    levels = board.get("levels") or []
-    chars = board.get("characters") or []
-    types = board.get("types") or {}
-    if levels and chars:
-        by_key = {lv["key"]: lv for lv in levels}
-        rows = []
-        for c in sorted(chars, key=lambda c: c["name"].lower()):
-            level, n_open, fixed, awaiting = character_level(c, types)
-            lv = by_key.get(level)
-            if lv is None:
-                print(f"warn: level '{level}' has no card; tile rendered without a mark",
-                      file=sys.stderr)
-                lv = {"key": level, "mark": "", "label": level, "text": ""}
-            rows.append((c["name"], level, n_open, fixed, awaiting, lv))
-        counts = {lv["key"]: sum(1 for r in rows if r[1] == lv["key"]) for lv in levels}
-        b(f'<section id="characters" class="wide">\n<h2>{esc(page["characters_heading"])}</h2>\n')
-        if page.get("characters_banner"):
-            b(f'<p class="banner">{esc(page["characters_banner"])}</p>\n')
-        b('<div class="levels">\n')
-        for lv in levels:
-            b(f'<p><b class="{esc(lv["key"])}">{esc(lv["mark"])}</b> {esc(lv["label"])}: '
-              f'{counts[lv["key"]]} · {esc(lv["text"])}</p>\n')
-        b('</div>\n<div class="tiles">\n')
-        for name, level, n_open, fixed, awaiting, lv in rows:
-            extra = f" · {awaiting} awaiting confirmation" if awaiting else ""
-            b(f'<div class="tile {level}"><b>{esc(lv["mark"])} {esc(name)}</b>'
-              f'<span>{esc(lv["label"])}</span><small>{n_open} open · {fixed} fixed{extra}</small></div>\n')
-        b("</div>\n</section>\n")
 
     for s in sections:
         if s["kind"] != "background":
