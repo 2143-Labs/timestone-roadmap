@@ -16,8 +16,8 @@ spec:
       labels:
         app: timestone-roadmap
       annotations:
-        # Rolls the pod when the page, nginx config, tools or content change; the ConfigMap names are stable.
-        checksum/site: {{ printf "%s%s%s%s%s%s" (.Files.Glob "site/*.html").AsConfig (.Files.Get "files/nginx.conf") (.Files.Get "tools/export_board.py") (.Files.Get "tools/build.py") (.Files.Get "content/roadmap.json") (.Files.Get "data/board.json") | sha256sum | quote }}
+        # Rolls the pod when the page, nginx config, tools or board wiring change; the ConfigMap names are stable.
+        checksum/site: {{ printf "%s%s%s%s%s%s%s" (.Files.Glob "site/*.html").AsConfig (.Files.Get "files/nginx.conf") (.Files.Get "tools/export_board.py") (.Files.Get "tools/build.py") (.Files.Get "config/roadmap.json") .Values.config (.Files.Get "data/board.json") | sha256sum | quote }}
     spec:
       affinity:
         nodeAffinity:
@@ -81,9 +81,9 @@ spec:
               type: RuntimeDefault
         # Rebuilds /data/index.html from the board (link share) and GitHub releases
         # every refresh.intervalSeconds. On failure it logs one line and the old page stays.
-        # A fresh /data starts from the baked snapshot, so --prev always exists: when the
-        # GitHub API is rate-limited (60/h, shared by the whole home WAN IP) the release
-        # list comes from the last good snapshot instead of failing the run.
+        # A fresh /data starts from the baked snapshot when one is shipped (baked=true), so
+        # --prev exists: when the GitHub API is rate-limited (60/h, shared by the whole home
+        # WAN IP) the release list comes from the last good snapshot instead of failing.
         - name: refresh
           image: "{{ .Values.refresh.image }}"
           imagePullPolicy: IfNotPresent
@@ -93,13 +93,12 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              [ -f /data/board.json ] || cp /app/board.json /data/board.json
+              [ -f /data/board.json ] || cp /app/board.json /data/board.json 2>/dev/null || true
               while :; do
-                if python3 -B /app/export_board.py --content /app/roadmap.json \
+                if python3 -B /app/export_board.py --config /app/config.json \
                      --share-hash-file /etc/vikunja-share/hash --base-url {{ .Values.refresh.vikunjaUrl }} \
-                     --project {{ .Values.refresh.projectId }} --roster {{ .Values.refresh.rosterId }} \
                      --prev /data/board.json --out /data/board.json \
-                   && python3 -B /app/build.py --content /app/roadmap.json \
+                   && python3 -B /app/build.py --config /app/config.json \
                      --board /data/board.json --out /data/index.html; then
                   echo "refresh ok $(date -u +%FT%TZ)"
                 fi

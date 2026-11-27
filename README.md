@@ -7,26 +7,30 @@ by the Argo CD Application `timestone-roadmap` in `2143-Labs/argo`
 
 ## How the page is built
 
-- `content/roadmap.json` is the hand-written text: sections, items, shipped work,
-  timeline, caveats. Each upcoming item names the board cards (Vikunja project 19)
-  that decide its state. Card ids are never rendered.
-- `tools/export_board.py` reads the board and the GitHub releases and writes a
-  trimmed snapshot (`data/board.json`): done / needs-repro flags, the character
-  grid, release tags, one count. No card titles or descriptions.
-- `tools/build.py` turns content + snapshot into one static `site/index.html`.
-  It refuses to build on unknown cards, unknown releases, internal wording
-  (story points, Impact, P0-P2, board links) or a wrong tile count.
+Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>).
+Git holds the wiring, the CSS and the guards, no prose.
 
-In the cluster, a `refresh` sidecar runs both tools every 15 minutes into a shared
-`/data` volume, using a read-only Vikunja link share. nginx serves `/data/index.html`;
-until the sidecar's first good build (cold start, or the share is missing or broken)
-it serves the copy baked into git at `site/index.html`. A failed run logs one line
-and leaves the last good page in place. The sidecar starts from the baked
-`data/board.json`, so when the unauthenticated GitHub API is rate-limited (60 requests
-an hour, shared by everything behind the home IP) it reuses the last known releases.
+- `config/roadmap.json` is the wiring: which project, which two views, which bucket
+  and label ids, the legend wording, the size words, the character rules, the GitHub
+  repo release links point at. Ids are stable; column and label *names* are not used.
+- `tools/export_board.py` reads the project through a read-only link share and writes
+  a trimmed snapshot (`data/board.json`, schema 2): the published boxes and lines with
+  their text, the state flags, the character grid, release tags and two counts. Card
+  ids never reach the page; titles and descriptions of box/line/page cards do, because
+  they *are* the page text.
+- `tools/build.py` turns the snapshot plus the config into one static `site/index.html`.
+  It refuses to build on internal wording (story points, Impact, P0-P2, board links),
+  a malformed snapshot or a wrong tile count. A mistake on a single card unpublishes
+  that card with a `warn:` line instead, because editors work on the board and cannot
+  see a stalled build.
 
-Live refresh changes states, counts and the character grid only. New items or
-wording need a PR.
+In the cluster a `refresh` sidecar runs both tools every 15 minutes into a shared
+`/data` volume. nginx serves `/data/index.html`; until the sidecar's first good build
+(cold start, or the share is missing or broken) it serves the copy baked into git at
+`site/index.html`. A failed run logs one line and leaves the last good page in place.
+The sidecar starts from the baked `data/board.json`, so when the unauthenticated GitHub
+API is rate-limited (60 requests an hour, shared by everything behind the home IP) it
+reuses the last known releases.
 
 Visitors reach nginx through Anubis (`templates/anubis.yaml`): the route keeps its
 rate-limit and CrowdSec gates and points at the `anubis` Service, which shows a
@@ -35,29 +39,82 @@ link unfurlers (Discord, Slack) a fixed preview card. `anubis.enabled=false` rou
 straight to nginx again. With the Anubis pod down the page answers 503. Only this
 host is covered: the lobby join links on `mm.b.hero.rehab` are not behind Anubis.
 
-## Edit the text
+## Edit the text on the board
 
-1. Edit `content/roadmap.json`.
-2. Run `python3 tools/build.py && python3 -m unittest tools/test_build.py`.
-3. Commit `content/` and `site/index.html` and open a PR. Merging to `main` deploys it.
-4. To check the deployed page, read it from inside the pod; `curl` from outside gets the
-   Anubis challenge:
-   `kubectl --context closet-as-admin -n timestone-roadmap exec deploy/timestone-roadmap -c refresh -- python3 -c 'import urllib.request as u; print(u.urlopen("http://127.0.0.1:8080/").read().decode())'`
+Nothing on the page is edited in git. Two Kanban/list views of project 19 do the work:
 
-A group's `size` (small / medium / large job) is a judgment of the work left for the
-whole feature as players will see it, not a sum of card points. A card estimate can
-cover a narrower scope than the item text: Replays (card 758, 8 points) is a large job
-because saving, offline playback, a Gallery menu entry and version handling are all
-still to build. Put a group under Now only while someone is working on it.
+- **Public roadmap** (Kanban) — its columns are the page's sections, in column order.
+- **Public lines** (list view) — drag to reorder lines inside their box.
+
+| Label | Goes on | Meaning |
+|---|---|---|
+| `Public: box` | box cards | publishes the card as a box; required |
+| `Public: line` | line cards | publishes the line; unlabelled subtasks stay drafts |
+| `Public: confirming` | line | force ◷ with no suffix |
+| `Public: not confirming` | line | suppress the automatic Needs-Repro ◷ |
+| `Public: size S` / `M` / `L` | box | the `small` / `medium` / `large job` badge |
+| `Public: verified ready` | `Character: …` card | tile becomes Tournament-ready |
+
+- **Box** = card with `Public: box`, no parent task, in any column except `Draft`.
+  Title = the box heading, description = the blurb (plain text, no markdown), size
+  label = the badge. Box order = drag order inside its column; section order = column
+  order. A column titled `Heading (note)` renders as `Heading` plus a small note.
+- **Line** = subtask of a box with `Public: line`, exactly one parent, no subtasks of
+  its own. Title = the line text. Lines are ordered by the `Public lines` view.
+- **State** comes from cards the line is *related* to. A related card titled
+  `Release vX` means it shipped in that release (the shipped tail links to it); every
+  other related card is a state card: done → ✔, open with `Needs-Repro` → ◷ "fix
+  released, confirming". In the `Now` column an unmarked line reads as ▶, elsewhere ○.
+- **Columns with a meaning**: `Draft` (never published), `Shipped` (rendered as shipped
+  work), `Background` (each box is a card with its lines as a plain bulleted list),
+  `Page text` (see below). Every other column is an ordinary section.
+- **Page text** boxes, keyed by their title: `Title`, `Tagline`, `Goal`, `Notice`,
+  `Footer`, `Characters banner` (the description is the text) and `Links`, whose
+  subtasks are one link each (title = label, description = the `https://` address).
+- `{verifying_open}` inside a line is replaced by the number of open Needs-Repro cards.
+
+A new card is published only once it has its label and its box is outside `Draft`; cards
+added from inside a column start unlabelled. The page refreshes every 15 minutes, or
+at once with `kubectl --context closet-as-admin -n timestone-roadmap rollout restart
+deploy/timestone-roadmap`.
+
+A box's size is a judgment of the work left for the whole feature as players will see
+it, not a sum of points. A card estimate can cover a narrower scope than the line text:
+Replays (card 758, 8 points) is a large job because saving, offline playback, a Gallery
+menu entry and version handling are all still to build. A box belongs under Now only
+while someone is working on it.
+
+## A second project on the same chart
+
+Set `config` to that board's wiring as a JSON string (same shape as
+`config/roadmap.json`: project id, view ids, bucket ids, label ids) and `baked: false`
+so the chart ships no Timestone snapshot and no Timestone page. The pod then starts
+unready and becomes ready when the first refresh has built the page.
 
 ## Refresh the baked copy
 
+Run the exporter in the pod, where the link share lives, and build locally:
+
 ```bash
-kubectl --context closet-as-admin -n timestone-roadmap exec deploy/timestone-roadmap -c refresh -- cat /data/board.json > data/board.json
-python3 tools/build.py
+K="kubectl --context closet-as-admin -n timestone-roadmap exec -i deploy/timestone-roadmap -c refresh --"
+$K sh -c 'cat > /data/.probe-config.json' < config/roadmap.json
+$K python3 -B - --config /data/.probe-config.json --share-hash-file /etc/vikunja-share/hash \
+   --base-url http://vikunja.default.svc --prev /data/board.json --out /data/.probe-board.json \
+   < tools/export_board.py
+$K cat /data/.probe-board.json > data/board.json
+$K rm -f /data/.probe-config.json /data/.probe-board.json
+python3 tools/build.py && python3 -m unittest tools/test_build.py
 ```
 
 Commit `data/board.json` and `site/index.html`.
+
+## Check the deployed page
+
+`curl` from outside gets the Anubis challenge, so read it from inside the pod:
+
+```bash
+kubectl --context closet-as-admin -n timestone-roadmap exec deploy/timestone-roadmap -c refresh -- python3 -c 'import urllib.request as u; print(u.urlopen("http://127.0.0.1:8080/").read().decode())'
+```
 
 ## Rotate the link share
 
@@ -86,4 +143,5 @@ kubectl -n timestone-roadmap logs deploy/timestone-roadmap -c refresh --tail=20
 
 `refresh ok <time>` is a good run. `export failed: <reason>` or `build failed: <reason>`
 means the page kept its last good version; the `Last updated` stamp on the page shows
-how old it is.
+how old it is. `warn: box <id> has no published lines; skipped` (and friends) mean one
+card stayed off the page: fix the card, not the code.

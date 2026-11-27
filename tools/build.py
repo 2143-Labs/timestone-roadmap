@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Build the roadmap page from the curated content and a board snapshot.
+"""Build the roadmap page from the board snapshot and the chart's config.
 
-Usage: build.py [--content content/roadmap.json] [--board data/board.json] [--out site/index.html]
-                [--strict-releases]
+Usage: build.py [--config config/roadmap.json] [--board data/board.json]
+                [--out site/index.html] [--strict-releases]
 
-Fails (exit 1, old page untouched) on anything that would put wrong or
+Every word on the page comes from the board snapshot (boxes, lines, page text)
+except the legend wording, size words and character levels, which stay in the
+config. Fails (exit 1, old page untouched) on anything that would put wrong or
 internal information on the public page. An unchanged snapshot gives a
 byte-identical page.
 """
@@ -16,10 +18,7 @@ import re
 import sys
 
 TOKEN_RE = re.compile(r"\{([^{}]*)\}")
-FORBIDDEN_RE = re.compile(r"\bSP\d|Impact|Bug census|\bP[0-2]\b|tasks\.2143\.me")
 MAX_BYTES = 600_000
-LEVEL_ORDER = ("crash", "desync", "playable")
-RELEASE_URL = "https://github.com/tilderain/Timestone/releases/tag/"
 
 
 def fail(reason):
@@ -30,42 +29,36 @@ def esc(s):
     return html.escape(str(s), quote=True)
 
 
-def card_flags(item, cards):
-    flags = []
-    for cid in item.get("cards", []):
-        c = cards.get(str(cid))
-        if c is None:
-            fail(f"card {cid} missing from board snapshot")
-        flags.append(c)
-    return flags
+def _fallback(kind):
+    return "now" if kind == "active" else "open"
 
 
-def item_state(section_id, item, cards):
-    """Return (state, suffix) for an upcoming item; first matching rule wins."""
-    flags = card_flags(item, cards)
-    if section_id == "not-planned":
+def line_state(kind, line, releases):
+    """Return (state, suffix) for a line; first matching rule wins."""
+    cards = line.get("cards") or []
+    if kind == "not_planned":
         return "no", ""
-    if flags and all(c["done"] for c in flags):
+    if line.get("done") or (cards and all(c["done"] for c in cards)):
         return "done", ""
-    if item.get("state") == "now":
-        return "now", ""
-    if item.get("state") == "verifying":
+    if line.get("confirming"):
         return "verifying", ""
-    # Curated items whose cards are only partly done: stay plain open instead of
-    # claiming a fix is released and awaiting confirmation.
-    if item.get("state") == "open":
-        return "open", ""
-    if item.get("shipped_in"):
-        return "verifying", f" (in {item['shipped_in']}, confirming)"
-    if any(not c["done"] and c["needs_repro"] for c in flags):
+    if line.get("not_confirming"):
+        return _fallback(kind), ""
+    tag = line.get("release")
+    if tag:
+        if tag in releases:
+            return "verifying", f" (in {tag}, confirming)"
+        print(f"warn: line {line['id']} names release {tag}, which is not a known release",
+              file=sys.stderr)
+    if any(not c["done"] and c["needs_repro"] for c in cards):
         return "verifying", " (fix released, confirming)"
-    return ("now" if section_id == "now" else "open"), ""
+    return _fallback(kind), ""
 
 
 def character_level(char, cfg):
     """Return (level, open, fixed, awaiting) for one character."""
-    skip = set(cfg.get("skip_cards", []))
     rank = cfg["type_rank"]
+    skip = set(cfg.get("skip_cards") or [])
     open_ranks, n_open, fixed, awaiting = set(), 0, 0, 0
     for issue in char["issues"]:
         t = issue.get("type")
@@ -82,17 +75,19 @@ def character_level(char, cfg):
         if r is not None:
             n_open += 1
             open_ranks.add(r)
-    if char["id"] in cfg.get("verified_ready", []):
+    if char.get("ready"):
         level = "ready"
     else:
-        level = next((lv for lv in LEVEL_ORDER if lv in open_ranks), "untested")
+        level = next((lv for lv in cfg["severity"] if lv in open_ranks), "untested")
     return level, n_open, fixed, awaiting
 
 
 def fill(text, board):
+    """The text with board counts filled in, or None when it holds an unknown token."""
     for tok in TOKEN_RE.findall(text):
         if tok != "verifying_open":
-            fail(f"unknown token {{{tok}}} in '{text}'")
+            print(f"warn: unknown token {{{tok}}}; line dropped", file=sys.stderr)
+            return None
     return text.replace("{verifying_open}", str(board["stats"]["verifying_open"]))
 
 
@@ -152,153 +147,195 @@ footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
 """.strip()
 
 
-def release_mentioned(content, tag):
-    """True when `tag` is listed as a shipped version (or in the timeline)."""
-    for g in content.get("shipped") or []:
-        for it in g.get("items") or []:
-            if it.get("version") == tag:
-                return True
-    for t in content.get("timeline") or []:
-        if t.get("version") == tag or str(t.get("text") or "").startswith(tag):
-            return True
+def release_mentioned(board, tag):
+    """True when `tag` shipped a line or is named in the background section."""
+    name = re.compile(r"(?<![\w.])" + re.escape(tag) + r"(?!\.?\w)")
+    for s in board["sections"]:
+        for box in s["boxes"]:
+            for line in box["lines"]:
+                if s["kind"] == "shipped" and line.get("release") == tag:
+                    return True
+                if s["kind"] == "background" and name.search(line["text"]):
+                    return True
     return False
 
 
-def render(content, board, strict_releases=False):
-    releases = set(board["releases"])
+def render(cfg, board, strict_releases=False):
+    if board.get("schema") != 2:
+        fail("snapshot schema is not 2")
+    releases = set(board.get("releases") or [])
+    repo = (cfg.get("releases") or {}).get("repo")
+    page = board["page"]
+    ch = cfg.get("characters")
     out = []
     w = out.append
     w('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
-      '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-      '<title>Timestone roadmap</title>\n<meta name="robots" content="noindex, nofollow">\n'
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n')
+    w(f'<title>{esc(page["title"])}</title>\n<meta name="robots" content="noindex, nofollow">\n'
       f"<style>\n{CSS}\n</style>\n</head>\n<body>\n")
 
-    lr = board["latest_release"]
-    if not release_mentioned(content, lr["tag"]):
+    lr = board.get("latest_release")
+    if lr and not release_mentioned(board, lr["tag"]):
         if strict_releases:
             fail(f"latest release {lr['tag']} not mentioned in shipped")
         print(f"warn: latest release {lr['tag']} is not listed in shipped", file=sys.stderr)
     w("<header>\n")
-    w(f"<h1>{esc(content['title'])}</h1>\n<p>{esc(content['tagline'])}</p>\n")
-    w(f"<p><strong>{esc(content['goal'])}</strong></p>\n<p>{esc(content['notice'])}</p>\n")
-    w("<nav>" + "".join(f'<a href="{esc(l["href"])}">{esc(l["label"])}</a>' for l in content["links"]) + "</nav>\n")
-    w(f'<p class="stamp">Last updated {fmt_time(board["exported_at"])} · latest release '
-      f'{esc(lr["tag"])} ({esc(lr["date"])})</p>\n</header>\n')
+    w(f'<h1>{esc(page["title"])}</h1>\n')
+    if page.get("tagline"):
+        w(f'<p>{esc(page["tagline"])}</p>\n')
+    if page.get("goal"):
+        w(f'<p><strong>{esc(page["goal"])}</strong></p>\n')
+    if page.get("notice"):
+        w(f'<p>{esc(page["notice"])}</p>\n')
+    if page.get("links"):
+        w("<nav>" + "".join(f'<a href="{esc(l["href"])}">{esc(l["label"])}</a>'
+                            for l in page["links"]) + "</nav>\n")
+    stamp = f'<p class="stamp">Last updated {fmt_time(board["exported_at"])}'
+    if lr:
+        stamp += f' · latest release {esc(lr["tag"])} ({esc(lr["date"])})'
+    w(stamp + "</p>\n</header>\n")
     w('<ul class="legend">' + "".join(f'<li class="{esc(l["class"])}">{esc(l["text"])}</li>'
-                                      for l in content["legend"]) + "</ul>\n")
+                                      for l in cfg["legend"]) + "</ul>\n")
 
+    sections = board["sections"]
     body = []
     b = body.append
     n_done = 0
     b('<main class="roadmap">\n')
-    for s in content["sections"]:
-        sid = s["id"]
+
+    def box_head(box, extra="card"):
+        span = f' <span class="size">{esc(box["size"])} job</span>' if box.get("size") else ""
+        b(f'<article class="{extra}">\n<h3>{esc(box["title"])}{span}</h3>\n')
+        if box.get("blurb"):
+            b(f"<p>{esc(box['blurb'])}</p>\n")
+
+    for s in sections:
+        if s["kind"] not in ("active", "upcoming", "not_planned"):
+            continue
         note = f' <small>{esc(s["note"])}</small>' if s.get("note") else ""
-        b(f'<section id="{esc(sid)}">\n<h2>{esc(s["heading"])}{note}</h2>\n')
-        for g in s["groups"]:
-            size = g.get("size")
-            span = f' <span class="size">{esc(content["sizes"][size])} job</span>' if size else ""
-            b(f'<article class="card">\n<h3>{esc(g["title"])}{span}</h3>\n')
-            if g.get("blurb"):
-                b(f"<p>{esc(g['blurb'])}</p>\n")
+        b(f'<section id="{esc(s["id"])}">\n<h2>{esc(s["heading"])}{note}</h2>\n')
+        for box in s["boxes"]:
+            box_head(box)
             b("<ul>\n")
-            for it in g["items"]:
-                state, suffix = item_state(sid, it, board["cards"])
-                if it.get("shipped_in") and it["shipped_in"] not in releases:
-                    fail(f"version {it['shipped_in']} not a release")
+            for line in box["lines"]:
+                state, suffix = line_state(s["kind"], line, releases)
+                text = fill(line["text"], board)
+                if text is None:
+                    continue
                 if state == "done":
                     n_done += 1
-                    if sid != "not-planned":
-                        print(f"warn: item '{it['text']}' is all done; move it to shipped", file=sys.stderr)
-                b(f'<li class="{state}">{esc(fill(it["text"], board) + suffix)}</li>\n')
+                    print(f"warn: line {line['id']} is all done; move it to shipped", file=sys.stderr)
+                b(f'<li class="{state}">{esc(text + suffix)}</li>\n')
             b("</ul>\n</article>\n")
         b("</section>\n")
 
-    b('<section id="shipped" class="shipped">\n<h2>Shipped</h2>\n')
-    for g in content["shipped"]:
-        b(f'<article class="card shipped">\n<h3>{esc(g["title"])}</h3>\n<ul>\n')
-        for it in g["items"]:
-            v = it.get("version")
-            if v:
-                if v not in releases:
-                    fail(f"version {v} not a release")
-                tail = f' <a href="{RELEASE_URL}{esc(v)}">{esc(v)}</a>'
-            elif it.get("date"):
-                tail = f" ({esc(it['date'])})"
-            else:
-                tail = ""
-            n_done += 1
-            b(f'<li class="done">{esc(fill(it["text"], board))}{tail}</li>\n')
-        b("</ul>\n</article>\n")
-    b("</section>\n")
+    for s in sections:
+        if s["kind"] != "shipped":
+            continue
+        note = f' <small>{esc(s["note"])}</small>' if s.get("note") else ""
+        b(f'<section id="shipped" class="shipped">\n<h2>{esc(s["heading"])}{note}</h2>\n')
+        for box in s["boxes"]:
+            box_head(box, "card shipped")
+            b("<ul>\n")
+            for line in box["lines"]:
+                text = fill(line["text"], board)
+                if text is None:
+                    continue
+                if line.get("release"):
+                    tag = line["release"]
+                    tail = (f' <a href="https://github.com/{esc(repo)}/releases/tag/{esc(tag)}">'
+                            f"{esc(tag)}</a>")
+                elif line.get("date"):
+                    tail = f" ({esc(line['date'])})"
+                else:
+                    tail = ""
+                n_done += 1
+                b(f'<li class="done">{esc(text)}{tail}</li>\n')
+            b("</ul>\n</article>\n")
+        b("</section>\n")
 
-    ch = content["characters"]
-    chars = board["characters"]
-    if len(chars) != 50:
-        fail(f"{len(chars)} characters, expected 50")
-    levels = {lv["key"]: lv for lv in ch["levels"]}
-    rows = []
-    for c in sorted(chars, key=lambda c: c["name"].lower()):
-        level, n_open, fixed, awaiting = character_level(c, ch)
-        rows.append((c["name"], level, n_open, fixed, awaiting))
-    counts = {k: sum(1 for r in rows if r[1] == k) for k in levels}
-    b(f'<section id="characters" class="wide">\n<h2>{esc(ch["heading"])}</h2>\n')
-    b(f'<p class="banner">{esc(ch["banner"])}</p>\n<div class="levels">\n')
-    for lv in ch["levels"]:
-        b(f'<p><b class="{esc(lv["key"])}">{esc(lv["mark"])}</b> {esc(lv["label"])}: '
-          f'{counts[lv["key"]]} · {esc(lv["text"])}</p>\n')
-    b('</div>\n<div class="tiles">\n')
-    for name, level, n_open, fixed, awaiting in rows:
-        lv = levels[level]
-        extra = f" · {awaiting} awaiting confirmation" if awaiting else ""
-        b(f'<div class="tile {level}"><b>{esc(lv["mark"])} {esc(name)}</b>'
-          f'<span>{esc(lv["label"])}</span><small>{n_open} open · {fixed} fixed{extra}</small></div>\n')
-    b("</div>\n</section>\n")
+    if ch:
+        chars = board.get("characters") or []
+        if len(chars) != ch["count"]:
+            fail(f"{len(chars)} characters, expected {ch['count']}")
+        levels = {lv["key"]: lv for lv in ch["levels"]}
+        rows = []
+        for c in sorted(chars, key=lambda c: c["name"].lower()):
+            level, n_open, fixed, awaiting = character_level(c, ch)
+            rows.append((c["name"], level, n_open, fixed, awaiting))
+        counts = {k: sum(1 for r in rows if r[1] == k) for k in levels}
+        b(f'<section id="characters" class="wide">\n<h2>{esc(ch["heading"])}</h2>\n')
+        if page.get("characters_banner"):
+            b(f'<p class="banner">{esc(page["characters_banner"])}</p>\n')
+        b('<div class="levels">\n')
+        for lv in ch["levels"]:
+            b(f'<p><b class="{esc(lv["key"])}">{esc(lv["mark"])}</b> {esc(lv["label"])}: '
+              f'{counts[lv["key"]]} · {esc(lv["text"])}</p>\n')
+        b('</div>\n<div class="tiles">\n')
+        for name, level, n_open, fixed, awaiting in rows:
+            lv = levels[level]
+            extra = f" · {awaiting} awaiting confirmation" if awaiting else ""
+            b(f'<div class="tile {level}"><b>{esc(lv["mark"])} {esc(name)}</b>'
+              f'<span>{esc(lv["label"])}</span><small>{n_open} open · {fixed} fixed{extra}</small></div>\n')
+        b("</div>\n</section>\n")
 
-    b('<section id="history" class="wide">\n<h2>Background</h2>\n')
-    b('<article class="card">\n<h3>How we got here</h3>\n<ol class="plain">\n')
-    for t in content["timeline"]:
-        b(f"<li>{esc(t['date'])}: {esc(t['text'])}</li>\n")
-    b('</ol>\n</article>\n<article class="card">\n<h3>Changed or removed</h3>\n<ul class="plain">\n')
-    for c in content["caveats"]:
-        b(f"<li>{esc(c)}</li>\n")
-    b("</ul>\n</article>\n</section>\n</main>\n")
+    for s in sections:
+        if s["kind"] != "background":
+            continue
+        b(f'<section id="history" class="wide">\n<h2>{esc(s["heading"])}</h2>\n')
+        for box in s["boxes"]:
+            b(f'<article class="card">\n<h3>{esc(box["title"])}</h3>\n')
+            if box.get("blurb"):
+                b(f"<p>{esc(box['blurb'])}</p>\n")
+            b('<ul class="plain">\n')
+            for line in box["lines"]:
+                text = fill(line["text"], board)
+                if text is None:
+                    continue
+                b(f"<li>{esc(text)}</li>\n")
+            b("</ul>\n</article>\n")
+        b("</section>\n")
 
+    b("</main>\n")
     w('<input type="checkbox" id="show-done" class="toggle">\n'
       f'<label for="show-done">Show shipped work ({n_done})</label>\n')
     out.extend(body)
-    w(f"<footer><p>{esc(content['footer'])}</p></footer>\n</body>\n</html>\n")
-    page = "".join(out)
+    if page.get("footer"):
+        w(f'<footer><p>{esc(page["footer"])}</p></footer>\n')
+    w("</body>\n</html>\n")
+    got = "".join(out)
 
-    m = FORBIDDEN_RE.search(page)
+    m = re.compile(cfg["forbidden"]).search(got)
     if m:
-        fail(f"forbidden text '{m.group(0)}' near '{page[max(0, m.start() - 40):m.end() + 40]}'")
-    if len(page.encode()) >= MAX_BYTES:
-        fail(f"page is {len(page.encode())} bytes")
-    n_tiles = page.count('class="tile ')
-    if n_tiles != 50:
-        fail(f"{n_tiles} tiles")
-    return page
+        fail(f"forbidden text '{m.group(0)}' near '{got[max(0, m.start() - 40):m.end() + 40]}'")
+    if len(got.encode()) >= MAX_BYTES:
+        fail(f"page is {len(got.encode())} bytes")
+    if ch:
+        n_tiles = got.count('class="tile ')
+        if n_tiles != ch["count"]:
+            fail(f"{n_tiles} tiles")
+    return got
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Build the roadmap page.")
-    ap.add_argument("--content", default="content/roadmap.json")
+    ap.add_argument("--config", default="config/roadmap.json")
     ap.add_argument("--board", default="data/board.json")
     ap.add_argument("--out", default="site/index.html")
     ap.add_argument("--strict-releases", action="store_true",
                     help="fail when the latest release is not listed in the shipped section")
     a = ap.parse_args(argv)
     try:
-        with open(a.content) as f:
-            content = json.load(f)
+        with open(a.config) as f:
+            cfg = json.load(f)
         with open(a.board) as f:
             board = json.load(f)
     except (OSError, ValueError) as e:
         fail(str(e))
     try:
-        page = render(content, board, a.strict_releases)
-        levels = [character_level(c, content["characters"])[0] for c in board["characters"]]
+        page = render(cfg, board, a.strict_releases)
+        ch = cfg.get("characters")
+        levels = [character_level(c, ch)[0] for c in (board.get("characters") or [])] if ch else []
     except (KeyError, TypeError) as e:
         fail(f"malformed input: {e!r}")
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
@@ -306,10 +343,15 @@ def main(argv=None):
     with open(tmp, "w") as f:
         f.write(page)
     os.replace(tmp, a.out)
-    n_up = sum(len(g["items"]) for s in content["sections"] for g in s["groups"])
-    n_sh = sum(len(g["items"]) for g in content["shipped"])
-    print(f"ok: {n_up} upcoming, {n_sh} shipped, characters "
-          + " ".join(f"{k}={levels.count(k)}" for k in ("crash", "desync", "playable", "untested", "ready")))
+    n_up = sum(len(box["lines"]) for s in board["sections"]
+               if s["kind"] in ("active", "upcoming", "not_planned") for box in s["boxes"])
+    n_sh = sum(len(box["lines"]) for s in board["sections"] if s["kind"] == "shipped"
+               for box in s["boxes"])
+    line = f"ok: {n_up} upcoming, {n_sh} shipped"
+    if ch:
+        line += ", characters " + " ".join(f"{k}={levels.count(k)}"
+                                           for k in list(ch["severity"]) + ["untested", "ready"])
+    print(line)
 
 
 if __name__ == "__main__":

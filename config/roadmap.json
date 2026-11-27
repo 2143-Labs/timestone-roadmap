@@ -1,0 +1,42 @@
+{
+  "project": 19,
+  "min_tasks": 500,
+  "views": {"boxes": 101, "lines": 102},
+  "buckets": {"draft": 82, "active": 92, "not_planned": 95, "shipped": 96, "background": 97, "page": 98},
+  "labels": {
+    "box": 56, "line": 57, "confirming": 58, "not_confirming": 59, "needs_repro": 17,
+    "sizes": {"60": "small", "61": "medium", "62": "large"}
+  },
+  "releases": {"repo": "tilderain/Timestone", "card_prefix": "Release "},
+  "forbidden": "\\bSP\\d|Impact|Bug census|\\bP[0-2]\\b|tasks\\.2143\\.me",
+  "legend": [
+    {"class": "now", "text": "Being worked on now"},
+    {"class": "open", "text": "Planned, not started"},
+    {"class": "verifying", "text": "Fix is in a release, waiting for players to confirm it"},
+    {"class": "done", "text": "Shipped (hidden until you press Show shipped)"},
+    {"class": "no", "text": "Not planned"}
+  ],
+  "characters": {
+    "roster": 329,
+    "count": 50,
+    "name_prefix": "Character: ",
+    "ready_label": 63,
+    "type_pattern": "\\*\\*Type:\\*\\*\\s*([a-z]+)",
+    "severity": ["crash", "desync", "playable"],
+    "heading": "Characters",
+    "levels": [
+      {"key": "ready", "mark": "●", "label": "Tournament-ready", "text": "Confirmed clean in real matches"},
+      {"key": "playable", "mark": "◐", "label": "Playable", "text": "Only visual or sound glitches known"},
+      {"key": "desync", "mark": "▲", "label": "Known desyncs", "text": "Some moves can desync a match"},
+      {"key": "crash", "mark": "■", "label": "Can crash", "text": "Some moves can crash or freeze the game"},
+      {"key": "untested", "mark": "○", "label": "Untested", "text": "No reports yet, good or bad"}
+    ],
+    "type_rank": {
+      "crash": "crash", "freeze": "crash",
+      "desync": "desync", "state": "desync", "input": "desync",
+      "visibility": "playable", "effect": "playable", "audio": "playable",
+      "verify": null
+    },
+    "skip_cards": [650, 656, 723, 894, 895, 896, 897, 898, 1112, 1137, 1138, 1139, 1140, 1141]
+  }
+}

@@ -1,3 +1,12 @@
+# Board wiring for tools/export_board.py and tools/build.py (JSON, as one
+# string). Empty ships config/roadmap.json from this chart: the Timestone
+# roadmap on project 19 of tasks.2143.me. A second project points this at its
+# own board (project id, views, buckets, labels) and sets `baked: false`.
+config: ""
+# Serve this repo's baked copy (data/board.json + site/index.html) until the
+# sidecar's first refresh lands. False when `config` points at another board:
+# the page is empty and the pod stays unready until the first good refresh.
+baked: true
 namespace: timestone-roadmap
 # Served through shared-gateway's roadmap-b-hero-rehab-https listener; the
 # certificate lives in 2143-Labs/argo workloads/gateway.
@@ -14,8 +23,6 @@ refresh:
   image: python:3.15-alpine
   intervalSeconds: 900
   vikunjaUrl: http://vikunja.default.svc
-  projectId: 19
-  rosterId: 329
   resources:
     requests: {cpu: 5m, memory: 32Mi}
     limits: {cpu: 200m, memory: 128Mi}
