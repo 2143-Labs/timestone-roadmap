@@ -12,8 +12,8 @@ html{scroll-padding-top:5.2rem}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 a{color:var(--link)}
 .wrap{max-width:1380px;margin:0 auto;padding:0 1rem}
-.s-now{--c:#4aa3ff;--g:"▶"}.s-open{--c:#99a0aa;--g:"○"}.s-verifying{--c:#f0b429;--g:"◷"}.s-done{--c:#4caf50;--g:"✔"}.s-no{--c:#e5534b;--g:"✕"}
-.l-ready{--c:#4caf50}.l-playable{--c:#8bc34a}.l-desync{--c:#f0b429}.l-crash{--c:#e5534b}.l-untested{--c:#99a0aa}
+.s-now{--c:#4aa3ff;--g:"▶"}.s-open{--c:#99a0aa;--g:"○"}.s-verifying{--c:#f0b429;--g:"◷"}.s-done{--c:#4caf50;--g:"✔"}.s-no{--c:#f47067;--g:"✕"}
+.l-ready{--c:#4caf50}.l-playable{--c:#8bc34a}.l-desync{--c:#f0b429}.l-crash{--c:#f47067}.l-untested{--c:#99a0aa}
 .hero{background:radial-gradient(60rem 18rem at 0 0,#1f3350 0,transparent 70%);padding:1.8rem 0 1.2rem}
 .top{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:flex-end;justify-content:space-between}
 h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.01em}
@@ -46,6 +46,7 @@ h2 small{margin-left:.35rem;color:var(--muted);font-size:.8rem;font-weight:400}
 .lv span{font-weight:600}
 .lv small{color:var(--muted);font-size:.8rem;line-height:1.3}
 .mk{color:var(--c)}
+div.lv{opacity:.75}
 .spread{height:10px;margin:.8rem 0 1rem;border-radius:5px}
 .roster{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));margin:0;padding:0;list-style:none}
 .tile{display:flex;flex-direction:column;gap:.15rem;padding:.45rem .6rem .5rem;border-left:4px solid var(--c);border-radius:5px;background:var(--card)}
@@ -99,6 +100,7 @@ ul.lines{margin:.4rem 0 0;padding:0;list-style:none}
 .plain{margin:.5rem 0 0;padding-left:1.2rem;font-size:.93rem}
 .plain li{margin:.3rem 0}
 footer{margin-top:2.5rem;padding:1.2rem 0 2rem;border-top:1px solid var(--edge);color:var(--muted);font-size:.9rem}
+@supports not selector(:has(a)){label.chip,label.lv{pointer-events:none}}
 @media print{:root{--bg:#fff;--panel:#fff;--card:#fff;--edge:#bbb;--text:#000;--soft:#222;--muted:#555;--link:#000}.jump{display:none}.hero{background:none}.banner{background:none;color:#000}.lanes{display:block}}
 .plan:has(.stf:checked) .ln{display:none}
 .plan:has(.stf:checked) .box{display:none}

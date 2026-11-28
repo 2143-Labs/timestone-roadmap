@@ -204,8 +204,8 @@ html{scroll-padding-top:5.2rem}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 a{color:var(--link)}
 .wrap{max-width:1380px;margin:0 auto;padding:0 1rem}
-.s-now{--c:#4aa3ff;--g:"▶"}.s-open{--c:#99a0aa;--g:"○"}.s-verifying{--c:#f0b429;--g:"◷"}.s-done{--c:#4caf50;--g:"✔"}.s-no{--c:#e5534b;--g:"✕"}
-.l-ready{--c:#4caf50}.l-playable{--c:#8bc34a}.l-desync{--c:#f0b429}.l-crash{--c:#e5534b}.l-untested{--c:#99a0aa}
+.s-now{--c:#4aa3ff;--g:"▶"}.s-open{--c:#99a0aa;--g:"○"}.s-verifying{--c:#f0b429;--g:"◷"}.s-done{--c:#4caf50;--g:"✔"}.s-no{--c:#f47067;--g:"✕"}
+.l-ready{--c:#4caf50}.l-playable{--c:#8bc34a}.l-desync{--c:#f0b429}.l-crash{--c:#f47067}.l-untested{--c:#99a0aa}
 .hero{background:radial-gradient(60rem 18rem at 0 0,#1f3350 0,transparent 70%);padding:1.8rem 0 1.2rem}
 .top{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:flex-end;justify-content:space-between}
 h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.01em}
@@ -238,6 +238,7 @@ h2 small{margin-left:.35rem;color:var(--muted);font-size:.8rem;font-weight:400}
 .lv span{font-weight:600}
 .lv small{color:var(--muted);font-size:.8rem;line-height:1.3}
 .mk{color:var(--c)}
+div.lv{opacity:.75}
 .spread{height:10px;margin:.8rem 0 1rem;border-radius:5px}
 .roster{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));margin:0;padding:0;list-style:none}
 .tile{display:flex;flex-direction:column;gap:.15rem;padding:.45rem .6rem .5rem;border-left:4px solid var(--c);border-radius:5px;background:var(--card)}
@@ -291,6 +292,7 @@ ul.lines{margin:.4rem 0 0;padding:0;list-style:none}
 .plain{margin:.5rem 0 0;padding-left:1.2rem;font-size:.93rem}
 .plain li{margin:.3rem 0}
 footer{margin-top:2.5rem;padding:1.2rem 0 2rem;border-top:1px solid var(--edge);color:var(--muted);font-size:.9rem}
+@supports not selector(:has(a)){label.chip,label.lv{pointer-events:none}}
 @media print{:root{--bg:#fff;--panel:#fff;--card:#fff;--edge:#bbb;--text:#000;--soft:#222;--muted:#555;--link:#000}.jump{display:none}.hero{background:none}.banner{background:none;color:#000}.lanes{display:block}}
 """.strip()
 
@@ -378,7 +380,7 @@ def render(cfg, board, strict_releases=False):
         ship_secs.append(s)
         for box in s["boxes"]:
             a = len(areas)
-            areas.append({"box": box, "n": 0})
+            areas.append({"box": box, "n": 0, "section": len(ship_secs) - 1})
             for line in box["lines"]:
                 text = fill(line["text"], board)
                 if text is None:
@@ -397,6 +399,9 @@ def render(cfg, board, strict_releases=False):
 
     state_keys = [item["class"] for item in legend]
     state_keys += [k for k in ("now", "open", "verifying", "done", "no") if k not in state_keys]
+    plan_counts = state_counts([bx for _, boxes in plan for bx in boxes])
+    # Only states that occur on the plan filter; the rest stay a plain legend entry.
+    chip_states = [item["class"] for item in legend if plan_counts.get(item["class"])]
 
     def state_bar(counts, cls="bar"):
         return bar([(f"s-{k}", counts.get(k, 0)) for k in state_keys], cls)
@@ -412,9 +417,6 @@ def render(cfg, board, strict_releases=False):
     o(f'<title>{esc(page["title"])}</title>\n<meta name="robots" content="noindex, nofollow">\n')
 
     css = [CSS]
-    plan_states = [k for k in state_keys
-                   if any(st == k for _, boxes in plan for _, rows in boxes for st, _, _ in rows)]
-    chip_states = [item["class"] for item in legend if item["class"] in plan_states]
     css += filter_css("plan", "stf", "ln", [(f"stf_{j}", f"s-{k}") for j, k in enumerate(chip_states)],
                       "list-item", [("box", "block"), ("np", "block")])
     css += filter_css("chars", "lvf", "tile", [(f"lvf_{i}", f"lv{i}") for i, lv in enumerate(levels)
@@ -453,8 +455,8 @@ def render(cfg, board, strict_releases=False):
     for s, boxes in plan:
         counts = state_counts(boxes)
         jumps.append((s["id"], s["heading"], sum(counts.values()), state_bar(counts)))
-    for s in ship_secs:
-        n = sum(a["n"] for a in areas if a["box"] in s["boxes"])
+    for si, s in enumerate(ship_secs):
+        n = sum(a["n"] for a in areas if a["section"] == si)
         jumps.append((s["id"], s["heading"], n, bar([("s-done", n)])))
     for s in background:
         jumps.append((s["id"], s["heading"], None, ""))
@@ -501,14 +503,13 @@ def render(cfg, board, strict_releases=False):
     # --- the plan: legend chips filter the lanes and the not-planned list
     if plan:
         o('<div class="plan">\n<div class="chips">\n')
-        all_counts = state_counts([bx for _, boxes in plan for bx in boxes])
         for item in legend:
             k = item["class"]
             if k in chip_states:
                 j = chip_states.index(k)
                 o(f'<input type="checkbox" id="stf_{j}" class="stf sr">'
                   f'<label for="stf_{j}" class="chip st s-{k}">{esc(item["text"])} '
-                  f'<b>{all_counts.get(k, 0)}</b></label>\n')
+                  f'<b>{plan_counts[k]}</b></label>\n')
             else:
                 o(f'<span class="chip st s-{k}">{esc(item["text"])}</span>\n')
         o("</div>\n")
@@ -551,8 +552,8 @@ def render(cfg, board, strict_releases=False):
         o("</div>\n")
 
     # --- shipped: a changelog by release; the board's boxes become area filters
-    for s in ship_secs:
-        mine = [i for i, a in enumerate(areas) if a["box"] in s["boxes"]]
+    for si, s in enumerate(ship_secs):
+        mine = [i for i, a in enumerate(areas) if a["section"] == si]
         o(f'<section id="{esc(s["id"])}" class="ship">\n<h2>{esc(s["heading"])}{note(s)}</h2>\n')
         o('<div class="chips">\n')
         for i in mine:

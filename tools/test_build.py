@@ -574,6 +574,18 @@ class CommittedPage(unittest.TestCase):
         with open(os.path.join(REPO, "site", "index.html")) as f:
             self.assertEqual(f.read(), page, "run python3 tools/build.py and commit site/index.html")
 
+    def test_links_labels_and_filters_point_at_something(self):
+        cfg, board = repo_inputs()
+        page = quiet(build.render, cfg, board)
+        ids = re.findall(r' id="([^"]+)"', page)
+        self.assertEqual(len(ids), len(set(ids)), "duplicate ids")
+        for target in re.findall(r'href="#([^"]+)"', page) + re.findall(r' for="([^"]+)"', page):
+            self.assertIn(target, ids)
+        for box_id in re.findall(r":has\(#([a-z]+_\d+):checked\)", page):
+            self.assertIn(f'<input type="checkbox" id="{box_id}"', page)
+        for section in ("characters", "now", "next", "later", "not-planned", "shipped", "history"):
+            self.assertIn(f'<a href="#{section}">', page)
+
     def test_every_visible_word_comes_from_the_board_or_the_config(self):
         """Strip every letter from the inputs: any letter left on the page is prose in build.py."""
         cfg, board = repo_inputs()
@@ -726,6 +738,23 @@ class ExportSections(unittest.TestCase):
         self.assertEqual(line["cards"], [{"done": False, "needs_repro": True},
                                          {"done": False, "needs_repro": False}])
         self.assertEqual(out["stats"]["verifying_open"], 1)
+
+
+class ExportThenBuild(unittest.TestCase):
+    def test_a_fresh_export_builds(self):
+        cfg, data = small_board()
+        with tempfile.TemporaryDirectory() as d:
+            out, _ = run_export(cfg, data, d, github=False,
+                                prev={"releases": ["v0.6.9"],
+                                      "latest_release": {"tag": "v0.6.9", "date": "2026-11-25"}})
+        page = quiet(build.render, CFG, out)
+        self.assertIn("<title>Roadmap</title>", page)
+        self.assertIn('<section id="now" class="lane active">', page)
+        self.assertIn('<h3><span>Box A</span> <span class="size">large job</span></h3>', page)
+        # line two sorts before line one in the lines view
+        self.assertLess(page.index(">line two<"), page.index(">line one<"))
+        self.assertIn('<li class="ln s-verifying">shipped line <span class="sfx">(in v0.6.9, confirming)</span></li>',
+                      page)
 
 
 class ExportExclusions(unittest.TestCase):
