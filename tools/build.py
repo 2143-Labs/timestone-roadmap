@@ -6,7 +6,7 @@ Usage: build.py [--config config/roadmap.json] [--board data/board.json]
 
 The page is one static file: a status header (with the latest release and the
 roster bar), a sticky section index with a client-side find, the board's
-horizons, the character roster grouped by level, the shipped log newest first,
+horizons, the character roster grouped by level, the shipped areas newest first,
 and the background notes. Every word a visitor reads comes from the board
 snapshot (page text, headings and notes, box titles and blurbs, line text,
 character names, level words). Page furniture -- the legend, the state marks,
@@ -551,16 +551,16 @@ def render(cfg, board, strict_releases=False):
           f'<span class="n">{total}</span></label>\n')
         for i, group in enumerate(groups):
             level = group["level"]
-            cls = f'lv-{esc(level["key"])}'
+            cls = "lv-" + level["key"]
             b(f'<input class="lv-radio" type="radio" name="level" id="lv-{i}">'
-              f'<label class="chip {cls}" for="lv-{i}">'
+              f'<label class="chip {esc(cls)}" for="lv-{i}">'
               f'{mark_html(cls, level.get("mark", ""))}'
               f'{esc(level["label"])}<span class="n">{len(group["rows"])}</span></label>\n')
         b('<div class="roster">\n')
         for i, group in enumerate(groups):
             level = group["level"]
-            cls = f'lv-{esc(level["key"])}'
-            b(f'<section class="lv-group {cls}" data-level="{i}" data-group>\n')
+            cls = "lv-" + level["key"]
+            b(f'<section class="lv-group {esc(cls)}" data-level="{i}" data-group>\n')
             b(f'<div class="lv-head"><h3>{mark_html(cls, level.get("mark", ""))}'
               f'{esc(level["label"])}<span class="n">{len(group["rows"])}</span></h3>')
             if level.get("text"):
@@ -680,8 +680,8 @@ def render(cfg, board, strict_releases=False):
         h('<ul class="rosterkeys">\n')
         for group in groups:
             level = group["level"]
-            cls = "lv-" + esc(level["key"])
-            h(f'<li class="{cls}" title="{esc(level["label"])}">'
+            cls = "lv-" + level["key"]
+            h(f'<li class="{esc(cls)}" title="{esc(level["label"])}">'
               f'{mark_html(cls, level.get("mark", ""))}'
               f'<span>{len(group["rows"])}</span></li>\n')
         h('</ul>\n</div>\n')
