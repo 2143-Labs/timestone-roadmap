@@ -47,12 +47,15 @@ def put(template, **parts):
 def page_words(cfg, board):
     """The page's fixed phrases: the config's, unless the board's Words card says otherwise."""
     words = dict(cfg["words"])
-    known = set(words) | {"legend_" + l["class"] for l in cfg["legend"]}
+    legend = {"legend_" + l["class"] for l in cfg["legend"]}
     for key, text in sorted(((board.get("page") or {}).get("words") or {}).items()):
-        if key in known:
-            words[key] = text
-        else:
+        if key not in words and key not in legend:
             warn(f"word '{key}' is not a phrase this page uses; ignored")
+        elif not text or not set(TOKEN_RE.findall(text)) <= set(TOKEN_RE.findall(words.get(key, ""))):
+            # a mistyped {placeholder} would reach readers as braces
+            warn(f"word '{key}' is empty or holds a placeholder that phrase does not have; ignored")
+        else:
+            words[key] = text
     return words
 
 
@@ -129,7 +132,11 @@ def slug(name, used):
 
 
 def version_key(tag):
-    return tuple(int(p) for p in re.findall(r"\d+", tag)), tag
+    """Sort key for release tags: by number, a release above its own pre-releases."""
+    m = re.match(r"v?(\d+(?:\.\d+)*)(.*)", tag)
+    if not m:
+        return (), False, tag
+    return tuple(int(p) for p in m.group(1).split(".")), not m.group(2), tag
 
 
 def fill(text, board):
@@ -150,8 +157,8 @@ def fmt_time(ts):
 
 
 CSS = r"""
-:root{color-scheme:dark;--bg:#14161b;--panel:#1b1e25;--card:#262a33;--edge:#394050;--fg:#e8eaed;--mut:#9ea6b1;--acc:#4aa3ff;--on:#08121f;--tint:#1d2c40;--warn:#f0b429;--warnbg:#3a2f12;--ready:#4caf50;--playable:#8bc34a;--desync:#f0b429;--crash:#f0635a;--untested:#8d96a1;--c:var(--untested);--navh:2.9rem}
-@media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#f3f4f7;--panel:#e7eaef;--card:#fff;--edge:#c9ced8;--fg:#1b1d22;--mut:#56606c;--acc:#0b62c4;--on:#fff;--tint:#e3effc;--warn:#a86400;--warnbg:#fff1cf;--ready:#2e7d32;--playable:#4f7a16;--desync:#a86400;--crash:#c62828;--untested:#68717d}}
+:root{color-scheme:dark;--bg:#14161b;--panel:#1b1e25;--card:#262a33;--edge:#4b5364;--fg:#e8eaed;--mut:#9ea6b1;--acc:#4aa3ff;--on:#08121f;--tint:#1d2c40;--warn:#f0b429;--warnbg:#3a2f12;--ready:#4caf50;--playable:#8bc34a;--desync:#f0b429;--crash:#f0635a;--untested:#8d96a1;--c:var(--untested);--navh:2.9rem}
+@media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#f3f4f7;--panel:#e7eaef;--card:#fff;--edge:#aab1bd;--fg:#1b1d22;--mut:#56606c;--acc:#0b62c4;--on:#fff;--tint:#e3effc;--warn:#955800;--warnbg:#fff1cf;--ready:#2e7d32;--playable:#4f7a16;--desync:#955800;--crash:#c62828;--untested:#68717d}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--navh) + .75rem);-webkit-text-size-adjust:100%}
@@ -183,7 +190,7 @@ header .stamp{color:var(--mut);font-size:.875rem}
 .jump a:hover{color:var(--fg)}
 .jump a[aria-current]{background:var(--card);color:var(--fg)}
 .jump b,.chip b{font-weight:600;font-size:.85em;font-variant-numeric:tabular-nums}
-.jump b{margin-left:.4rem;opacity:.75}
+.jump b{margin-left:.15rem;font-weight:400}
 main>*{margin-top:2.2rem}
 h2{margin:0 0 .7rem;font-size:1.5rem;line-height:1.2;font-style:italic;font-weight:800}
 h2 small{font-size:.85rem;font-style:normal;font-weight:400;color:var(--mut)}
@@ -192,15 +199,15 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .banner{margin:0 0 1rem}
 .meter{display:flex;gap:2px;height:.6rem;margin-bottom:.6rem;border-radius:999px;overflow:hidden}
 .meter i,.mix i{background:var(--c)}
-.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
-.lv{display:grid;grid-template-columns:auto 1fr auto;gap:0 .5rem;align-items:baseline;padding:.5rem .7rem;border:1px solid var(--edge);border-radius:8px;background:var(--card);text-align:left}
+.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(11.5rem,1fr))}
+.lv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 .5rem;align-items:baseline;padding:.5rem .7rem;border:1px solid var(--edge);border-radius:8px;background:var(--card);text-align:left}
 .m{color:var(--c)}
 .n,.lv em{font-weight:700;font-style:normal}
+.lv .n{overflow-wrap:break-word}
 .lv em{font-variant-numeric:tabular-nums}
 .t{color:var(--mut);font-size:.8rem}
 .lv .t{grid-column:1/-1}
-.js .lv:enabled:hover,.js .chip:enabled:hover{border-color:var(--acc)}
-.lv:disabled{cursor:default}
+@media(hover:hover){.js .lv:hover,.js .chip:hover{border-color:var(--acc)}.js .tile:hover{border-color:var(--acc);border-left-color:var(--c)}}
 .lv[aria-pressed=true],.chip[aria-pressed=true]{border-color:var(--acc);background:var(--tint);box-shadow:inset 0 0 0 1px var(--acc)}
 .tools{position:sticky;top:var(--navh);z-index:4;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.3rem -.5rem;padding:.6rem .5rem;background:var(--bg)}
 #find{flex:1 1 9rem;max-width:20rem;min-width:0;height:2.3rem;padding:0 .9rem;border:1px solid var(--edge);border-radius:999px;background:var(--card)}
@@ -209,7 +216,7 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .verdict{flex:0 1 auto;display:flex;gap:0 .45rem;align-items:baseline;margin:0}
 .verdict:empty{display:none}
 .verdict .n{color:var(--c);white-space:nowrap}
-.picks{flex:1 1 auto;display:flex;gap:.4rem;min-width:0;margin:0;padding:0;overflow-x:auto;scrollbar-width:none;list-style:none}
+.picks{flex:1 1 auto;display:flex;gap:.4rem;min-width:0;margin:-4px;padding:4px;overflow-x:auto;scrollbar-width:none;list-style:none}
 .picks::-webkit-scrollbar{display:none}
 .picks li{flex:none}
 .slot{display:grid;place-items:center;width:3.2rem;height:2.3rem;border:1px dashed var(--edge);border-radius:999px;color:var(--mut)}
@@ -218,16 +225,14 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .pick::after{content:"✕";margin-left:.5rem;color:var(--mut);font-size:.8em}
 .pick i,.tile b i{font-style:normal;color:var(--c)}
 .tiles{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr))}
-.tile{display:flex;flex-direction:column;padding:.45rem .6rem .5rem;border:1px solid transparent;border-left:4px solid var(--c);border-radius:6px;background:var(--card);text-align:left}
+.tile{scroll-margin-top:7.5rem;display:flex;flex-direction:column;padding:.45rem .6rem .5rem;border:1px solid transparent;border-left:4px solid var(--c);border-radius:6px;background:var(--card);text-align:left}
 .tile span{font-size:.85rem}
 .tile small{color:var(--mut);font-size:.75rem}
 .tile .mix{display:flex;gap:2px;height:4px;margin-top:auto;border-radius:2px;overflow:hidden}
 .tile small{margin-bottom:.4rem}
-.js .tile:hover,.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c)}
-.tile[aria-pressed=true]{background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
+.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c);background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
 .legend,.rels{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem}
 .chip{display:inline-flex;gap:.45rem;align-items:baseline;padding:.3rem .75rem;border:1px solid var(--edge);border-radius:999px;background:var(--card);font-size:.9rem;text-align:left}
-.chip:disabled{opacity:.5;cursor:default}
 .now{--m:"▶";--mc:var(--acc)}.open{--m:"○";--mc:var(--mut)}.verifying{--m:"◷";--mc:var(--desync)}.done{--m:"✔";--mc:var(--ready)}.no{--m:"✕";--mc:var(--crash)}
 .legend .chip::before,.lines li::before{content:var(--m,"○");color:var(--mc,var(--mut))}
 .lanes{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));align-items:start}
@@ -245,7 +250,7 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .lines{font-size:.95rem}
 .lines li{position:relative;margin:.35rem 0;padding-left:1.5rem}
 .lines li::before{position:absolute;left:0}
-.lane li.done{text-decoration:line-through;opacity:.6}
+.lane li.done{text-decoration:line-through;opacity:.7}
 .lines a{white-space:nowrap}
 .past .boxes{columns:19rem;column-gap:1rem}
 .past .box{display:inline-block;width:100%;margin-bottom:1rem;vertical-align:top;break-inside:avoid}
@@ -255,12 +260,15 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .timeline li::before{content:"";position:absolute;left:-5px;top:.75rem;width:8px;height:8px;border-radius:50%;background:var(--acc)}
 .timeline time{color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
 footer{margin-top:2.5rem;padding-bottom:2rem;color:var(--mut);font-size:.9rem}
-@media(max-width:640px){.verdict .t{display:none}.tools{gap:.5rem}.picks{flex-basis:100%}}
+@media(max-width:640px){.levels{grid-template-columns:1fr 1fr}.verdict .t{display:none}.tools{gap:.5rem}.picks{flex-basis:100%}}
+@media(max-width:480px){.levels{grid-template-columns:1fr}}
+@media(pointer:coarse){.chip{padding:.5rem .85rem}.jump a{padding:.45rem .7rem}}
 """.strip()
 
 # The script only shows, hides and copies what the page already holds: it has
 # no words of its own, makes no requests, and without it every section still
-# reads top to bottom. The picked team lives in the address (?team=) and in
+# reads top to bottom. The jump bar marks every section in view: lanes that
+# sit side by side are in view together. The picked team lives in the address (?team=) and in
 # this browser's localStorage.
 JS = r"""
 (function(){
@@ -277,7 +285,7 @@ var n=0;
 tiles.forEach(function(t){
 t.hidden=!!(f.level&&t.getAttribute("data-level")!==f.level)||!!(f.q&&t.getAttribute("data-name").indexOf(f.q)<0);
 if(!t.hidden)n++});
-if(find)find.classList.toggle("miss",!n);
+if(find){find.classList.toggle("miss",!n&&!!f.q);find.setAttribute("aria-invalid",String(!n&&!!f.q))}
 lines.forEach(function(li){
 li.hidden=!!(f.state&&!li.classList.contains(f.state))||!!(f.rel&&li.closest(".past")&&li.getAttribute("data-rel")!==f.rel)});
 boxes.forEach(function(b){b.hidden=!all(".lines li",b).some(shown)});
@@ -298,8 +306,8 @@ var size=+tray.getAttribute("data-size"),rank=tray.getAttribute("data-rank").spl
 verdict=tray.querySelector(".verdict"),picks=tray.querySelector(".picks");
 tiles.forEach(function(t){by[t.value]=t;t.addEventListener("click",function(){toggle(t.value)})});
 picks.addEventListener("click",function(e){
-var b=e.target.closest("button");
-if(b){toggle(b.value);by[b.value].focus({preventScroll:true})}});
+var b=e.target.closest("button"),t=b&&by[b.value];
+if(t){toggle(b.value);(t.hidden?picks.querySelector("button")||find:t).focus({preventScroll:true})}});
 var draw=function(){
 var worst="",at=rank.length+1;
 picks.replaceChildren();verdict.replaceChildren();
@@ -342,15 +350,17 @@ find.value="";f.q="";apply()}});
 }
 var nav=d.querySelector(".jump"),links=all(".jump a"),seen={};
 function mark(){
-var end=window.innerHeight+window.scrollY>=d.documentElement.scrollHeight-2,
-cur=end?links[links.length-1]:links.filter(function(a){return seen[a.getAttribute("href").slice(1)]})[0];
-links.forEach(function(a){
-if(a!==cur)a.removeAttribute("aria-current");
-else if(!a.hasAttribute("aria-current")){a.setAttribute("aria-current","true");nav.scrollLeft=a.offsetLeft-(nav.clientWidth-a.offsetWidth)/2}});
+var end=window.innerHeight+window.scrollY>=d.documentElement.scrollHeight-2,first=true;
+links.forEach(function(a,i){
+var on=end?i===links.length-1:!!seen[a.getAttribute("href").slice(1)];
+if(!on)a.removeAttribute("aria-current");
+else{
+if(first&&!a.hasAttribute("aria-current"))nav.scrollLeft=a.offsetLeft-(nav.clientWidth-a.offsetWidth)/2;
+a.setAttribute("aria-current","true");first=false}});
 }
 if(nav&&"IntersectionObserver" in window){
 var io=new IntersectionObserver(function(es){
-es.forEach(function(e){seen[e.target.id]=e.isIntersecting});mark()},{rootMargin:"-20% 0px -70% 0px"});
+es.forEach(function(e){seen[e.target.id]=e.isIntersecting});mark()},{rootMargin:"-10% 0px -55% 0px"});
 links.forEach(function(a){var t=d.getElementById(a.getAttribute("href").slice(1));if(t)io.observe(t)});
 window.addEventListener("scroll",mark,{passive:true});
 }
@@ -406,9 +416,8 @@ def characters(cfg, board, words):
     b('<div class="levels">\n')
     for lv in levels:
         key = esc(lv["key"])
-        off = "" if counts[lv["key"]] else " disabled"
         b(f'<button type="button" class="lv l-{key}" data-f="level" value="{key}" '
-          f'aria-pressed="false"{off}><b class="m">{esc(lv["mark"])}</b> <span class="n">{esc(lv["label"])}</span> '
+          f'aria-pressed="false"><b class="m">{esc(lv["mark"])}</b> <span class="n">{esc(lv["label"])}</span> '
           f'<em>{counts[lv["key"]]}</em> <small class="t">{esc(lv["text"])}</small></button>\n')
     b('</div>\n<div class="tools jsonly">\n'
       f'<input type="search" id="find" aria-label="{heading}" placeholder="{heading}" '
@@ -553,7 +562,7 @@ def render(cfg, board, strict_releases=False):
     for l in cfg["legend"]:
         cls, n = l["class"], tally.get(l["class"], 0)
         b(f'<button type="button" class="chip {esc(cls)}" data-f="state" value="{esc(cls)}" '
-          f'aria-pressed="false"{"" if n else " disabled"}>'
+          'aria-pressed="false">'
           f'<span>{esc(words.get("legend_" + cls, l["text"]))}</span> <b>{n}</b></button>\n')
     b('</div>\n<div class="lanes">\n' + "".join(lanes) + "</div>\n</div>\n")
     for s, cards in past:
@@ -593,8 +602,9 @@ def render(cfg, board, strict_releases=False):
             tag = f'<a href="#shipped" data-rel="{tag}">{tag}</a>'
         stamp += " · " + put(words["latest"], tag=tag, date=esc(lr["date"]))
     w(f'<p class="stamp">{stamp}</p>\n</header>\n')
-    w('<nav class="jump">' + "".join(
-        f'<a href="#{esc(anchor)}">{esc(text)}' + (f"<b>{n}</b>" if n is not None else "") + "</a>"
+    # The jump bar is the page's table of contents, so it is named by the page title.
+    w(f'<nav class="jump" aria-label="{esc(page["title"])}">' + "".join(
+        f'<a href="#{esc(anchor)}">{esc(text)}' + (f" <b>{n}</b>" if n is not None else "") + "</a>"
         for anchor, text, n in jump) + "</nav>\n")
     w("<main>\n")
     out.extend(body)

@@ -6,8 +6,8 @@
 <title>Timestone roadmap</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
-:root{color-scheme:dark;--bg:#14161b;--panel:#1b1e25;--card:#262a33;--edge:#394050;--fg:#e8eaed;--mut:#9ea6b1;--acc:#4aa3ff;--on:#08121f;--tint:#1d2c40;--warn:#f0b429;--warnbg:#3a2f12;--ready:#4caf50;--playable:#8bc34a;--desync:#f0b429;--crash:#f0635a;--untested:#8d96a1;--c:var(--untested);--navh:2.9rem}
-@media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#f3f4f7;--panel:#e7eaef;--card:#fff;--edge:#c9ced8;--fg:#1b1d22;--mut:#56606c;--acc:#0b62c4;--on:#fff;--tint:#e3effc;--warn:#a86400;--warnbg:#fff1cf;--ready:#2e7d32;--playable:#4f7a16;--desync:#a86400;--crash:#c62828;--untested:#68717d}}
+:root{color-scheme:dark;--bg:#14161b;--panel:#1b1e25;--card:#262a33;--edge:#4b5364;--fg:#e8eaed;--mut:#9ea6b1;--acc:#4aa3ff;--on:#08121f;--tint:#1d2c40;--warn:#f0b429;--warnbg:#3a2f12;--ready:#4caf50;--playable:#8bc34a;--desync:#f0b429;--crash:#f0635a;--untested:#8d96a1;--c:var(--untested);--navh:2.9rem}
+@media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#f3f4f7;--panel:#e7eaef;--card:#fff;--edge:#aab1bd;--fg:#1b1d22;--mut:#56606c;--acc:#0b62c4;--on:#fff;--tint:#e3effc;--warn:#955800;--warnbg:#fff1cf;--ready:#2e7d32;--playable:#4f7a16;--desync:#955800;--crash:#c62828;--untested:#68717d}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--navh) + .75rem);-webkit-text-size-adjust:100%}
@@ -39,7 +39,7 @@ header .stamp{color:var(--mut);font-size:.875rem}
 .jump a:hover{color:var(--fg)}
 .jump a[aria-current]{background:var(--card);color:var(--fg)}
 .jump b,.chip b{font-weight:600;font-size:.85em;font-variant-numeric:tabular-nums}
-.jump b{margin-left:.4rem;opacity:.75}
+.jump b{margin-left:.15rem;font-weight:400}
 main>*{margin-top:2.2rem}
 h2{margin:0 0 .7rem;font-size:1.5rem;line-height:1.2;font-style:italic;font-weight:800}
 h2 small{font-size:.85rem;font-style:normal;font-weight:400;color:var(--mut)}
@@ -48,15 +48,15 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .banner{margin:0 0 1rem}
 .meter{display:flex;gap:2px;height:.6rem;margin-bottom:.6rem;border-radius:999px;overflow:hidden}
 .meter i,.mix i{background:var(--c)}
-.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
-.lv{display:grid;grid-template-columns:auto 1fr auto;gap:0 .5rem;align-items:baseline;padding:.5rem .7rem;border:1px solid var(--edge);border-radius:8px;background:var(--card);text-align:left}
+.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(11.5rem,1fr))}
+.lv{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 .5rem;align-items:baseline;padding:.5rem .7rem;border:1px solid var(--edge);border-radius:8px;background:var(--card);text-align:left}
 .m{color:var(--c)}
 .n,.lv em{font-weight:700;font-style:normal}
+.lv .n{overflow-wrap:break-word}
 .lv em{font-variant-numeric:tabular-nums}
 .t{color:var(--mut);font-size:.8rem}
 .lv .t{grid-column:1/-1}
-.js .lv:enabled:hover,.js .chip:enabled:hover{border-color:var(--acc)}
-.lv:disabled{cursor:default}
+@media(hover:hover){.js .lv:hover,.js .chip:hover{border-color:var(--acc)}.js .tile:hover{border-color:var(--acc);border-left-color:var(--c)}}
 .lv[aria-pressed=true],.chip[aria-pressed=true]{border-color:var(--acc);background:var(--tint);box-shadow:inset 0 0 0 1px var(--acc)}
 .tools{position:sticky;top:var(--navh);z-index:4;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.3rem -.5rem;padding:.6rem .5rem;background:var(--bg)}
 #find{flex:1 1 9rem;max-width:20rem;min-width:0;height:2.3rem;padding:0 .9rem;border:1px solid var(--edge);border-radius:999px;background:var(--card)}
@@ -65,7 +65,7 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .verdict{flex:0 1 auto;display:flex;gap:0 .45rem;align-items:baseline;margin:0}
 .verdict:empty{display:none}
 .verdict .n{color:var(--c);white-space:nowrap}
-.picks{flex:1 1 auto;display:flex;gap:.4rem;min-width:0;margin:0;padding:0;overflow-x:auto;scrollbar-width:none;list-style:none}
+.picks{flex:1 1 auto;display:flex;gap:.4rem;min-width:0;margin:-4px;padding:4px;overflow-x:auto;scrollbar-width:none;list-style:none}
 .picks::-webkit-scrollbar{display:none}
 .picks li{flex:none}
 .slot{display:grid;place-items:center;width:3.2rem;height:2.3rem;border:1px dashed var(--edge);border-radius:999px;color:var(--mut)}
@@ -74,16 +74,14 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .pick::after{content:"✕";margin-left:.5rem;color:var(--mut);font-size:.8em}
 .pick i,.tile b i{font-style:normal;color:var(--c)}
 .tiles{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr))}
-.tile{display:flex;flex-direction:column;padding:.45rem .6rem .5rem;border:1px solid transparent;border-left:4px solid var(--c);border-radius:6px;background:var(--card);text-align:left}
+.tile{scroll-margin-top:7.5rem;display:flex;flex-direction:column;padding:.45rem .6rem .5rem;border:1px solid transparent;border-left:4px solid var(--c);border-radius:6px;background:var(--card);text-align:left}
 .tile span{font-size:.85rem}
 .tile small{color:var(--mut);font-size:.75rem}
 .tile .mix{display:flex;gap:2px;height:4px;margin-top:auto;border-radius:2px;overflow:hidden}
 .tile small{margin-bottom:.4rem}
-.js .tile:hover,.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c)}
-.tile[aria-pressed=true]{background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
+.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c);background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
 .legend,.rels{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem}
 .chip{display:inline-flex;gap:.45rem;align-items:baseline;padding:.3rem .75rem;border:1px solid var(--edge);border-radius:999px;background:var(--card);font-size:.9rem;text-align:left}
-.chip:disabled{opacity:.5;cursor:default}
 .now{--m:"▶";--mc:var(--acc)}.open{--m:"○";--mc:var(--mut)}.verifying{--m:"◷";--mc:var(--desync)}.done{--m:"✔";--mc:var(--ready)}.no{--m:"✕";--mc:var(--crash)}
 .legend .chip::before,.lines li::before{content:var(--m,"○");color:var(--mc,var(--mut))}
 .lanes{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));align-items:start}
@@ -101,7 +99,7 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .lines{font-size:.95rem}
 .lines li{position:relative;margin:.35rem 0;padding-left:1.5rem}
 .lines li::before{position:absolute;left:0}
-.lane li.done{text-decoration:line-through;opacity:.6}
+.lane li.done{text-decoration:line-through;opacity:.7}
 .lines a{white-space:nowrap}
 .past .boxes{columns:19rem;column-gap:1rem}
 .past .box{display:inline-block;width:100%;margin-bottom:1rem;vertical-align:top;break-inside:avoid}
@@ -111,7 +109,9 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .timeline li::before{content:"";position:absolute;left:-5px;top:.75rem;width:8px;height:8px;border-radius:50%;background:var(--acc)}
 .timeline time{color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
 footer{margin-top:2.5rem;padding-bottom:2rem;color:var(--mut);font-size:.9rem}
-@media(max-width:640px){.verdict .t{display:none}.tools{gap:.5rem}.picks{flex-basis:100%}}
+@media(max-width:640px){.levels{grid-template-columns:1fr 1fr}.verdict .t{display:none}.tools{gap:.5rem}.picks{flex-basis:100%}}
+@media(max-width:480px){.levels{grid-template-columns:1fr}}
+@media(pointer:coarse){.chip{padding:.5rem .85rem}.jump a{padding:.45rem .7rem}}
 </style>
 </head>
 <body>
@@ -127,14 +127,14 @@ footer{margin-top:2.5rem;padding-bottom:2rem;color:var(--mut);font-size:.9rem}
 <p class="notice">Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.</p>
 <p class="stamp">Last updated 2026-11-27 07:15 UTC · latest release <a href="#shipped" data-rel="v0.6.9">v0.6.9</a> (2026-11-25)</p>
 </header>
-<nav class="jump"><a href="#characters">Characters<b>50</b></a><a href="#now">Now<b>14</b></a><a href="#next">Next<b>17</b></a><a href="#later">Later<b>18</b></a><a href="#not-planned">Not planned<b>8</b></a><a href="#shipped">Shipped<b>42</b></a><a href="#history">Background</a></nav>
+<nav class="jump" aria-label="Timestone roadmap"><a href="#characters">Characters <b>50</b></a><a href="#now">Now <b>14</b></a><a href="#next">Next <b>17</b></a><a href="#later">Later <b>18</b></a><a href="#not-planned">Not planned <b>8</b></a><a href="#shipped">Shipped <b>42</b></a><a href="#history">Background</a></nav>
 <main>
 <section id="characters">
 <h2>Characters</h2>
 <p class="banner">Nobody has confirmed any character in real matches yet. This table comes from bug reports and code review, so treat every row as unverified.</p>
 <div class="meter" aria-hidden="true"><i class="l-playable" style="flex:10"></i><i class="l-desync" style="flex:15"></i><i class="l-crash" style="flex:21"></i><i class="l-untested" style="flex:4"></i></div>
 <div class="levels">
-<button type="button" class="lv l-ready" data-f="level" value="ready" aria-pressed="false" disabled><b class="m">●</b> <span class="n">Tournament-ready</span> <em>0</em> <small class="t">Confirmed clean in real matches</small></button>
+<button type="button" class="lv l-ready" data-f="level" value="ready" aria-pressed="false"><b class="m">●</b> <span class="n">Tournament-ready</span> <em>0</em> <small class="t">Confirmed clean in real matches</small></button>
 <button type="button" class="lv l-playable" data-f="level" value="playable" aria-pressed="false"><b class="m">◐</b> <span class="n">Playable</span> <em>10</em> <small class="t">Only visual or sound glitches known</small></button>
 <button type="button" class="lv l-desync" data-f="level" value="desync" aria-pressed="false"><b class="m">▲</b> <span class="n">Known desyncs</span> <em>15</em> <small class="t">Some moves can desync a match</small></button>
 <button type="button" class="lv l-crash" data-f="level" value="crash" aria-pressed="false"><b class="m">■</b> <span class="n">Can crash</span> <em>21</em> <small class="t">Some moves can crash or freeze the game</small></button>
@@ -496,7 +496,7 @@ var n=0;
 tiles.forEach(function(t){
 t.hidden=!!(f.level&&t.getAttribute("data-level")!==f.level)||!!(f.q&&t.getAttribute("data-name").indexOf(f.q)<0);
 if(!t.hidden)n++});
-if(find)find.classList.toggle("miss",!n);
+if(find){find.classList.toggle("miss",!n&&!!f.q);find.setAttribute("aria-invalid",String(!n&&!!f.q))}
 lines.forEach(function(li){
 li.hidden=!!(f.state&&!li.classList.contains(f.state))||!!(f.rel&&li.closest(".past")&&li.getAttribute("data-rel")!==f.rel)});
 boxes.forEach(function(b){b.hidden=!all(".lines li",b).some(shown)});
@@ -517,8 +517,8 @@ var size=+tray.getAttribute("data-size"),rank=tray.getAttribute("data-rank").spl
 verdict=tray.querySelector(".verdict"),picks=tray.querySelector(".picks");
 tiles.forEach(function(t){by[t.value]=t;t.addEventListener("click",function(){toggle(t.value)})});
 picks.addEventListener("click",function(e){
-var b=e.target.closest("button");
-if(b){toggle(b.value);by[b.value].focus({preventScroll:true})}});
+var b=e.target.closest("button"),t=b&&by[b.value];
+if(t){toggle(b.value);(t.hidden?picks.querySelector("button")||find:t).focus({preventScroll:true})}});
 var draw=function(){
 var worst="",at=rank.length+1;
 picks.replaceChildren();verdict.replaceChildren();
@@ -561,15 +561,17 @@ find.value="";f.q="";apply()}});
 }
 var nav=d.querySelector(".jump"),links=all(".jump a"),seen={};
 function mark(){
-var end=window.innerHeight+window.scrollY>=d.documentElement.scrollHeight-2,
-cur=end?links[links.length-1]:links.filter(function(a){return seen[a.getAttribute("href").slice(1)]})[0];
-links.forEach(function(a){
-if(a!==cur)a.removeAttribute("aria-current");
-else if(!a.hasAttribute("aria-current")){a.setAttribute("aria-current","true");nav.scrollLeft=a.offsetLeft-(nav.clientWidth-a.offsetWidth)/2}});
+var end=window.innerHeight+window.scrollY>=d.documentElement.scrollHeight-2,first=true;
+links.forEach(function(a,i){
+var on=end?i===links.length-1:!!seen[a.getAttribute("href").slice(1)];
+if(!on)a.removeAttribute("aria-current");
+else{
+if(first&&!a.hasAttribute("aria-current"))nav.scrollLeft=a.offsetLeft-(nav.clientWidth-a.offsetWidth)/2;
+a.setAttribute("aria-current","true");first=false}});
 }
 if(nav&&"IntersectionObserver" in window){
 var io=new IntersectionObserver(function(es){
-es.forEach(function(e){seen[e.target.id]=e.isIntersecting});mark()},{rootMargin:"-20% 0px -70% 0px"});
+es.forEach(function(e){seen[e.target.id]=e.isIntersecting});mark()},{rootMargin:"-10% 0px -55% 0px"});
 links.forEach(function(a){var t=d.getElementById(a.getAttribute("href").slice(1));if(t)io.observe(t)});
 window.addEventListener("scroll",mark,{passive:true});
 }

@@ -94,7 +94,8 @@ Nothing on the page is edited in git. Two Kanban/list views of project 19 do the
   other related card is a state card: done → ✔, open with `Needs-Repro` → ◷ "fix
   released, confirming". In the `Now` column an unmarked line reads as ▶, elsewhere ○.
 - **Columns with a meaning**: `Draft` (never published), `Shipped` (rendered as shipped
-  work), `Background` (each box is a card with its lines as a plain bulleted list),
+  work), `Background` (each box is a card with its lines as a plain bulleted list, or as a
+  timeline when every line starts with a date),
   `Page text` (see below). Every other column is an ordinary section.
 - **Page text** boxes, keyed by their title: `Title`, `Tagline`, `Goal`, `Notice`,
   `Footer`, `Characters heading` (the description is the `<h2>` text and the name of the

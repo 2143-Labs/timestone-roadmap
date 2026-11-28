@@ -348,7 +348,7 @@ class Render(unittest.TestCase):
         self.assertNotIn("kept", page)
         self.assertIn("warn:", err.getvalue())
         # the dropped line is not counted either
-        self.assertIn('<a href="#now">Now<b>1</b></a>', page)
+        self.assertIn('<a href="#now">Now <b>1</b></a>', page)
 
     def test_forbidden_text_fails(self):
         cfg, board = render_cfg(), snapshot()
@@ -425,9 +425,10 @@ class Render(unittest.TestCase):
 class JumpBar(unittest.TestCase):
     def test_every_section_heading_is_a_link_in_page_order(self):
         page = quiet(build.render, render_cfg(), snapshot())
-        self.assertIn('<nav class="jump"><a href="#characters">Characters<b>2</b></a>'
-                      '<a href="#now">Now<b>2</b></a><a href="#not-planned">No<b>1</b></a>'
-                      '<a href="#shipped">Shipped<b>2</b></a><a href="#history">Background</a></nav>',
+        # named by the page title; the space keeps "Now 2" two words for a screen reader
+        self.assertIn('<nav class="jump" aria-label="T"><a href="#characters">Characters <b>2</b></a>'
+                      '<a href="#now">Now <b>2</b></a><a href="#not-planned">No <b>1</b></a>'
+                      '<a href="#shipped">Shipped <b>2</b></a><a href="#history">Background</a></nav>',
                       page)
 
     def test_every_link_has_its_target(self):
@@ -454,13 +455,15 @@ class Lanes(unittest.TestCase):
         page = quiet(build.render, cfg, snapshot())
         legend = page[page.index('<div class="legend">'):page.index('<div class="lanes">')]
         chips = re.findall(r'<button type="button" class="chip (\w+)" data-f="state" value="(\w+)" '
-                           r'aria-pressed="false"( disabled)?><span>([^<]+)</span> <b>(\d+)</b></button>',
+                           r'aria-pressed="false"><span>([^<]+)</span> <b>(\d+)</b></button>',
                            legend)
-        self.assertEqual(chips, [("now", "now", "", "doing", "1"),
-                                 ("open", "open", " disabled", "planned", "0"),
-                                 ("verifying", "verifying", "", "checking", "1"),
-                                 ("done", "done", "", "shipped", "2"),
-                                 ("no", "no", "", "never", "1")])
+        # a state no line is in still reads in full: its row is content, not only a control
+        self.assertEqual(chips, [("now", "now", "doing", "1"),
+                                 ("open", "open", "planned", "0"),
+                                 ("verifying", "verifying", "checking", "1"),
+                                 ("done", "done", "shipped", "2"),
+                                 ("no", "no", "never", "1")])
+        self.assertNotIn("disabled", legend)
         # every chip value is a class the lines carry, so the filter has something to match
         for cls in ("now", "verifying", "done", "no"):
             self.assertIn(f'<li class="{cls}"', page)
@@ -496,10 +499,14 @@ class Shipped(unittest.TestCase):
                                     r'<span>([^<]+)</span> <b>(\d+)</b>', rels),
                          [("v1", "v1", "1"), ("v0.6.10", "v0.6.10", "2"), ("v0.6.9", "v0.6.9", "1"),
                           ("v0.4.0", "v0.4.0", "1")])
+        # a release sorts above its own pre-releases, and both above an older release
+        tags = ["v0.2.7-dev-pr1", "v0.2.7", "v0.2.4-dev-pr1", "v0.6.10", "v0.6.9", "nightly"]
+        self.assertEqual(sorted(tags, key=build.version_key, reverse=True),
+                         ["v0.6.10", "v0.6.9", "v0.2.7", "v0.2.7-dev-pr1", "v0.2.4-dev-pr1", "nightly"])
         # each chip matches the data-rel of the lines it filters
         self.assertEqual(page.count('<li class="done" data-rel="v0.6.10">'), 2)
         self.assertIn('<li class="done">undated</li>', page)
-        self.assertIn('<a href="#shipped">Shipped<b>7</b></a>', page)
+        self.assertIn('<a href="#shipped">Shipped <b>7</b></a>', page)
 
     def test_no_release_chips_without_release_lines(self):
         board = snapshot()
@@ -564,15 +571,16 @@ class Roster(unittest.TestCase):
     def test_levels_are_the_roster_filter_and_the_bar(self):
         page = quiet(build.render, render_cfg(), self.board())
         chips = re.findall(r'<button type="button" class="lv l-(\w+)" data-f="level" value="(\w+)" '
-                           r'aria-pressed="false"( disabled)?><b class="m">(.)</b> '
+                           r'aria-pressed="false"><b class="m">(.)</b> '
                            r'<span class="n">([^<]+)</span> <em>(\d+)</em> '
                            r'<small class="t">([^<]+)</small></button>', page)
-        # a level nobody is at cannot be filtered on, but its row still reads in full
-        self.assertEqual(chips, [("ready", "ready", "", "●", "Tournament-ready", "1", "clean"),
-                                 ("playable", "playable", " disabled", "◐", "Playable", "0", "visual"),
-                                 ("desync", "desync", " disabled", "▲", "Known desyncs", "0", "desync"),
-                                 ("crash", "crash", "", "■", "Can crash", "1", "crash"),
-                                 ("untested", "untested", "", "○", "Untested", "1", "none")])
+        # a level nobody is at keeps its row, undimmed and reachable by keyboard
+        self.assertEqual(chips, [("ready", "ready", "●", "Tournament-ready", "1", "clean"),
+                                 ("playable", "playable", "◐", "Playable", "0", "visual"),
+                                 ("desync", "desync", "▲", "Known desyncs", "0", "desync"),
+                                 ("crash", "crash", "■", "Can crash", "1", "crash"),
+                                 ("untested", "untested", "○", "Untested", "1", "none")])
+        self.assertNotIn(" disabled", page)
         self.assertIn('<div class="meter" aria-hidden="true"><i class="l-ready" style="flex:1"></i>'
                       '<i class="l-crash" style="flex:1"></i><i class="l-untested" style="flex:1"></i>'
                       "</div>", page)
@@ -634,6 +642,22 @@ class Words(unittest.TestCase):
             page = build.render(cfg, board)
         self.assertIn("warn: word 'sidebar' is not a phrase this page uses", err.getvalue())
         self.assertNotIn("zzz-unused", page)
+
+    def test_board_word_with_a_wrong_placeholder_or_no_text_keeps_the_config_phrase(self):
+        cfg, board = dict(render_cfg(), legend=FULL_LEGEND), snapshot()
+        board["page"]["words"] = {"counts": "{opne} open, {fixed} fixed", "size": "",
+                                  "legend_now": "now {n}", "stamp": "As of {time}"}
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            page = build.render(cfg, board)
+        for key in ("counts", "size", "legend_now"):
+            self.assertIn(f"warn: word '{key}' is empty or holds a placeholder", err.getvalue())
+        self.assertNotIn("stamp", err.getvalue())
+        self.assertIn("<small>1 open · 0 fixed</small>", page)
+        self.assertIn('<span class="size">small job</span>', page)
+        self.assertIn("<span>doing</span>", page)
+        self.assertIn('<p class="stamp">As of 2026-11-25 05:30 · ', page)
+        self.assertNotRegex(visible(page), r"[{}]")
 
     def test_words_are_escaped_and_placeholders_filled_once(self):
         cfg, board = render_cfg(), snapshot()
@@ -729,6 +753,9 @@ class Baked(unittest.TestCase):
 
     def test_build_is_quiet_on_the_committed_snapshot(self):
         self.assertEqual(self.err.getvalue(), "")
+
+    def test_no_placeholder_is_left_unfilled(self):
+        self.assertNotRegex(self.seen, r"[{}]")
 
     def test_cli_builds_the_same_page_and_reports(self):
         with tempfile.TemporaryDirectory() as d:
