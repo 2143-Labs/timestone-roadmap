@@ -7,12 +7,15 @@ by the Argo CD Application `timestone-roadmap` in `2143-Labs/argo`
 
 ## How the page is built
 
-Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>).
-Git holds the wiring, the CSS and the guards, no prose.
+Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>),
+except the page furniture: the legend, the state marks, the size words and the short
+labels around counts, which live in `config/roadmap.json`. Git holds the wiring, the
+CSS, that furniture and the guards; the prose is on the board.
 
 - `config/roadmap.json` is the wiring: which project, which two views, which bucket
-  and label ids, the legend wording, the size words, the GitHub repo release links
-  point at. Ids are stable; column and label *names* are not used.
+  and label ids, the legend wording and marks, the size words, the `ui` labels and
+  templates, the GitHub repo release links point at. Ids are stable; column and label
+  *names* are not used.
 - `tools/export_board.py` reads the project through a read-only link share and writes
   a trimmed snapshot (`data/board.json`, schema 2): the published boxes and lines with
   their text, the state flags, the character grid, release tags and two counts. Card
@@ -22,7 +25,51 @@ Git holds the wiring, the CSS and the guards, no prose.
   It refuses to build on internal wording (story points, Impact, P0-P2, board links)
   or a malformed snapshot. A mistake on a single card unpublishes that card with a
   `warn:` line instead, because editors work on the board and cannot see a stalled
-  build.
+  build. Every visitor-facing word comes from the snapshot or from the config's
+  `legend` and `ui` blocks; a test renders a page from nonsense tokens and fails if
+  any other word reaches it.
+
+### The page itself
+
+One static file, no external assets, no requests at view time. Top to bottom:
+
+- the status header: title, tagline, goal, the beta notice, the download and
+  community links, and a panel with the latest release (tag, date, GitHub link)
+  and a roster bar of the characters by level;
+- a sticky section index with counts and a find box. `/` focuses the box, Escape
+  clears it; typing filters the roadmap lines, boxes, shipped items and character
+  tiles in place and announces the match count. The script is inline and reads
+  only the page;
+- the board's horizons in column order: `Now` as feature cards with their lines in
+  two columns on wide screens, then `Next`, `Later` and `Not planned`;
+- the roster, grouped by level card (green through red) with level chips that
+  filter the groups with CSS alone, and each character's open, fixed and
+  awaiting-confirmation counts;
+- the shipped log by area: newest area first, newest release first inside each
+  area, every line carrying its release tag or date;
+- the background cards and the footer.
+
+The roster sits between `Not planned` and `Shipped`, because the `Now` blurb points
+at "the character table further down". Only the find box needs JavaScript: the
+level chips are CSS, and every word is already in the HTML without it.
+
+Page furniture that is not board prose lives in `config/roadmap.json`: `legend`
+holds the state marks and their wording, `ui` holds the short labels and templates
+(last updated, latest release, the find box, the match counts, the `open` / `fixed`
+/ `awaiting` words in a tile and the `(in vX, confirming)` tails). A second board
+on this chart needs its own `ui` block; the build fails without it.
+
+### Build and test
+
+```bash
+python3 tools/build.py                                  # writes site/index.html
+python3 -m unittest tools/test_build.py                 # renderer and exporter
+nix shell nixpkgs#kubernetes-helm -c helm template . --set vikunja.shareKey=x >/dev/null
+```
+
+`tools/test_build.py` also fails when the committed `site/index.html` differs from
+what the build produces, so rebuild and commit the page with any board, config or
+renderer change.
 
 In the cluster a `refresh` sidecar runs both tools every 15 minutes into a shared
 `/data` volume. nginx serves `/data/index.html`; until the sidecar's first good build

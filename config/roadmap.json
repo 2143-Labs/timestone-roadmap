@@ -10,10 +10,29 @@
   "releases": {"repo": "tilderain/Timestone", "card_prefix": "Release "},
   "forbidden": "\\bSP\\d|Impact|Bug census|\\bP[0-2]\\b|tasks\\.2143\\.me",
   "legend": [
-    {"class": "now", "text": "Being worked on now"},
-    {"class": "open", "text": "Planned, not started"},
-    {"class": "verifying", "text": "Fix is in a release, waiting for players to confirm it"},
-    {"class": "done", "text": "Shipped (hidden until you press Show shipped)"},
-    {"class": "no", "text": "Not planned"}
-  ]
+    {"class": "now", "mark": "▶", "text": "Being worked on now"},
+    {"class": "open", "mark": "○", "text": "Planned, not started"},
+    {"class": "verifying", "mark": "◷", "text": "Fix is in a release, waiting for players to confirm it"},
+    {"class": "done", "mark": "✔", "text": "Shipped"},
+    {"class": "no", "mark": "✕", "text": "Not planned"}
+  ],
+  "ui": {
+    "skip": "Skip to the roadmap",
+    "updated": "Last updated",
+    "latest": "Latest release",
+    "links": "Downloads and community",
+    "jump": "Page sections",
+    "find": "Find on this page",
+    "findHint": "Find a fix, feature or character",
+    "matches": "{n} matches",
+    "match": "{n} match",
+    "noResults": "Nothing here matches that.",
+    "all": "All",
+    "filterLevel": "Show characters by level",
+    "open": "open",
+    "fixed": "fixed",
+    "awaiting": "awaiting confirmation",
+    "inRelease": "(in {tag}, confirming)",
+    "needsConfirm": "(fix released, confirming)"
+  }
 }
