@@ -1,11 +1,14 @@
 import contextlib
+import copy
 import io
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
 import urllib.error
+from html.parser import HTMLParser
 from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -28,8 +31,14 @@ CFG = {
                "needs_repro": 17, "sizes": {str(k): v for k, v in SIZES.items()}},
     "releases": {"repo": "o/r", "card_prefix": "Release "},
     "forbidden": "\\bSP\\d|Impact|Bug census|\\bP[0-2]\\b|tasks\\.2143\\.me",
-    "legend": [{"class": "now", "text": "now"}],
+    "legend": [{"class": "now", "text": "now"}, {"class": "verifying", "text": "confirming"},
+               {"class": "done", "text": "shipped"}, {"class": "no", "text": "no"}],
+    "words": {"updated": "Last updated {date} {time} UTC", "latest_release": "latest release {tag} ({date})",
+              "size": "{size} job", "in_release": "(in {tag}, confirming)",
+              "fix_released": "(fix released, confirming)", "open": "{n} open", "fixed": "{n} fixed",
+              "awaiting": "{n} awaiting confirmation"},
 }
+W = CFG["words"]
 
 CHAR, READY, IGNORE = 120, 121, 122
 LEVELS = [{"key": "ready", "mark": "●", "label": "Tournament-ready", "text": "clean"},
@@ -97,37 +106,37 @@ class LineState(unittest.TestCase):
         return base
 
     def test_rule1_not_planned_is_no(self):
-        self.assertEqual(build.line_state("not_planned", self.line(done=True), set()), ("no", ""))
+        self.assertEqual(build.line_state("not_planned", self.line(done=True), set(), W), ("no", ""))
 
     def test_rule2_done_by_flag(self):
-        self.assertEqual(build.line_state("upcoming", self.line(done=True), set()), ("done", ""))
+        self.assertEqual(build.line_state("upcoming", self.line(done=True), set(), W), ("done", ""))
 
     def test_rule2_done_when_all_cards_done(self):
-        st = build.line_state("active", self.line(cards=[{"done": True, "needs_repro": False}]), set())
+        st = build.line_state("active", self.line(cards=[{"done": True, "needs_repro": False}]), set(), W)
         self.assertEqual(st, ("done", ""))
 
     def test_rule3_confirming_has_no_suffix(self):
-        self.assertEqual(build.line_state("upcoming", self.line(confirming=True), set()),
+        self.assertEqual(build.line_state("upcoming", self.line(confirming=True), set(), W),
                          ("verifying", ""))
 
     def test_rule4_not_confirming_beats_needs_repro_active(self):
         st = build.line_state("active", self.line(not_confirming=True,
-                                                  cards=[{"done": False, "needs_repro": True}]), set())
+                                                  cards=[{"done": False, "needs_repro": True}]), set(), W)
         self.assertEqual(st, ("now", ""))
 
     def test_rule4_not_confirming_beats_needs_repro_upcoming(self):
         st = build.line_state("upcoming", self.line(not_confirming=True,
-                                                    cards=[{"done": False, "needs_repro": True}]), set())
+                                                    cards=[{"done": False, "needs_repro": True}]), set(), W)
         self.assertEqual(st, ("open", ""))
 
     def test_rule5_release_in_list(self):
-        st = build.line_state("upcoming", self.line(release="v1"), {"v1"})
-        self.assertEqual(st, ("verifying", " (in v1, confirming)"))
+        st = build.line_state("upcoming", self.line(release="v1"), {"v1"}, W)
+        self.assertEqual(st, ("verifying", "(in v1, confirming)"))
 
     def test_rule5_unknown_release_warns_and_falls_through(self):
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
-            st = build.line_state("upcoming", self.line(release="v9"), {"v1"})
+            st = build.line_state("upcoming", self.line(release="v9"), {"v1"}, W)
         self.assertEqual(st, ("open", ""))
         self.assertIn("warn:", err.getvalue())
 
@@ -135,20 +144,20 @@ class LineState(unittest.TestCase):
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
             st = build.line_state("upcoming", self.line(release="v9",
-                                                        cards=[{"done": False, "needs_repro": True}]), {"v1"})
-        self.assertEqual(st, ("verifying", " (fix released, confirming)"))
+                                                        cards=[{"done": False, "needs_repro": True}]), {"v1"}, W)
+        self.assertEqual(st, ("verifying", "(fix released, confirming)"))
 
     def test_rule6_needs_repro(self):
-        st = build.line_state("upcoming", self.line(cards=[{"done": False, "needs_repro": True}]), set())
-        self.assertEqual(st, ("verifying", " (fix released, confirming)"))
+        st = build.line_state("upcoming", self.line(cards=[{"done": False, "needs_repro": True}]), set(), W)
+        self.assertEqual(st, ("verifying", "(fix released, confirming)"))
 
     def test_rule7_fallback(self):
-        self.assertEqual(build.line_state("active", self.line(), set()), ("now", ""))
-        self.assertEqual(build.line_state("upcoming", self.line(), set()), ("open", ""))
+        self.assertEqual(build.line_state("active", self.line(), set(), W), ("now", ""))
+        self.assertEqual(build.line_state("upcoming", self.line(), set(), W), ("open", ""))
         self.assertEqual(build.line_state("upcoming", self.line(cards=[{"done": True,
                                                                        "needs_repro": False},
                                                                       {"done": False,
-                                                                       "needs_repro": False}]), set()),
+                                                                       "needs_repro": False}]), set(), W),
                          ("open", ""))
 
 
@@ -239,21 +248,134 @@ class Render(unittest.TestCase):
     def test_markup_and_counts(self):
         page = quiet(build.render, render_cfg(), snapshot())
         self.assertIn('<span class="size">small job</span>', page)
-        self.assertIn('<li class="verifying">7 awaiting</li>', page)
-        self.assertIn('<li class="no">x</li>', page)
+        self.assertIn('<li class="ln s-verifying">7 awaiting</li>', page)
+        self.assertIn('<li class="ln s-no">x</li>', page)
         self.assertIn('<h2>Now <small>(n)</small></h2>', page)
         self.assertIn('<a href="https://github.com/o/r/releases/tag/v1">v1</a>', page)
-        self.assertIn('<li class="done">d (2026-01-01)</li>', page)
-        self.assertIn('<ul class="plain">', page)
-        self.assertIn("Last updated 2026-11-25 05:30 UTC · latest release v1 (2026-11-24)", page)
-        self.assertIn("Show shipped work (2)", page)
+        self.assertIn('<h3><time datetime="2026-01-01">2026-01-01</time></h3>', page)
+        self.assertIn('<li class="ln s-done ent ar0">d <span class="area">S</span></li>', page)
+        self.assertIn('<ol class="tl">', page)
+        self.assertIn('<li><time datetime="2026-01-01">2026-01-01</time><span>t</span></li>', page)
+        self.assertIn('Last updated 2026-11-25 05:30 UTC · '
+                      '<a href="#rel_v1">latest release v1 (2026-11-24)</a>', page)
+        self.assertIn('<li class="rel" id="rel_v1">', page)
         self.assertEqual(page.count('class="tile '), 2)
+        self.assertIn('<small>1 open · 0 fixed</small>', page)
         self.assertIn('<p class="banner">banner</p>', page)
-        self.assertIn("<footer><p>f</p></footer>", page)
-        # body order: characters, sections, shipped, background
-        self.assertLess(page.index('id="characters"'), page.index('id="now"'))
-        self.assertLess(page.index('id="now"'), page.index('id="shipped"'))
-        self.assertLess(page.index('id="shipped"'), page.index('id="history"'))
+        self.assertIn("<p>f</p></div>\n</footer>", page)
+        self.assertNotIn("<script", page)
+        # body order: characters, lanes, not planned, shipped, background
+        for a, b in (('id="characters"', 'id="now"'), ('id="now"', 'id="not-planned"'),
+                     ('id="not-planned"', 'id="shipped"'), ('id="shipped"', 'id="history"')):
+            self.assertLess(page.index(a), page.index(b))
+
+    def test_jump_bar_counts_every_block(self):
+        page = quiet(build.render, render_cfg(), snapshot())
+        nav = page[page.index('<nav class="jump">'):page.index("</nav>", page.index('<nav class="jump">'))]
+        for href, label in (("characters", "Characters <b>2</b>"), ("now", "Now <b>2</b>"),
+                            ("not-planned", "No <b>1</b>"), ("shipped", "Shipped <b>2</b>"),
+                            ("history", "Background</span>")):
+            self.assertIn(f'<a href="#{href}"><span>{label}', nav)
+
+    def test_lanes_follow_column_order(self):
+        cfg, board = render_cfg(), snapshot()
+        later = json.loads(json.dumps(board["sections"][0]))
+        later.update(id="later", heading="Later", note=None, kind="upcoming")
+        board["sections"].insert(1, later)
+        nxt = json.loads(json.dumps(later))
+        nxt.update(id="next", heading="Next")
+        board["sections"].insert(1, nxt)
+        page = quiet(build.render, cfg, board)
+        lanes = page[page.index('<div class="lanes">'):page.index('id="not-planned"')]
+        self.assertLess(lanes.index('id="now" class="lane active"'), lanes.index('id="next" class="lane upcoming"'))
+        self.assertLess(lanes.index('id="next"'), lanes.index('id="later"'))
+        # the fallback state follows the column kind
+        self.assertIn('<li class="ln s-open">a</li>', lanes)
+        self.assertIn('<li class="ln s-now">a</li>', lanes)
+
+    def test_state_filters_only_for_states_on_the_plan(self):
+        page = quiet(build.render, render_cfg(), snapshot())
+        # now, verifying and no occur on the plan; done does not, so it is a plain legend entry
+        self.assertIn('<input type="checkbox" id="stf_0" class="stf sr"><label for="stf_0" '
+                      'class="chip st s-now">now <b>1</b></label>', page)
+        self.assertIn('<label for="stf_1" class="chip st s-verifying">confirming <b>1</b></label>', page)
+        self.assertIn('<label for="stf_2" class="chip st s-no">no <b>1</b></label>', page)
+        self.assertIn('<span class="chip st s-done">shipped</span>', page)
+        self.assertIn(".plan:has(.stf:checked) .ln{display:none}", page)
+        self.assertIn(".plan:has(#stf_1:checked) .ln.s-verifying{display:list-item}", page)
+        self.assertIn(".plan:has(#stf_1:checked) .box:has(.ln.s-verifying){display:block}", page)
+        self.assertIn(".plan:has(#stf_2:checked) .np:has(.ln.s-no){display:block}", page)
+        self.assertNotIn("#stf_3", page)
+
+    def test_level_filters_skip_empty_levels(self):
+        page = quiet(build.render, render_cfg(), snapshot())
+        # both characters are playable (index 1); the other levels show but do not filter
+        self.assertIn('<input type="checkbox" id="lvf_1" class="lvf sr">', page)
+        self.assertNotIn('id="lvf_0"', page)
+        self.assertIn('<div class="lv l-ready"><b class="n">0</b>', page)
+        self.assertIn(".chars:has(#lvf_1:checked) .tile.lv1{display:flex}", page)
+        self.assertEqual(page.count('class="tile l-playable lv1"'), 2)
+
+    def test_area_filters_cover_shipped_boxes(self):
+        page = quiet(build.render, render_cfg(), snapshot())
+        self.assertIn('<input type="checkbox" id="arf_0" class="arf sr"><label for="arf_0" '
+                      'class="chip">S <b>2</b></label>', page)
+        self.assertIn(".ship:has(#arf_0:checked) .rel:has(.ent.ar0){display:grid}", page)
+        self.assertNotIn('class="notes"', page)
+
+    def test_shipped_box_blurb_and_size_stay_on_the_page(self):
+        cfg, board = render_cfg(), snapshot()
+        board["sections"][2]["boxes"][0].update(blurb="how it went", size="large")
+        page = quiet(build.render, cfg, board)
+        self.assertIn("<dt>S</dt><dd>how it went · large job</dd>", page)
+
+    def test_release_without_repo_is_not_linked(self):
+        cfg, board = copy.deepcopy(render_cfg()), snapshot()
+        cfg.pop("releases")
+        page = quiet(build.render, cfg, board)
+        self.assertIn("<h3><span>v1</span>", page)
+        self.assertNotIn("github.com", page)
+
+    def test_done_line_on_the_plan_warns_and_stays(self):
+        cfg, board = render_cfg(), snapshot()
+        board["sections"][0]["boxes"][0]["lines"][1]["done"] = True
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            page = build.render(cfg, board)
+        self.assertIn("warn: line 12 is all done; move it to shipped", err.getvalue())
+        self.assertIn('<li class="ln s-done">a</li>', page)
+        # no line is "now" any more, so the chips are verifying, done, no
+        self.assertIn('<span class="chip st s-now">now</span>', page)
+        self.assertIn('id="stf_1" class="stf sr"><label for="stf_1" class="chip st s-done">', page)
+
+    def test_history_with_an_undated_line_is_a_plain_list(self):
+        cfg, board = render_cfg(), snapshot()
+        board["sections"][3]["boxes"][0]["lines"].append(
+            {"id": 17, "text": "no date here", "done": False, "confirming": False,
+             "not_confirming": False, "release": None, "date": None, "cards": []})
+        page = quiet(build.render, cfg, board)
+        self.assertNotIn('<ol class="tl">', page)
+        self.assertIn("<li>2026-01-01: t</li>", page)
+        self.assertIn("<li>no date here</li>", page)
+
+    def test_card_ids_never_reach_the_page(self):
+        cfg, board = render_cfg(), snapshot()
+        n = 987000
+        for s in board["sections"]:
+            for box in s["boxes"]:
+                n += 1
+                box["id"] = n
+                for line in box["lines"]:
+                    n += 1
+                    line["id"] = n
+        for c in board["characters"]:
+            n += 1
+            c["id"] = n
+            for issue in c["issues"]:
+                n += 1
+                issue["id"] = n
+        page = quiet(build.render, cfg, board)
+        self.assertNotIn("987", page)
 
     def test_unknown_token_drops_the_line(self):
         cfg, board = render_cfg(), snapshot()
@@ -277,8 +399,10 @@ class Render(unittest.TestCase):
         board["releases"] = ["v1", "v2"]
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
-            build.render(cfg, board)
+            page = build.render(cfg, board)
         self.assertIn("warn: latest release v2 is not listed in shipped", err.getvalue())
+        # no changelog entry to point at, so the stamp is plain text
+        self.assertIn("· latest release v2 (2026-11-25)</p>", page)
 
     def test_latest_release_strict_fails(self):
         cfg, board = render_cfg(), snapshot()
@@ -304,11 +428,9 @@ class Render(unittest.TestCase):
         for k in ("tagline", "goal", "notice", "footer", "links", "characters_banner"):
             board["page"].pop(k)
         page = quiet(build.render, cfg, board)
-        self.assertNotIn("<nav>", page)
-        self.assertNotIn("<footer>", page)
-        self.assertNotIn("<strong>", page)
-        self.assertNotIn('class="banner"', page)
-        self.assertNotIn("<p>tag</p>", page)
+        for absent in ('class="links"', "<footer>", 'class="goal"', 'class="notice"',
+                       'class="banner"', 'class="tagline"'):
+            self.assertNotIn(absent, page)
 
     def test_latest_release_null_omits_stamp_part(self):
         cfg, board = render_cfg(), snapshot()
@@ -324,13 +446,208 @@ class Render(unittest.TestCase):
         page = quiet(build.render, cfg, board)
         self.assertEqual(page.count('class="tile '), 0)
         self.assertNotIn('id="characters"', page)
+        self.assertNotIn('href="#characters"', page)
         self.assertNotIn('class="banner"', page)
+        self.assertNotIn(".chars:has", page)
 
     def test_schema_must_be_2(self):
         cfg, board = render_cfg(), snapshot()
         board["schema"] = 1
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
             build.render(cfg, board)
+
+
+class ConfigWords(unittest.TestCase):
+    def fails(self, cfg):
+        with self.assertRaises(SystemExit) as cm, contextlib.redirect_stderr(io.StringIO()):
+            build.render(cfg, snapshot())
+        return str(cm.exception)
+
+    def test_words_block_required(self):
+        cfg = copy.deepcopy(CFG)
+        cfg.pop("words")
+        self.assertIn("no 'words' block", self.fails(cfg))
+
+    def test_each_word_required(self):
+        cfg = copy.deepcopy(CFG)
+        del cfg["words"]["awaiting"]
+        cfg["words"]["size"] = "  "
+        self.assertIn("config words missing: size, awaiting", self.fails(cfg))
+
+    def test_unknown_field_fails(self):
+        cfg = copy.deepcopy(CFG)
+        cfg["words"]["open"] = "{count} open"
+        self.assertIn("words.open is malformed", self.fails(cfg))
+
+    def test_words_are_used_verbatim(self):
+        cfg = copy.deepcopy(CFG)
+        cfg["words"].update(open="offen: {n}", size="{size}!")
+        page = quiet(build.render, cfg, snapshot())
+        self.assertIn("offen: 1", page)
+        self.assertIn('<span class="size">small!</span>', page)
+
+    def test_legend_class_must_be_plain(self):
+        cfg = copy.deepcopy(CFG)
+        cfg["legend"].append({"class": "x{}", "text": "bad"})
+        self.assertIn("legend class", self.fails(cfg))
+
+
+class Changelog(unittest.TestCase):
+    def test_release_then_date_then_rest(self):
+        def e(release=None, date=None, text="t"):
+            return {"release": release, "date": date, "text": text, "area": 0}
+        got = build.changelog([e("v0.6.9", text="a"), e(date="2026-01-01"), e(), e("v0.6.10"),
+                               e("v1.0"), e(date="2026-02-01"), e("v0.2.7-dev-pr1"),
+                               e("v0.6.9", text="b")])
+        self.assertEqual([(k, key, [x["text"] for x in g]) for k, key, g in got],
+                         [("release", "v1.0", ["t"]), ("release", "v0.6.10", ["t"]),
+                          ("release", "v0.6.9", ["a", "b"]), ("release", "v0.2.7-dev-pr1", ["t"]),
+                          ("date", "2026-02-01", ["t"]), ("date", "2026-01-01", ["t"]),
+                          ("rest", "", ["t"])])
+
+    def test_empty(self):
+        self.assertEqual(build.changelog([]), [])
+
+
+class IssueMix(unittest.TestCase):
+    def test_counts_open_counted_issues_per_level(self):
+        char = {"issues": [{"done": False, "type": "crash"}, {"done": False, "type": "freeze"},
+                           {"done": True, "type": "crash"}, {"done": False, "type": "effect"},
+                           {"done": False, "type": "verify"}, {"done": False, "type": None}]}
+        self.assertEqual(build.issue_mix(char, TYPES), {"crash": 2, "playable": 1})
+
+
+# --- the committed page ------------------------------------------------------
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def repo_inputs():
+    with open(os.path.join(REPO, "config", "roadmap.json")) as f:
+        cfg = json.load(f)
+    with open(os.path.join(REPO, "data", "board.json")) as f:
+        board = json.load(f)
+    return cfg, board
+
+
+class VisibleText(HTMLParser):
+    """What a visitor can read: text outside <style>/<script>, the tab title and
+    the attributes browsers show (title, alt, placeholder, aria-label)."""
+
+    SHOWN_ATTRS = ("title", "alt", "placeholder", "aria-label")
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts, self.skip = [], 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("style", "script"):
+            self.skip += 1
+        self.parts += [v for k, v in attrs if k in self.SHOWN_ATTRS and v]
+
+    def handle_endtag(self, tag):
+        if tag in ("style", "script"):
+            self.skip -= 1
+
+    def handle_data(self, data):
+        if not self.skip:
+            self.parts.append(data)
+
+
+def visible_text(page):
+    p = VisibleText()
+    p.feed(page)
+    p.close()
+    return "".join(p.parts)
+
+
+def unworded(text):
+    """`text` with every run of letters replaced by '#', keeping {fields}."""
+    return re.sub(r"\{[^{}]*\}|[^\W\d_]+",
+                  lambda m: m.group(0) if m.group(0).startswith("{") else "#", text)
+
+
+class CommittedPage(unittest.TestCase):
+    def test_baked_page_matches_the_build(self):
+        cfg, board = repo_inputs()
+        page = quiet(build.render, cfg, board)
+        with open(os.path.join(REPO, "site", "index.html")) as f:
+            self.assertEqual(f.read(), page, "run python3 tools/build.py and commit site/index.html")
+
+    def test_links_labels_and_filters_point_at_something(self):
+        cfg, board = repo_inputs()
+        page = quiet(build.render, cfg, board)
+        ids = re.findall(r' id="([^"]+)"', page)
+        self.assertEqual(len(ids), len(set(ids)), "duplicate ids")
+        for target in re.findall(r'href="#([^"]+)"', page) + re.findall(r' for="([^"]+)"', page):
+            self.assertIn(target, ids)
+        for box_id in re.findall(r":has\(#([a-z]+_\d+):checked\)", page):
+            self.assertIn(f'<input type="checkbox" id="{box_id}"', page)
+        for section in ("characters", "now", "next", "later", "not-planned", "shipped", "history"):
+            self.assertIn(f'<a href="#{section}">', page)
+
+    def test_every_visible_word_comes_from_the_board_or_the_config(self):
+        """Strip every letter from the inputs: any letter left on the page is prose in build.py."""
+        cfg, board = repo_inputs()
+        cfg["legend"] = [dict(item, text=unworded(item["text"])) for item in cfg["legend"]]
+        cfg["words"] = {k: unworded(v) for k, v in cfg["words"].items()}
+        page_text = board["page"]
+        for k, v in list(page_text.items()):
+            if isinstance(v, str):
+                page_text[k] = unworded(v)
+        page_text["links"] = [dict(l, label=unworded(l["label"])) for l in page_text.get("links", [])]
+        tags = {t: unworded(t) for t in board["releases"]}
+        board["releases"] = list(tags.values())
+        if board.get("latest_release"):
+            board["latest_release"]["tag"] = unworded(board["latest_release"]["tag"])
+        for s in board["sections"]:
+            s["heading"] = unworded(s["heading"])
+            s["note"] = s["note"] and unworded(s["note"])
+            for box in s["boxes"]:
+                for k in ("title", "blurb", "size"):
+                    box[k] = box[k] and unworded(box[k])
+                for line in box["lines"]:
+                    line["text"] = unworded(line["text"])
+                    line["release"] = line["release"] and unworded(line["release"])
+        for c in board["characters"]:
+            c["name"] = unworded(c["name"])
+        board["levels"] = [dict(lv, mark=unworded(lv["mark"]), label=unworded(lv["label"]),
+                                text=unworded(lv["text"])) for lv in board["levels"]]
+        text = visible_text(quiet(build.render, cfg, board))
+        left = re.findall(r"[^\W\d_]+", text)
+        self.assertEqual(left, [], f"words on the page that came from neither input: {left[:10]}")
+
+    def test_everything_on_the_board_is_on_the_page(self):
+        cfg, board = repo_inputs()
+        text = visible_text(quiet(build.render, cfg, board))
+        p = board["page"]
+        want = [p[k] for k in ("title", "tagline", "goal", "notice", "footer", "characters_heading",
+                               "characters_banner")]
+        want += [l["label"] for l in p["links"]]
+        want += [v for lv in board["levels"] for v in (lv["mark"], lv["label"], lv["text"])]
+        want += [c["name"] for c in board["characters"]]
+        want += [item["text"] for item in cfg["legend"]]
+        want.append(board["latest_release"]["tag"])
+        for s in board["sections"]:
+            want += [s["heading"]] + ([s["note"]] if s["note"] else [])
+            for box in s["boxes"]:
+                want += [box["title"]] + ([box["blurb"]] if box["blurb"] else [])
+                if box["size"]:
+                    want.append(build.say(cfg["words"], "size", size=box["size"]))
+                for line in box["lines"]:
+                    t = build.fill(line["text"], board)
+                    m = build.HISTORY_RE.match(t) if s["kind"] == "background" else None
+                    want += [m.group(1), m.group(2)] if m else [t]
+                    want += [line["release"]] if line["release"] else []
+                    want += [line["date"]] if line["date"] else []
+        missing = [x for x in want if x not in text]
+        self.assertEqual(missing, [])
+        # one tile per character, and the characters block leads
+        page = quiet(build.render, cfg, board)
+        self.assertEqual(page.count('<li class="tile '), len(board["characters"]))
+        self.assertEqual(len(re.findall(r'<li class="ln s-done ent ar\d+">', page)),
+                         sum(len(b["lines"]) for s in board["sections"] if s["kind"] == "shipped"
+                             for b in s["boxes"]))
 
 
 # --- export ----------------------------------------------------------------
@@ -421,6 +738,23 @@ class ExportSections(unittest.TestCase):
         self.assertEqual(line["cards"], [{"done": False, "needs_repro": True},
                                          {"done": False, "needs_repro": False}])
         self.assertEqual(out["stats"]["verifying_open"], 1)
+
+
+class ExportThenBuild(unittest.TestCase):
+    def test_a_fresh_export_builds(self):
+        cfg, data = small_board()
+        with tempfile.TemporaryDirectory() as d:
+            out, _ = run_export(cfg, data, d, github=False,
+                                prev={"releases": ["v0.6.9"],
+                                      "latest_release": {"tag": "v0.6.9", "date": "2026-11-25"}})
+        page = quiet(build.render, CFG, out)
+        self.assertIn("<title>Roadmap</title>", page)
+        self.assertIn('<section id="now" class="lane active">', page)
+        self.assertIn('<h3><span>Box A</span> <span class="size">large job</span></h3>', page)
+        # line two sorts before line one in the lines view
+        self.assertLess(page.index(">line two<"), page.index(">line one<"))
+        self.assertIn('<li class="ln s-verifying">shipped line <span class="sfx">(in v0.6.9, confirming)</span></li>',
+                      page)
 
 
 class ExportExclusions(unittest.TestCase):
