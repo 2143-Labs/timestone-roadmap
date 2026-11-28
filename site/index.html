@@ -5,380 +5,1860 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Timestone roadmap</title>
 <meta name="robots" content="noindex, nofollow">
+<script>try{var t=localStorage.getItem("ts-roadmap-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}document.documentElement.classList.add("js");</script>
 <style>
+:root{
+  --bg:#0b0e14;--bg-glow:rgba(56,189,248,.07);--surface:#131823;--surface-2:#1a2232;--surface-3:#222c40;
+  --border:#242f43;--border-strong:#364663;--text:#eef3fa;--text-muted:#94a3b8;--text-dim:#6b7c95;
+  --accent:#38bdf8;--accent-strong:#0ea5e9;--accent-soft:rgba(56,189,248,.13);--accent-border:rgba(56,189,248,.38);
+  --ready:#22c55e;--ready-soft:rgba(34,197,94,.14);
+  --playable:#84cc16;--playable-soft:rgba(132,204,22,.14);
+  --desync:#f59e0b;--desync-soft:rgba(245,158,11,.15);
+  --crash:#ef4444;--crash-soft:rgba(239,68,68,.15);
+  --untested:#94a3b8;--untested-soft:rgba(148,163,184,.14);
+  --now:#38bdf8;--verifying:#f59e0b;--open:#94a3b8;--done:#22c55e;--no:#ef4444;
+  --banner-bg:rgba(245,158,11,.11);--banner-border:#f59e0b;--banner-text:#fde68a;
+  --shadow:0 8px 24px rgba(0,0,0,.28);--radius:10px;--radius-sm:6px;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+html[data-theme="light"]{
+  --bg:#f2f5fa;--bg-glow:rgba(2,132,199,.07);--surface:#ffffff;--surface-2:#eef2f8;--surface-3:#e2e8f0;
+  --border:#d5dfec;--border-strong:#b0c0d6;--text:#0f172a;--text-muted:#475569;--text-dim:#64748b;
+  --accent:#0284c7;--accent-strong:#0369a1;--accent-soft:rgba(2,132,199,.10);--accent-border:rgba(2,132,199,.34);
+  --ready:#15803d;--ready-soft:rgba(21,128,61,.11);
+  --playable:#4d7c0f;--playable-soft:rgba(77,124,15,.11);
+  --desync:#b45309;--desync-soft:rgba(180,83,9,.11);
+  --crash:#dc2626;--crash-soft:rgba(220,38,38,.11);
+  --untested:#64748b;--untested-soft:rgba(100,116,139,.12);
+  --now:#0284c7;--verifying:#b45309;--open:#64748b;--done:#15803d;--no:#dc2626;
+  --banner-bg:#fffbeb;--banner-border:#d97706;--banner-text:#78350f;
+  --shadow:0 6px 20px rgba(15,23,42,.07);
+}
 *{box-sizing:border-box}
-body{margin:0 auto;max-width:1300px;padding:1rem;background:#1b1d22;color:#e6e6e6;font:16px/1.5 system-ui,sans-serif}
-a{color:#4aa3ff}
-h1{margin:.2rem 0}
-h2{grid-column:1/-1;margin:1.5rem 0 0}
-h2 small{font-weight:normal;color:#9aa0a6;font-size:.8rem}
-h3{margin:0 0 .4rem;font-size:1.1rem}
-header p{margin:.3rem 0}
-nav a{margin-right:1rem}
-.stamp{color:#9aa0a6;font-size:.9rem}
-.card{background:#262a31;border-radius:6px;padding:1rem}
-.card p{margin:.2rem 0 .6rem;color:#c4c7cc}
-.size{float:right;font-size:.75rem;font-weight:normal;color:#9aa0a6;border:1px solid #444a53;border-radius:4px;padding:0 .4rem}
-.roadmap{display:grid;gap:1rem;grid-template-columns:1fr}
-@media(min-width:700px){.roadmap{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1100px){.roadmap{grid-template-columns:repeat(3,1fr)}}
-.roadmap>section{display:contents}
-.roadmap>section.wide{display:block;grid-column:1/-1}
-ul{padding-left:0}
-.card li,.legend li{list-style:none;margin:.25rem 0}
-.card li::before,.legend li::before{content:"○ ";color:#9aa0a6}
-li.done::before{content:"✔ ";color:#4caf50}
-li.verifying::before{content:"◷ ";color:#f0b429}
-li.now::before{content:"▶ ";color:#4aa3ff}
-li.open::before{content:"○ ";color:#9aa0a6}
-li.no::before{content:"✕ ";color:#e5534b}
-.card li.done{text-decoration:line-through;opacity:.5}
-.legend{display:flex;flex-wrap:wrap;gap:.2rem 1.5rem;font-size:.9rem}
-.card ol.plain li,.card ul.plain li{list-style:revert;margin-left:1.5rem}
-.card .plain li::before{content:none}
-.toggle{position:absolute;opacity:0}
-.toggle+label{display:inline-block;margin:.8rem 0;padding:.4rem .9rem;border:1px solid #4aa3ff;border-radius:6px;cursor:pointer;user-select:none}
-#show-done:checked+label::after{content:" ✓"}
-#show-done:focus-visible+label{outline:2px solid #4aa3ff}
-#show-done:not(:checked)~main li.done,#show-done:not(:checked)~main .shipped{display:none}
-.banner{background:#3a2f12;border-left:4px solid #f0b429;padding:.5rem .8rem;border-radius:4px}
-.levels p{margin:.2rem 0}
-.tiles{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:.8rem}
-.tile{border-left:4px solid;background:#262a31;border-radius:4px;padding:.4rem .6rem;display:flex;flex-direction:column}
-.tile span{font-size:.85rem}
-.tile small{color:#9aa0a6;font-size:.75rem}
-.ready{border-color:#4caf50}.playable{border-color:#8bc34a}.desync{border-color:#f0b429}.crash{border-color:#e5534b}.untested{border-color:#9aa0a6}
-b.ready{color:#4caf50}b.playable{color:#8bc34a}b.desync{color:#f0b429}b.crash{color:#e5534b}b.untested{color:#9aa0a6}
-footer{margin-top:2rem;color:#9aa0a6;font-size:.9rem}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;background:radial-gradient(ellipse 90% 420px at 50% -80px,var(--bg-glow),transparent 70%),var(--bg);
+  color:var(--text);font:15px/1.55 var(--font);-webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{max-width:1280px;margin:0 auto;padding:0 1.25rem 3rem}
+.js-only{display:none!important}
+html.js .js-only{display:revert!important}
+html.js .js-only.flex-only{display:flex!important}
+html.js .js-only.grid-only{display:grid!important}
+html.js .js-only.inline-flex-only{display:inline-flex!important}
+html.js .panel[hidden]{display:none!important}
+[hidden]{display:none!important}
+
+/* Masthead */
+.masthead{padding:1.25rem 0 1rem}
+.masthead-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.9rem}
+.stamp-row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;font-size:.82rem;color:var(--text-muted)}
+.live-dot{width:8px;height:8px;border-radius:99px;background:var(--ready);box-shadow:0 0 0 3px var(--ready-soft);flex-shrink:0}
+.stamp{font-variant-numeric:tabular-nums}
+.release-pill{
+  display:inline-flex;align-items:center;gap:.35rem;padding:.18rem .58rem;border-radius:99px;
+  background:var(--accent-soft);border:1px solid var(--accent-border);color:var(--accent);
+  font-size:.8rem;font-family:var(--mono);font-variant-numeric:tabular-nums;
+}
+.release-pill:hover{text-decoration:none;filter:brightness(1.12)}
+.masthead-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem}
+.ext-links{display:flex;flex-wrap:wrap;gap:.45rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.35rem;padding:.38rem .78rem;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-size:.86rem;font-weight:600;
+  cursor:pointer;transition:background .12s,border-color .12s,transform .1s;text-decoration:none;
+}
+.btn:hover{background:var(--surface-3);border-color:var(--accent-border);text-decoration:none}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#06121f}
+html[data-theme="light"] .btn-primary{color:#fff}
+.btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);color:#fff}
+.btn-icon{padding:.38rem .55rem}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+.masthead-title h1{margin:0;font-size:clamp(1.65rem,3.2vw,2.35rem);letter-spacing:-.03em;line-height:1.15}
+.tagline{margin:.35rem 0 0;color:var(--text-muted);font-size:1.02rem}
+
+.brief-grid{display:grid;gap:.75rem;margin-top:1rem;grid-template-columns:1fr}
+@media(min-width:760px){.brief-grid.two-col{grid-template-columns:1.15fr 1fr}}
+.brief-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem}
+.brief-goal{border-left:4px solid var(--accent);font-size:.96rem}
+.brief-notice{border-left:4px solid var(--desync);color:var(--text-muted);font-size:.91rem}
+
+/* Roster Pulse Strip in Masthead */
+.roster-pulse{
+  margin-top:.9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:.8rem 1rem;
+}
+.pulse-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem}
+.pulse-title{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:flex;align-items:center;gap:.45rem}
+.pulse-total{font-family:var(--mono);font-size:.8rem;color:var(--text);background:var(--surface-2);padding:.05rem .45rem;border-radius:99px;border:1px solid var(--border)}
+.pulse-bar{display:flex;height:9px;border-radius:99px;overflow:hidden;background:var(--surface-2);gap:2px}
+.pulse-seg{height:100%;border:0;padding:0;cursor:pointer;transition:filter .12s,transform .12s;min-width:6px}
+.pulse-seg:hover{filter:brightness(1.2)}
+.pulse-seg.ready{background:var(--ready)}.pulse-seg.playable{background:var(--playable)}
+.pulse-seg.desync{background:var(--desync)}.pulse-seg.crash{background:var(--crash)}.pulse-seg.untested{background:var(--untested)}
+.pulse-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.pulse-chip{
+  display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .58rem;border-radius:99px;
+  border:1px solid var(--border);background:var(--surface-2);font-size:.8rem;color:var(--text-muted);
+  cursor:pointer;font-variant-numeric:tabular-nums;transition:border-color .12s,background .12s;
+}
+.pulse-chip:hover{border-color:var(--border-strong);background:var(--surface-3);color:var(--text)}
+.pulse-chip strong{color:var(--text);font-family:var(--mono);font-weight:700}
+
+/* Sticky Command Bar */
+.command-bar{
+  position:sticky;top:0;z-index:40;margin:0 -1.25rem 1.15rem;padding:.65rem 1.25rem;
+  background:rgba(11,14,20,.88);backdrop-filter:blur(12px);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+html[data-theme="light"] .command-bar{background:rgba(242,245,250,.90)}
+.command-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.65rem}
+.tabs{display:flex;align-items:center;gap:.3rem;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  display:inline-flex;align-items:center;gap:.4rem;padding:.44rem .82rem;border-radius:var(--radius-sm);
+  border:1px solid transparent;background:transparent;color:var(--text-muted);font-weight:600;font-size:.9rem;
+  cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;
+}
+.tab:hover{background:var(--surface-2);color:var(--text)}
+.tab.is-active{background:var(--surface-2);color:var(--text);border-color:var(--accent-border);box-shadow:inset 0 -2px 0 var(--accent)}
+.tab-count{
+  font-family:var(--mono);font-size:.75rem;padding:.05rem .42rem;border-radius:99px;
+  background:var(--surface-3);color:var(--text-muted);font-variant-numeric:tabular-nums;
+}
+.tab.is-active .tab-count{background:var(--accent-soft);color:var(--accent)}
+
+.search-wrap{position:relative;display:flex;align-items:center;flex:1 1 220px;max-width:340px;margin-left:auto}
+.search-icon{position:absolute;left:.65rem;width:15px;height:15px;color:var(--text-dim);pointer-events:none}
+.search-input{
+  width:100%;padding:.44rem 2.3rem .44rem 2.1rem;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:.88rem;
+}
+.search-input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.search-kbd{
+  position:absolute;right:.55rem;padding:.05rem .35rem;border-radius:4px;border:1px solid var(--border-strong);
+  background:var(--surface-2);color:var(--text-dim);font:700 .72rem var(--mono);pointer-events:none;
+}
+.search-clear{
+  position:absolute;right:.4rem;border:0;background:transparent;color:var(--text-muted);
+  cursor:pointer;font-size:1.1rem;line-height:1;padding:.15rem .35rem;border-radius:4px;
+}
+.search-clear:hover{color:var(--text);background:var(--surface-3)}
+.search-status{
+  display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+  margin-bottom:1rem;padding:.6rem .9rem;border-radius:var(--radius-sm);
+  background:var(--accent-soft);border:1px solid var(--accent-border);font-size:.88rem;
+}
+html.js body.is-searching .rm-controls,html.js body.is-searching .team-bar,
+html.js body.is-searching .roster-controls,html.js body.is-searching .shipped-toolbar,
+body.is-searching .legend,body.is-searching .levels,body.is-searching .banner{display:none!important}
+
+/* Legend & Roadmap Toolbar */
+.rm-controls{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.65rem;
+  margin-bottom:.85rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+}
+.pill-group{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem}
+.pill{
+  display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .65rem;border-radius:99px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);font-size:.82rem;font-weight:500;
+  cursor:pointer;transition:background .12s,border-color .12s,color .12s;text-decoration:none;
+}
+.pill:hover{background:var(--surface-3);color:var(--text);border-color:var(--border-strong);text-decoration:none}
+.pill.is-active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.pill-num{font-family:var(--mono);font-size:.74rem;opacity:.85}
+
+.legend{
+  display:flex;flex-wrap:wrap;gap:.4rem .55rem;list-style:none;margin:0 0 1.25rem;padding:0;font-size:.84rem;
+}
+.legend li{
+  display:inline-flex;align-items:center;gap:.35rem;padding:.26rem .62rem;border-radius:99px;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-muted);
+  transition:border-color .12s,background .12s,color .12s;
+}
+html.js .legend li[data-filter-state]{cursor:pointer}
+html.js .legend li[data-filter-state]:hover{border-color:var(--border-strong);color:var(--text);background:var(--surface-2)}
+html.js .legend li.is-active{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.legend li::before,.line-list li::before{font-weight:700;flex-shrink:0}
+li.done::before{content:"✔";color:var(--done)}
+li.verifying::before{content:"◷";color:var(--verifying)}
+li.now::before{content:"▶";color:var(--now)}
+li.open::before{content:"○";color:var(--open)}
+li.no::before{content:"✕";color:var(--no)}
+
+/* Sections & Cards */
+.rm-section,.char-section,.shipped-section,.history-section{margin-bottom:2rem;scroll-margin-top:4.5rem}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem 1rem;margin-bottom:.85rem;padding-bottom:.45rem;border-bottom:1px solid var(--border)}
+.sec-head h2{margin:0;font-size:1.3rem;letter-spacing:-.02em;display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem}
+.sec-head h2 small{font-weight:400;color:var(--text-muted);font-size:.86rem}
+.sec-meta{font-family:var(--mono);font-size:.78rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
+
+.box-grid{display:grid;gap:1rem;grid-template-columns:1fr;align-items:start}
+@media(min-width:760px){.box-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1100px){.kind-active .box-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kind-not_planned .box-grid{grid-template-columns:1fr}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.1rem;box-shadow:var(--shadow);display:flex;flex-direction:column;
+}
+.kind-active .card{border-top:3px solid var(--accent)}
+.kind-not_planned .card{border-left:4px solid var(--no)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.65rem;margin-bottom:.35rem}
+.card-head h3{margin:0;font-size:1.04rem;line-height:1.3;letter-spacing:-.01em}
+.size{
+  flex-shrink:0;font-family:var(--mono);font-size:.72rem;font-weight:600;padding:.14rem .5rem;
+  border-radius:99px;border:1px solid var(--border-strong);color:var(--text-muted);background:var(--surface-2);white-space:nowrap;
+}
+.size-small{border-color:rgba(34,197,94,.4);color:var(--ready);background:var(--ready-soft)}
+.size-medium{border-color:rgba(245,158,11,.42);color:var(--desync);background:var(--desync-soft)}
+.size-large{border-color:var(--accent-border);color:var(--accent);background:var(--accent-soft)}
+.card-blurb{margin:.15rem 0 .7rem;color:var(--text-muted);font-size:.89rem;line-height:1.48}
+
+.line-list{list-style:none;margin:.3rem 0 0;padding:0;display:flex;flex-direction:column;gap:.48rem}
+.kind-not_planned .line-list{display:grid;gap:.5rem 1.5rem;grid-template-columns:1fr}
+@media(min-width:760px){.kind-not_planned .line-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.line-list li{display:flex;align-items:baseline;gap:.55rem;font-size:.92rem;line-height:1.45}
+.line-list li::before{width:1rem;text-align:center;font-size:.85rem}
+.line-list li.done .line-body{color:var(--text-muted)}
+.kind-active .line-list li.done .line-body,.kind-upcoming .line-list li.done .line-body{text-decoration:line-through;opacity:.7}
+.line-body{flex:1;min-width:0}
+.confirm-tag{
+  display:inline-block;margin-left:.35rem;padding:.05rem .42rem;border-radius:4px;
+  background:var(--desync-soft);color:var(--desync);font-size:.78rem;font-weight:600;
+}
+.rel-tag{
+  display:inline-block;margin:0 .06rem;padding:.02rem .4rem;border-radius:4px;
+  background:var(--accent-soft);border:1px solid var(--accent-border);color:var(--accent);
+  font-family:var(--mono);font-size:.77rem;font-weight:600;white-space:nowrap;
+}
+.rel-tag.tail{margin-left:.32rem}
+.rel-tag:hover{text-decoration:none;filter:brightness(1.15)}
+.date-tag{
+  display:inline-block;margin-left:.3rem;padding:.04rem .4rem;border-radius:4px;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);
+  font-family:var(--mono);font-size:.76rem;white-space:nowrap;
+}
+.area-tag{
+  display:inline-block;margin-right:.45rem;padding:.05rem .45rem;border-radius:4px;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);
+  font-size:.76rem;font-weight:600;vertical-align:baseline;
+}
+
+/* Characters Section */
+.banner{
+  margin:0 0 1rem;padding:.75rem 1rem;border-radius:var(--radius-sm);
+  background:var(--banner-bg);border:1px solid var(--banner-border);border-left-width:4px;
+  color:var(--banner-text);font-size:.91rem;
+}
+
+/* 3-Character Team Checker */
+.team-bar{
+  margin-bottom:1.1rem;padding:.95rem 1rem;border-radius:var(--radius);
+  background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
+}
+.team-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.75rem}
+.team-title{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;font-weight:700;font-size:.95rem}
+.team-verdict{
+  display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:99px;
+  font-size:.82rem;font-weight:600;border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);
+}
+.team-verdict.ready{border-color:var(--ready);background:var(--ready-soft);color:var(--ready)}
+.team-verdict.playable{border-color:var(--playable);background:var(--playable-soft);color:var(--playable)}
+.team-verdict.desync{border-color:var(--desync);background:var(--desync-soft);color:var(--desync)}
+.team-verdict.crash{border-color:var(--crash);background:var(--crash-soft);color:var(--crash)}
+.team-verdict.untested{border-color:var(--untested);background:var(--untested-soft);color:var(--untested)}
+.team-summary{font-size:.82rem;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.team-actions{display:flex;gap:.4rem}
+.team-slots{display:grid;gap:.65rem;grid-template-columns:1fr}
+@media(min-width:720px){.team-slots{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.team-slot{
+  display:flex;flex-direction:column;gap:.4rem;padding:.65rem .75rem;border-radius:var(--radius-sm);
+  border:1px dashed var(--border-strong);background:var(--surface-2);min-height:74px;
+}
+.team-slot.is-filled{border-style:solid;border-left-width:4px;background:var(--surface)}
+.team-slot.ready{border-left-color:var(--ready)}.team-slot.playable{border-left-color:var(--playable)}
+.team-slot.desync{border-left-color:var(--desync)}.team-slot.crash{border-left-color:var(--crash)}.team-slot.untested{border-left-color:var(--untested)}
+.slot-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.slot-num{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--text-dim);padding:.05rem .38rem;border-radius:4px;background:var(--surface-3)}
+.slot-select{
+  flex:1;min-width:0;padding:.28rem .45rem;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.85rem;
+}
+.slot-clear{border:0;background:transparent;color:var(--text-muted);cursor:pointer;padding:.1rem .35rem;border-radius:4px;font-size:1rem;line-height:1}
+.slot-clear:hover{background:var(--surface-3);color:var(--text)}
+.slot-info{font-size:.78rem;color:var(--text-muted);display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;font-variant-numeric:tabular-nums}
+
+/* Level Filter Cards */
+.levels{display:grid;gap:.55rem;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));margin-bottom:1rem}
+.level-card{
+  text-align:left;padding:.65rem .8rem;border-radius:var(--radius-sm);border:1px solid var(--border);
+  border-top:3px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:.2rem;
+  transition:border-color .12s,background .12s,transform .1s;
+}
+html.js .level-card{cursor:pointer}
+html.js .level-card:hover{background:var(--surface-2);border-color:var(--border-strong)}
+.level-card.is-active{box-shadow:0 0 0 2px var(--accent);background:var(--surface-2)}
+.level-card.ready{border-top-color:var(--ready)}.level-card.playable{border-top-color:var(--playable)}
+.level-card.desync{border-top-color:var(--desync)}.level-card.crash{border-top-color:var(--crash)}.level-card.untested{border-top-color:var(--untested)}
+.level-card-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.level-card-name{font-size:.86rem;font-weight:700;display:flex;align-items:center;gap:.35rem}
+.level-card-count{font-family:var(--mono);font-size:1.1rem;font-weight:800;font-variant-numeric:tabular-nums}
+.level-card-text{margin:0;font-size:.78rem;color:var(--text-muted);line-height:1.35}
+
+/* Roster Toolbar & Character Tiles */
+.roster-controls{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:.95rem;
+  padding:.65rem .85rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+}
+.roster-filter-input{
+  flex:1 1 180px;max-width:260px;padding:.36rem .65rem;border-radius:var(--radius-sm);
+  border:1px solid var(--border-strong);background:var(--surface-2);font-size:.86rem;
+}
+.roster-select{
+  padding:.36rem .6rem;border-radius:var(--radius-sm);border:1px solid var(--border-strong);
+  background:var(--surface-2);font-size:.85rem;cursor:pointer;
+}
+
+.tiles{display:grid;gap:.65rem;grid-template-columns:repeat(auto-fill,minmax(225px,1fr))}
+.tile{
+  border:1px solid var(--border);border-left:4px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--surface);padding:.65rem .78rem;display:flex;flex-direction:column;gap:.32rem;
+  transition:border-color .12s,background .12s;
+}
+.tile:hover{background:var(--surface-2)}
+.tile.in-team{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-border)}
+.tile.ready{border-left-color:var(--ready)}.tile.playable{border-left-color:var(--playable)}
+.tile.desync{border-left-color:var(--desync)}.tile.crash{border-left-color:var(--crash)}.tile.untested{border-left-color:var(--untested)}
+.tile-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.tile-name{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.35rem;min-width:0}
+.team-add{
+  flex-shrink:0;width:24px;height:24px;border-radius:6px;border:1px solid var(--border-strong);
+  background:var(--surface-2);color:var(--text-muted);cursor:pointer;font-weight:700;font-size:.9rem;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;
+}
+.team-add:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.tile.in-team .team-add{background:var(--accent);border-color:var(--accent);color:#06121f}
+.tile-mid{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.tile-level{font-size:.78rem;font-weight:600}
+.sev-bar{display:flex;height:4px;width:54px;border-radius:99px;overflow:hidden;background:var(--surface-3);gap:1px;flex-shrink:0}
+.sev-seg-crash{background:var(--crash)}.sev-seg-desync{background:var(--desync)}.sev-seg-playable{background:var(--playable)}
+.tile-stats{color:var(--text-muted);font-size:.76rem;font-variant-numeric:tabular-nums;line-height:1.45}
+.tile-await{color:var(--desync);font-weight:600;white-space:nowrap}
+.tile-types{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.1rem}
+.type-chip{
+  font-family:var(--mono);font-size:.69rem;padding:.04rem .36rem;border-radius:4px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--text-muted);
+}
+.type-chip.crash{border-color:rgba(239,68,68,.38);background:var(--crash-soft);color:var(--crash)}
+.type-chip.desync{border-color:rgba(245,158,11,.38);background:var(--desync-soft);color:var(--desync)}
+.type-chip.playable{border-color:rgba(132,204,22,.38);background:var(--playable-soft);color:var(--playable)}
+
+.lv-ready,b.ready,.tile-level.ready{color:var(--ready)}
+.lv-playable,b.playable,.tile-level.playable{color:var(--playable)}
+.lv-desync,b.desync,.tile-level.desync{color:var(--desync)}
+.lv-crash,b.crash,.tile-level.crash{color:var(--crash)}
+.lv-untested,b.untested,.tile-level.untested{color:var(--untested)}
+
+/* Shipped Section */
+.shipped-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.65rem;
+  margin-bottom:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+}
+.seg-switch{display:inline-flex;padding:2px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--border)}
+.seg-btn{
+  padding:.3rem .72rem;border-radius:4px;border:0;background:transparent;color:var(--text-muted);
+  font-size:.83rem;font-weight:600;cursor:pointer;
+}
+.seg-btn.is-active{background:var(--accent);color:#06121f}
+html[data-theme="light"] .seg-btn.is-active{color:#fff}
+.release-chips{display:flex;flex-wrap:wrap;gap:.35rem;flex:1}
+.shipped-by-release{display:none}
+.shipped-section[data-mode="release"] .shipped-by-area{display:none}
+.shipped-section[data-mode="release"] .shipped-by-release{display:grid}
+.rel-card-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.rel-card-head h3{margin:0;font-family:var(--mono);font-size:1.05rem}
+
+/* Background & Timeline */
+.history-grid{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:900px){.history-grid{grid-template-columns:1.15fr 1fr;align-items:start}}
+.timeline{list-style:none;margin:.4rem 0 0;padding:0 0 0 1.15rem;border-left:2px solid var(--border-strong);display:flex;flex-direction:column;gap:.7rem}
+.timeline li{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .6rem;font-size:.91rem}
+.timeline li::before{
+  content:"";position:absolute;left:-1.5rem;top:.45rem;width:9px;height:9px;border-radius:99px;
+  background:var(--accent);box-shadow:0 0 0 3px var(--surface);
+}
+.tl-date{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--text-muted);flex-shrink:0;min-width:6.2rem}
+.tl-text{flex:1;min-width:180px}
+.plain{margin:.35rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:.5rem;font-size:.91rem}
+.plain li{line-height:1.48}
+
+.empty-state{
+  padding:2rem 1rem;text-align:center;color:var(--text-muted);background:var(--surface);
+  border:1px dashed var(--border-strong);border-radius:var(--radius);font-size:.92rem;
+}
+@media(max-width:540px){
+  .tab{padding:.38rem .56rem;font-size:.83rem}
+  .tab-count{padding:.03rem .32rem;font-size:.7rem}
+}
+
+/* Footer */
+.site-footer{
+  margin-top:2.5rem;padding-top:1.1rem;border-top:1px solid var(--border);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;
+  color:var(--text-muted);font-size:.86rem;
+}
+.site-footer p{margin:0}
+.back-top{
+  display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);
+}
+.back-top:hover{color:var(--text);border-color:var(--accent);text-decoration:none}
+
+@media print{
+  body{background:#fff;color:#000}
+  .command-bar,.js-only,.back-top,.team-bar,.roster-controls,.rm-controls,.shipped-toolbar{display:none!important}
+  .panel[hidden]{display:block!important}
+  .card,.tile,.brief-card,.roster-pulse{box-shadow:none;break-inside:avoid;border-color:#ccc;background:#fff}
+}
 </style>
 </head>
-<body>
-<header>
+<body id="top">
+<div class="shell">
+<header class="masthead">
+<div class="masthead-top">
+<div class="stamp-row">
+<span class="live-dot" aria-hidden="true"></span>
+<span class="stamp">Last updated 2026-11-27 07:15 UTC</span>
+<a class="release-pill" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">latest release <strong>v0.6.9</strong> (2026-11-25)</a>
+</div>
+<div class="masthead-actions">
+<nav class="ext-links" aria-label="Links"><a class="btn btn-primary" href="https://github.com/tilderain/Timestone/releases" rel="noopener">Download<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11L11 5M6 5h5v5"/></svg></a><a class="btn" href="https://discord.gg/BvDNwPzwy4" rel="noopener">Discord<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11L11 5M6 5h5v5"/></svg></a><a class="btn" href="https://github.com/tilderain/Timestone" rel="noopener">Source<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11L11 5M6 5h5v5"/></svg></a></nav>
+<button type="button" class="btn btn-icon js-only inline-flex-only" id="theme-toggle" aria-label="Toggle theme" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1"/></svg><span class="theme-label">Light</span></button>
+</div>
+</div>
+<div class="masthead-title">
 <h1>Timestone roadmap</h1>
-<p>Rollback netcode for Ultimate Marvel vs. Capcom 3 (Steam)</p>
-<p><strong>Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.</strong></p>
-<p>Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.</p>
-<nav><a href="https://github.com/tilderain/Timestone/releases">Download</a><a href="https://discord.gg/BvDNwPzwy4">Discord</a><a href="https://github.com/tilderain/Timestone">Source</a></nav>
-<p class="stamp">Last updated 2026-11-27 07:15 UTC · latest release v0.6.9 (2026-11-25)</p>
+<p class="tagline">Rollback netcode for Ultimate Marvel vs. Capcom 3 (Steam)</p>
+</div>
+<div class="brief-grid two-col">
+<div class="brief-card brief-goal"><strong>Tournament-ready UMVC3 online: every character safe to play with rollback, then replays and ranked.</strong></div>
+<div class="brief-card brief-notice">Timestone is an open beta. It is not finished and not tournament-ready yet. Nothing below has a date: things ship when they work.</div>
+</div>
+<div class="roster-pulse" aria-label="Characters">
+<div class="pulse-head">
+<div class="pulse-title">Characters <span class="pulse-total">50</span></div>
+<button type="button" class="pill js-only inline-flex-only" id="pulse-team-btn">Team check →</button>
+</div>
+<div class="pulse-bar">
+<button type="button" class="pulse-seg playable" style="width:20.00%" data-pulse-level="playable" title="Playable: 10" aria-label="Playable: 10"></button>
+<button type="button" class="pulse-seg desync" style="width:30.00%" data-pulse-level="desync" title="Known desyncs: 15" aria-label="Known desyncs: 15"></button>
+<button type="button" class="pulse-seg crash" style="width:42.00%" data-pulse-level="crash" title="Can crash: 21" aria-label="Can crash: 21"></button>
+<button type="button" class="pulse-seg untested" style="width:8.00%" data-pulse-level="untested" title="Untested: 4" aria-label="Untested: 4"></button>
+</div>
+<div class="pulse-chips">
+<button type="button" class="pulse-chip" data-pulse-level="ready"><b class="ready">●</b> Tournament-ready <strong>0</strong></button>
+<button type="button" class="pulse-chip" data-pulse-level="playable"><b class="playable">◐</b> Playable <strong>10</strong></button>
+<button type="button" class="pulse-chip" data-pulse-level="desync"><b class="desync">▲</b> Known desyncs <strong>15</strong></button>
+<button type="button" class="pulse-chip" data-pulse-level="crash"><b class="crash">■</b> Can crash <strong>21</strong></button>
+<button type="button" class="pulse-chip" data-pulse-level="untested"><b class="untested">○</b> Untested <strong>4</strong></button>
+</div>
+</div>
 </header>
-<ul class="legend"><li class="now">Being worked on now</li><li class="open">Planned, not started</li><li class="verifying">Fix is in a release, waiting for players to confirm it</li><li class="done">Shipped (hidden until you press Show shipped)</li><li class="no">Not planned</li></ul>
-<input type="checkbox" id="show-done" class="toggle">
-<label for="show-done">Show shipped work (42)</label>
-<main class="roadmap">
-<section id="characters" class="wide">
-<h2>Characters</h2>
+<div class="command-bar js-only" id="command-bar">
+<div class="command-inner">
+<div class="tabs" role="tablist">
+<button type="button" class="tab is-active" role="tab" data-tab="roadmap" aria-selected="true">Roadmap <span class="tab-count">57</span></button>
+<button type="button" class="tab" role="tab" data-tab="characters" aria-selected="false">Characters <span class="tab-count">50</span></button>
+<button type="button" class="tab" role="tab" data-tab="shipped" aria-selected="false">Shipped <span class="tab-count">42</span></button>
+<button type="button" class="tab" role="tab" data-tab="history" aria-selected="false">Background <span class="tab-count">18</span></button>
+<button type="button" class="tab" role="tab" data-tab="all" aria-selected="false">All</button>
+</div>
+<div class="search-wrap">
+<svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+<input type="search" id="global-search" class="search-input" placeholder="Search…" aria-label="Search">
+<kbd class="search-kbd">/</kbd>
+<button type="button" id="search-clear" class="search-clear" hidden aria-label="Clear search">×</button>
+</div>
+</div>
+</div>
+<div id="search-status" class="search-status" hidden aria-live="polite">
+<span id="search-status-text"></span>
+<button type="button" id="search-status-clear" class="pill">Clear</button>
+</div>
+<div id="global-empty" class="empty-state" hidden>0</div>
+<main id="main-content">
+<div class="panel" data-panel="roadmap">
+<div class="rm-controls js-only flex-only">
+<div class="pill-group">
+<a class="pill" href="#now" data-jump-sec="now">Now <span class="pill-num">14</span></a>
+<a class="pill" href="#next" data-jump-sec="next">Next <span class="pill-num">17</span></a>
+<a class="pill" href="#later" data-jump-sec="later">Later <span class="pill-num">18</span></a>
+<a class="pill" href="#not-planned" data-jump-sec="not-planned">Not planned <span class="pill-num">8</span></a>
+</div>
+<div class="pill-group">
+<button type="button" class="pill is-active" data-size-filter="">All</button>
+<button type="button" class="pill" data-size-filter="small">small job</button>
+<button type="button" class="pill" data-size-filter="medium">medium job</button>
+<button type="button" class="pill" data-size-filter="large">large job</button>
+</div>
+</div>
+<ul class="legend"><li class="now" data-filter-state="now" tabindex="0" role="button" aria-pressed="false">Being worked on now</li><li class="open" data-filter-state="open" tabindex="0" role="button" aria-pressed="false">Planned, not started</li><li class="verifying" data-filter-state="verifying" tabindex="0" role="button" aria-pressed="false">Fix is in a release, waiting for players to confirm it</li><li class="done" data-filter-state="done" tabindex="0" role="button" aria-pressed="false">Shipped</li><li class="no" data-filter-state="no" tabindex="0" role="button" aria-pressed="false">Not planned</li></ul>
+<section id="now" class="rm-section kind-active" data-section-kind="active">
+<div class="sec-head"><h2>Now <small>(Currently working on this)</small></h2><span class="sec-meta">14</span></div>
+<div class="box-grid">
+<article class="card" data-size="large" data-head-text="fewer desyncs and crashes the biggest job. each character&#x27;s known problems are in the character table further down.">
+<div class="card-head"><h3>Fewer desyncs and crashes</h3><span class="size size-large">large job</span></div>
+<p class="card-blurb">The biggest job. Each character&#x27;s known problems are in the character table further down.</p>
+<ul class="line-list">
+<li class="now" data-state="now"><span class="line-body">Fix the character-specific desyncs and crashes listed in the character table</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">163 fixes and open bugs are marked for re-testing in recent releases. If you still hit one, report it on Discord</span></li>
+<li class="now" data-state="now"><span class="line-body">Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails</span></li>
+</ul>
+</article>
+<article class="card" data-size="large" data-head-text="smoother long sessions performance over a long night of sets.">
+<div class="card-head"><h3>Smoother long sessions</h3><span class="size size-large">large job</span></div>
+<p class="card-blurb">Performance over a long night of sets.</p>
+<ul class="line-list">
+<li class="now" data-state="now"><span class="line-body">Long sets and rematches dropping from 60 to 30 FPS</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Effects costing more to rewind than they used to<span class="confirm-tag">(fix released, confirming)</span></span></li>
+</ul>
+</article>
+<article class="card" data-size="medium" data-head-text="lobbies and social building on the in-game lobby from v0.6.">
+<div class="card-head"><h3>Lobbies and social</h3><span class="size size-medium">medium job</span></div>
+<p class="card-blurb">Building on the in-game lobby from v0.6.</p>
+<ul class="line-list">
+<li class="now" data-state="now"><span class="line-body">Return to the room you came from after a set, and keep the lobby list current</span></li>
+<li class="now" data-state="now"><span class="line-body">Private rooms with a password or a generated room code</span></li>
+<li class="now" data-state="now"><span class="line-body">Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)</span></li>
+<li class="now" data-state="now"><span class="line-body">Name each setup and give it its own set length, so a big room can mix beginner and long-set setups</span></li>
+<li class="now" data-state="now"><span class="line-body">Turn Galactus on or off per room</span></li>
+<li class="now" data-state="now"><span class="line-body">Room skill level and a casual or serious tag</span></li>
+<li class="now" data-state="now"><span class="line-body">A join sound and a &quot;player joined&quot; notice that stays on screen</span></li>
+<li class="now" data-state="now"><span class="line-body">Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)</span></li>
+<li class="now" data-state="now"><span class="line-body">Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a>; not in a release yet</span></li>
+</ul>
+</article>
+</div>
+</section>
+<section id="next" class="rm-section kind-upcoming" data-section-kind="upcoming">
+<div class="sec-head"><h2>Next <small>(Starts after the current work)</small></h2><span class="sec-meta">17</span></div>
+<div class="box-grid">
+<article class="card" data-size="large" data-head-text="replays the game already records each match&#x27;s inputs while you play; that is how spectating works. saving matches as files and watching them later from a gallery menu entry, like the vita version, has not started yet. replays may only play back on the version they were recorded with.">
+<div class="card-head"><h3>Replays</h3><span class="size size-large">large job</span></div>
+<p class="card-blurb">The game already records each match&#x27;s inputs while you play; that is how spectating works. Saving matches as files and watching them later from a Gallery menu entry, like the Vita version, has not started yet. Replays may only play back on the version they were recorded with.</p>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Save a match as a replay file and watch it again from the Gallery menu</span></li>
+</ul>
+</article>
+<article class="card" data-size="large" data-head-text="matchmaking and ranked the ranking server is built, though its live server needs updating; the in-game side has not started. lobbies stay the main way to play.">
+<div class="card-head"><h3>Matchmaking and ranked</h3><span class="size size-large">large job</span></div>
+<p class="card-blurb">The ranking server is built, though its live server needs updating; the in-game side has not started. Lobbies stay the main way to play.</p>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Unranked quick match: one button that drops you into an open room setup with someone waiting</span></li>
+<li class="open" data-state="open"><span class="line-body">Separate ranked and unranked queues, with a rating and a leaderboard</span></li>
+<li class="open" data-state="open"><span class="line-body">Both players&#x27; results checked, with replays to settle disagreements</span></li>
+<li class="open" data-state="open"><span class="line-body">Ladder rules, such as first-to-4 sets</span></li>
+<li class="open" data-state="open"><span class="line-body">Reports, anti-cheat and anti-smurf measures</span></li>
+</ul>
+</article>
+<article class="card" data-size="medium" data-head-text="controllers and inputs ">
+<div class="card-head"><h3>Controllers and inputs</h3><span class="size size-medium">medium job</span></div>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Button check in team setup and character select before a match starts</span></li>
+<li class="open" data-state="open"><span class="line-body">Pad working in menus but not in the match after leaving a room match</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Pads not detected online (PS4, Brook UFB and others)<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Reconnect a controller after it disconnects</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Button bindings resetting when a match starts<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Inputs freezing for a second or two in long online sets</span></li>
+<li class="open" data-state="open"><span class="line-body">Steam Deck: external controller order and player 2 input</span></li>
+</ul>
+</article>
+<article class="card" data-size="medium" data-head-text="training mode ">
+<div class="card-head"><h3>Training mode</h3><span class="size size-medium">medium job</span></div>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Start training mode from Timestone directly</span></li>
+<li class="open" data-state="open"><span class="line-body">Train in an empty lobby setup while waiting, or open a training room so someone can join and coach</span></li>
+<li class="open" data-state="open"><span class="line-body">Practise with online input delay and simulated rollback</span></li>
+<li class="open" data-state="open"><span class="line-body">Save states and custom starting positions</span></li>
+</ul>
+</article>
+</div>
+</section>
+<section id="later" class="rm-section kind-upcoming" data-section-kind="upcoming">
+<div class="sec-head"><h2>Later <small>(Wanted, not scheduled)</small></h2><span class="sec-meta">18</span></div>
+<div class="box-grid">
+<article class="card" data-size="medium" data-head-text="launcher and hud polish ">
+<div class="card-head"><h3>Launcher and HUD polish</h3><span class="size size-medium">medium job</span></div>
+<ul class="line-list">
+<li class="verifying" data-state="verifying"><span class="line-body">Portraits and health bars follow the team order<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Timer and meter display glitches<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Launcher layout on small screens and high-DPI displays</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Remaining non-English text edge cases (Unicode names, chat and input methods shipped in <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a>)<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Steam Deck: chat no longer grabbing launcher controls</span></li>
+<li class="open" data-state="open"><span class="line-body">Steam overlay and Recent Players</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Updater reliability: errors, relaunch loops, antivirus blocks<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a>)</span></li>
+<li class="open" data-state="open"><span class="line-body">Menu polish: wrap-around navigation and rebindable hotkeys</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">A fighting-game-style launcher look: portraits, colour dots, theme<span class="confirm-tag">(fix released, confirming)</span></span></li>
+</ul>
+</article>
+<article class="card" data-size="medium" data-head-text="mods and cosmetics ">
+<div class="card-head"><h3>Mods and cosmetics</h3><span class="size size-medium">medium job</span></div>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Work alongside other UMVC3 mods such as Community Edition and colour expansions</span></li>
+<li class="verifying" data-state="verifying"><span class="line-body">Alternate costumes and colours in normal play<span class="confirm-tag">(fix released, confirming)</span></span></li>
+<li class="open" data-state="open"><span class="line-body">Your own stage and cosmetic swaps, seen only by you</span></li>
+<li class="open" data-state="open"><span class="line-body">Classic music options</span></li>
+</ul>
+</article>
+<article class="card" data-size="small" data-head-text="install and updates ">
+<div class="card-head"><h3>Install and updates</h3><span class="size size-small">small job</span></div>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">A beta channel for testers</span></li>
+<li class="open" data-state="open"><span class="line-body">Antivirus false alarms (Smart App Control, Bitdefender)</span></li>
+</ul>
+</article>
+<article class="card" data-size="medium" data-head-text="watching ">
+<div class="card-head"><h3>Watching</h3><span class="size size-medium">medium job</span></div>
+<ul class="line-list">
+<li class="open" data-state="open"><span class="line-body">Take over a replay and play on from any point</span></li>
+<li class="open" data-state="open"><span class="line-body">A public winner-stays-on broadcast</span></li>
+</ul>
+</article>
+</div>
+</section>
+<section id="not-planned" class="rm-section kind-not_planned" data-section-kind="not_planned">
+<div class="sec-head"><h2>Not planned <small>(Asked for, but we are not doing these)</small></h2><span class="sec-meta">8</span></div>
+<div class="box-grid">
+<article class="card" data-size="" data-head-text="not planned ">
+<div class="card-head"><h3>Not planned</h3></div>
+<ul class="line-list">
+<li class="no" data-state="no"><span class="line-body">Voice chat. Use Discord</span></li>
+<li class="no" data-state="no"><span class="line-body">Free text chat during a match. Quick chat stays</span></li>
+<li class="no" data-state="no"><span class="line-body">Custom in-game display names. The game shows your Steam name</span></li>
+<li class="no" data-state="no"><span class="line-body">A maximum-ping filter, for now</span></li>
+<li class="no" data-state="no"><span class="line-body">Community-run rollback or tournament servers</span></li>
+<li class="no" data-state="no"><span class="line-body">Hiding character picks</span></li>
+<li class="no" data-state="no"><span class="line-body">Frame rates above 60. The game runs at 60</span></li>
+<li class="no" data-state="no"><span class="line-body">Different delay or rollback per player. Everyone shares one fixed 8-frame window since <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a> (a delay-only option for private rooms is still open to consideration)</span></li>
+</ul>
+</article>
+</div>
+</section>
+<div id="rm-empty" class="empty-state" hidden>0</div>
+</div>
+<div class="panel" data-panel="characters">
+<section id="characters" class="char-section" data-levels="[{&quot;key&quot;:&quot;ready&quot;,&quot;mark&quot;:&quot;\u25cf&quot;,&quot;label&quot;:&quot;Tournament-ready&quot;,&quot;text&quot;:&quot;Confirmed clean in real matches&quot;},{&quot;key&quot;:&quot;playable&quot;,&quot;mark&quot;:&quot;\u25d0&quot;,&quot;label&quot;:&quot;Playable&quot;,&quot;text&quot;:&quot;Only visual or sound glitches known&quot;},{&quot;key&quot;:&quot;desync&quot;,&quot;mark&quot;:&quot;\u25b2&quot;,&quot;label&quot;:&quot;Known desyncs&quot;,&quot;text&quot;:&quot;Some moves can desync a match&quot;},{&quot;key&quot;:&quot;crash&quot;,&quot;mark&quot;:&quot;\u25a0&quot;,&quot;label&quot;:&quot;Can crash&quot;,&quot;text&quot;:&quot;Some moves can crash or freeze the game&quot;},{&quot;key&quot;:&quot;untested&quot;,&quot;mark&quot;:&quot;\u25cb&quot;,&quot;label&quot;:&quot;Untested&quot;,&quot;text&quot;:&quot;No reports yet, good or bad&quot;}]">
+<div class="sec-head"><h2>Characters</h2><span class="sec-meta" id="char-shown-count">50 / 50</span></div>
 <p class="banner">Nobody has confirmed any character in real matches yet. This table comes from bug reports and code review, so treat every row as unverified.</p>
+<div class="team-bar js-only" id="team-bar">
+<div class="team-head">
+<div class="team-title"><span>Team check</span><span id="team-verdict" class="team-verdict" aria-live="polite">0 / 3</span><span id="team-summary" class="team-summary"></span></div>
+<div class="team-actions">
+<button type="button" class="pill" id="team-copy" hidden>Copy link</button>
+<button type="button" class="pill" id="team-clear" hidden>Clear</button>
+</div>
+</div>
+<div class="team-slots">
+<div class="team-slot" data-slot="0">
+<div class="slot-top">
+<span class="slot-num">1</span>
+<select class="slot-select" aria-label="Slot 1"><option value="">—</option><option value="akuma">Akuma</option><option value="amaterasu">Amaterasu</option><option value="arthur">Arthur</option><option value="c-viper">C. Viper</option><option value="captain-america">Captain America</option><option value="chris">Chris</option><option value="chun-li">Chun-Li</option><option value="dante">Dante</option><option value="deadpool">Deadpool</option><option value="doctor-doom">Doctor Doom</option><option value="doctor-strange">Doctor Strange</option><option value="dormammu">Dormammu</option><option value="felicia">Felicia</option><option value="firebrand">Firebrand</option><option value="frank-west">Frank West</option><option value="ghost-rider">Ghost Rider</option><option value="haggar">Haggar</option><option value="hawkeye">Hawkeye</option><option value="hsien-ko">Hsien-Ko</option><option value="hulk">Hulk</option><option value="iron-fist">Iron Fist</option><option value="iron-man">Iron Man</option><option value="jill">Jill</option><option value="m-o-d-o-k">M.O.D.O.K.</option><option value="magneto">Magneto</option><option value="morrigan">Morrigan</option><option value="nemesis">Nemesis</option><option value="nova">Nova</option><option value="phoenix">Phoenix</option><option value="phoenix-wright">Phoenix Wright</option><option value="rocket-raccoon">Rocket Raccoon</option><option value="ryu">Ryu</option><option value="sentinel">Sentinel</option><option value="she-hulk">She-Hulk</option><option value="shuma-gorath">Shuma-Gorath</option><option value="spencer">Spencer</option><option value="spider-man">Spider-Man</option><option value="storm">Storm</option><option value="strider">Strider</option><option value="super-skrull">Super-Skrull</option><option value="taskmaster">Taskmaster</option><option value="thor">Thor</option><option value="trish">Trish</option><option value="tron">Tron</option><option value="vergil">Vergil</option><option value="viewtiful-joe">Viewtiful Joe</option><option value="wesker">Wesker</option><option value="wolverine">Wolverine</option><option value="x-23">X-23</option><option value="zero">Zero</option></select>
+<button type="button" class="slot-clear" hidden aria-label="Clear slot 1">×</button>
+</div>
+<div class="slot-info"></div>
+</div>
+<div class="team-slot" data-slot="1">
+<div class="slot-top">
+<span class="slot-num">2</span>
+<select class="slot-select" aria-label="Slot 2"><option value="">—</option><option value="akuma">Akuma</option><option value="amaterasu">Amaterasu</option><option value="arthur">Arthur</option><option value="c-viper">C. Viper</option><option value="captain-america">Captain America</option><option value="chris">Chris</option><option value="chun-li">Chun-Li</option><option value="dante">Dante</option><option value="deadpool">Deadpool</option><option value="doctor-doom">Doctor Doom</option><option value="doctor-strange">Doctor Strange</option><option value="dormammu">Dormammu</option><option value="felicia">Felicia</option><option value="firebrand">Firebrand</option><option value="frank-west">Frank West</option><option value="ghost-rider">Ghost Rider</option><option value="haggar">Haggar</option><option value="hawkeye">Hawkeye</option><option value="hsien-ko">Hsien-Ko</option><option value="hulk">Hulk</option><option value="iron-fist">Iron Fist</option><option value="iron-man">Iron Man</option><option value="jill">Jill</option><option value="m-o-d-o-k">M.O.D.O.K.</option><option value="magneto">Magneto</option><option value="morrigan">Morrigan</option><option value="nemesis">Nemesis</option><option value="nova">Nova</option><option value="phoenix">Phoenix</option><option value="phoenix-wright">Phoenix Wright</option><option value="rocket-raccoon">Rocket Raccoon</option><option value="ryu">Ryu</option><option value="sentinel">Sentinel</option><option value="she-hulk">She-Hulk</option><option value="shuma-gorath">Shuma-Gorath</option><option value="spencer">Spencer</option><option value="spider-man">Spider-Man</option><option value="storm">Storm</option><option value="strider">Strider</option><option value="super-skrull">Super-Skrull</option><option value="taskmaster">Taskmaster</option><option value="thor">Thor</option><option value="trish">Trish</option><option value="tron">Tron</option><option value="vergil">Vergil</option><option value="viewtiful-joe">Viewtiful Joe</option><option value="wesker">Wesker</option><option value="wolverine">Wolverine</option><option value="x-23">X-23</option><option value="zero">Zero</option></select>
+<button type="button" class="slot-clear" hidden aria-label="Clear slot 2">×</button>
+</div>
+<div class="slot-info"></div>
+</div>
+<div class="team-slot" data-slot="2">
+<div class="slot-top">
+<span class="slot-num">3</span>
+<select class="slot-select" aria-label="Slot 3"><option value="">—</option><option value="akuma">Akuma</option><option value="amaterasu">Amaterasu</option><option value="arthur">Arthur</option><option value="c-viper">C. Viper</option><option value="captain-america">Captain America</option><option value="chris">Chris</option><option value="chun-li">Chun-Li</option><option value="dante">Dante</option><option value="deadpool">Deadpool</option><option value="doctor-doom">Doctor Doom</option><option value="doctor-strange">Doctor Strange</option><option value="dormammu">Dormammu</option><option value="felicia">Felicia</option><option value="firebrand">Firebrand</option><option value="frank-west">Frank West</option><option value="ghost-rider">Ghost Rider</option><option value="haggar">Haggar</option><option value="hawkeye">Hawkeye</option><option value="hsien-ko">Hsien-Ko</option><option value="hulk">Hulk</option><option value="iron-fist">Iron Fist</option><option value="iron-man">Iron Man</option><option value="jill">Jill</option><option value="m-o-d-o-k">M.O.D.O.K.</option><option value="magneto">Magneto</option><option value="morrigan">Morrigan</option><option value="nemesis">Nemesis</option><option value="nova">Nova</option><option value="phoenix">Phoenix</option><option value="phoenix-wright">Phoenix Wright</option><option value="rocket-raccoon">Rocket Raccoon</option><option value="ryu">Ryu</option><option value="sentinel">Sentinel</option><option value="she-hulk">She-Hulk</option><option value="shuma-gorath">Shuma-Gorath</option><option value="spencer">Spencer</option><option value="spider-man">Spider-Man</option><option value="storm">Storm</option><option value="strider">Strider</option><option value="super-skrull">Super-Skrull</option><option value="taskmaster">Taskmaster</option><option value="thor">Thor</option><option value="trish">Trish</option><option value="tron">Tron</option><option value="vergil">Vergil</option><option value="viewtiful-joe">Viewtiful Joe</option><option value="wesker">Wesker</option><option value="wolverine">Wolverine</option><option value="x-23">X-23</option><option value="zero">Zero</option></select>
+<button type="button" class="slot-clear" hidden aria-label="Clear slot 3">×</button>
+</div>
+<div class="slot-info"></div>
+</div>
+</div>
+</div>
 <div class="levels">
-<p><b class="ready">●</b> Tournament-ready: 0 · Confirmed clean in real matches</p>
-<p><b class="playable">◐</b> Playable: 10 · Only visual or sound glitches known</p>
-<p><b class="desync">▲</b> Known desyncs: 15 · Some moves can desync a match</p>
-<p><b class="crash">■</b> Can crash: 21 · Some moves can crash or freeze the game</p>
-<p><b class="untested">○</b> Untested: 4 · No reports yet, good or bad</p>
+<button type="button" class="level-card ready" data-level-filter="ready" aria-pressed="false">
+<div class="level-card-top"><span class="level-card-name"><b class="ready">●</b> Tournament-ready</span><span class="level-card-count">0</span></div>
+<p class="level-card-text">Confirmed clean in real matches</p>
+</button>
+<button type="button" class="level-card playable" data-level-filter="playable" aria-pressed="false">
+<div class="level-card-top"><span class="level-card-name"><b class="playable">◐</b> Playable</span><span class="level-card-count">10</span></div>
+<p class="level-card-text">Only visual or sound glitches known</p>
+</button>
+<button type="button" class="level-card desync" data-level-filter="desync" aria-pressed="false">
+<div class="level-card-top"><span class="level-card-name"><b class="desync">▲</b> Known desyncs</span><span class="level-card-count">15</span></div>
+<p class="level-card-text">Some moves can desync a match</p>
+</button>
+<button type="button" class="level-card crash" data-level-filter="crash" aria-pressed="false">
+<div class="level-card-top"><span class="level-card-name"><b class="crash">■</b> Can crash</span><span class="level-card-count">21</span></div>
+<p class="level-card-text">Some moves can crash or freeze the game</p>
+</button>
+<button type="button" class="level-card untested" data-level-filter="untested" aria-pressed="false">
+<div class="level-card-top"><span class="level-card-name"><b class="untested">○</b> Untested</span><span class="level-card-count">4</span></div>
+<p class="level-card-text">No reports yet, good or bad</p>
+</button>
+</div>
+<div class="roster-controls js-only flex-only">
+<input type="search" id="char-filter" class="roster-filter-input" placeholder="Filter…" aria-label="Filter">
+<select id="char-sort" class="roster-select" aria-label="Sort">
+<option value="name">A–Z</option>
+<option value="severity">Severity</option>
+<option value="open_desc">Most open</option>
+<option value="open_asc">Fewest open</option>
+<option value="fixed_desc">Most fixed</option>
+<option value="await_desc">Awaiting confirmation</option>
+</select>
+<button type="button" id="char-await-btn" class="pill" aria-pressed="false">Awaiting confirmation <span class="pill-num">36</span></button>
+<button type="button" id="char-reset-btn" class="pill" hidden>Reset</button>
 </div>
 <div class="tiles">
-<div class="tile playable"><b>◐ Akuma</b><span>Playable</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Amaterasu</b><span>Known desyncs</span><small>9 open · 2 fixed · 6 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Arthur</b><span>Known desyncs</span><small>4 open · 3 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ C. Viper</b><span>Can crash</span><small>7 open · 0 fixed</small></div>
-<div class="tile desync"><b>▲ Captain America</b><span>Known desyncs</span><small>2 open · 1 fixed · 1 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Chris</b><span>Known desyncs</span><small>3 open · 5 fixed · 1 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Chun-Li</b><span>Playable</span><small>1 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Dante</b><span>Known desyncs</span><small>10 open · 2 fixed · 3 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Deadpool</b><span>Can crash</span><small>5 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Doctor Doom</b><span>Known desyncs</span><small>3 open · 2 fixed · 3 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Doctor Strange</b><span>Can crash</span><small>6 open · 2 fixed · 4 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Dormammu</b><span>Can crash</span><small>8 open · 2 fixed · 4 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Felicia</b><span>Known desyncs</span><small>4 open · 0 fixed · 2 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Firebrand</b><span>Playable</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Frank West</b><span>Can crash</span><small>10 open · 3 fixed · 3 awaiting confirmation</small></div>
-<div class="tile untested"><b>○ Ghost Rider</b><span>Untested</span><small>0 open · 0 fixed</small></div>
-<div class="tile desync"><b>▲ Haggar</b><span>Known desyncs</span><small>2 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Hawkeye</b><span>Known desyncs</span><small>5 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Hsien-Ko</b><span>Can crash</span><small>4 open · 0 fixed</small></div>
-<div class="tile desync"><b>▲ Hulk</b><span>Known desyncs</span><small>1 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Iron Fist</b><span>Known desyncs</span><small>3 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Iron Man</b><span>Can crash</span><small>3 open · 2 fixed · 1 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Jill</b><span>Known desyncs</span><small>1 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ M.O.D.O.K.</b><span>Can crash</span><small>6 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Magneto</b><span>Playable</span><small>3 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Morrigan</b><span>Can crash</span><small>3 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Nemesis</b><span>Playable</span><small>1 open · 3 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Nova</b><span>Can crash</span><small>6 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Phoenix</b><span>Can crash</span><small>10 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Phoenix Wright</b><span>Known desyncs</span><small>6 open · 3 fixed · 3 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Rocket Raccoon</b><span>Can crash</span><small>10 open · 6 fixed · 6 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Ryu</b><span>Playable</span><small>1 open · 1 fixed</small></div>
-<div class="tile playable"><b>◐ Sentinel</b><span>Playable</span><small>1 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ She-Hulk</b><span>Can crash</span><small>1 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Shuma-Gorath</b><span>Can crash</span><small>6 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Spencer</b><span>Can crash</span><small>5 open · 2 fixed · 2 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Spider-Man</b><span>Known desyncs</span><small>2 open · 1 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Storm</b><span>Can crash</span><small>3 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Strider</b><span>Can crash</span><small>9 open · 3 fixed · 1 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Super-Skrull</b><span>Playable</span><small>2 open · 0 fixed · 1 awaiting confirmation</small></div>
-<div class="tile untested"><b>○ Taskmaster</b><span>Untested</span><small>0 open · 0 fixed</small></div>
-<div class="tile playable"><b>◐ Thor</b><span>Playable</span><small>1 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Trish</b><span>Can crash</span><small>4 open · 2 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Tron</b><span>Can crash</span><small>5 open · 1 fixed · 1 awaiting confirmation</small></div>
-<div class="tile crash"><b>■ Vergil</b><span>Can crash</span><small>12 open · 3 fixed · 4 awaiting confirmation</small></div>
-<div class="tile playable"><b>◐ Viewtiful Joe</b><span>Playable</span><small>3 open · 1 fixed · 2 awaiting confirmation</small></div>
-<div class="tile desync"><b>▲ Wesker</b><span>Known desyncs</span><small>3 open · 1 fixed · 1 awaiting confirmation</small></div>
-<div class="tile untested"><b>○ Wolverine</b><span>Untested</span><small>0 open · 0 fixed</small></div>
-<div class="tile untested"><b>○ X-23</b><span>Untested</span><small>0 open · 0 fixed</small></div>
-<div class="tile crash"><b>■ Zero</b><span>Can crash</span><small>9 open · 0 fixed · 1 awaiting confirmation</small></div>
+<article class="tile playable" data-slug="akuma" data-name="akuma" data-level="playable" data-sev="2" data-open="2" data-fixed="0" data-awaiting="1" data-search="akuma playable effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Akuma</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Akuma" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">2 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="amaterasu" data-name="amaterasu" data-level="desync" data-sev="1" data-open="9" data-fixed="2" data-awaiting="6" data-search="amaterasu known desyncs desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Amaterasu</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Amaterasu" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:5"></span><span class="sev-seg-playable" style="flex:4"></span></span></div>
+<small class="tile-stats">9 open · 2 fixed · <span class="tile-await">6 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 5</span><span class="type-chip playable">effect 2</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile desync" data-slug="arthur" data-name="arthur" data-level="desync" data-sev="1" data-open="4" data-fixed="3" data-awaiting="1" data-search="arthur known desyncs desync audio">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Arthur</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Arthur" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:3"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">4 open · 3 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 3</span><span class="type-chip playable">audio 1</span></div></article>
+<article class="tile crash" data-slug="c-viper" data-name="c. viper" data-level="crash" data-sev="0" data-open="7" data-fixed="0" data-awaiting="0" data-search="c. viper can crash crash desync state visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> C. Viper</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: C. Viper" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:2"></span><span class="sev-seg-desync" style="flex:4"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">7 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip crash">crash 2</span><span class="type-chip desync">desync 3</span><span class="type-chip desync">state 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="captain-america" data-name="captain america" data-level="desync" data-sev="1" data-open="2" data-fixed="1" data-awaiting="1" data-search="captain america known desyncs desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Captain America</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Captain America" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">2 open · 1 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="chris" data-name="chris" data-level="desync" data-sev="1" data-open="3" data-fixed="5" data-awaiting="1" data-search="chris known desyncs desync audio effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Chris</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Chris" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">3 open · 5 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span><span class="type-chip playable">audio 1</span><span class="type-chip playable">effect 1</span></div></article>
+<article class="tile playable" data-slug="chun-li" data-name="chun-li" data-level="playable" data-sev="2" data-open="1" data-fixed="0" data-awaiting="1" data-search="chun-li playable visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Chun-Li</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Chun-Li" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="dante" data-name="dante" data-level="desync" data-sev="1" data-open="10" data-fixed="2" data-awaiting="3" data-search="dante known desyncs desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Dante</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Dante" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:8"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">10 open · 2 fixed · <span class="tile-await">3 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 8</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile crash" data-slug="deadpool" data-name="deadpool" data-level="crash" data-sev="0" data-open="5" data-fixed="1" data-awaiting="2" data-search="deadpool can crash crash desync">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Deadpool</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Deadpool" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:4"></span><span class="sev-seg-desync" style="flex:1"></span></span></div>
+<small class="tile-stats">5 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 4</span><span class="type-chip desync">desync 1</span></div></article>
+<article class="tile desync" data-slug="doctor-doom" data-name="doctor doom" data-level="desync" data-sev="1" data-open="3" data-fixed="2" data-awaiting="3" data-search="doctor doom known desyncs desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Doctor Doom</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Doctor Doom" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">3 open · 2 fixed · <span class="tile-await">3 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="doctor-strange" data-name="doctor strange" data-level="crash" data-sev="0" data-open="6" data-fixed="2" data-awaiting="4" data-search="doctor strange can crash crash desync state effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Doctor Strange</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Doctor Strange" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:3"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">6 open · 2 fixed · <span class="tile-await">4 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 2</span><span class="type-chip desync">state 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="dormammu" data-name="dormammu" data-level="crash" data-sev="0" data-open="8" data-fixed="2" data-awaiting="4" data-search="dormammu can crash crash desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Dormammu</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Dormammu" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:3"></span><span class="sev-seg-playable" style="flex:4"></span></span></div>
+<small class="tile-stats">8 open · 2 fixed · <span class="tile-await">4 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 3</span><span class="type-chip playable">effect 3</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="felicia" data-name="felicia" data-level="desync" data-sev="1" data-open="4" data-fixed="0" data-awaiting="2" data-search="felicia known desyncs state">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Felicia</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Felicia" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:4"></span></span></div>
+<small class="tile-stats">4 open · 0 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">state 4</span></div></article>
+<article class="tile playable" data-slug="firebrand" data-name="firebrand" data-level="playable" data-sev="2" data-open="2" data-fixed="0" data-awaiting="1" data-search="firebrand playable effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Firebrand</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Firebrand" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">2 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="frank-west" data-name="frank west" data-level="crash" data-sev="0" data-open="10" data-fixed="3" data-awaiting="3" data-search="frank west can crash crash desync state visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Frank West</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Frank West" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:7"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">10 open · 3 fixed · <span class="tile-await">3 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 4</span><span class="type-chip desync">state 3</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile untested" data-slug="ghost-rider" data-name="ghost rider" data-level="untested" data-sev="3" data-open="0" data-fixed="0" data-awaiting="0" data-search="ghost rider untested ">
+<div class="tile-top"><b class="tile-name"><span class="lv-untested">○</span> Ghost Rider</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Ghost Rider" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level untested">Untested</span></div>
+<small class="tile-stats">0 open · 0 fixed</small>
+</article>
+<article class="tile desync" data-slug="haggar" data-name="haggar" data-level="desync" data-sev="1" data-open="2" data-fixed="1" data-awaiting="2" data-search="haggar known desyncs desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Haggar</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Haggar" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">2 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="hawkeye" data-name="hawkeye" data-level="desync" data-sev="1" data-open="5" data-fixed="0" data-awaiting="0" data-search="hawkeye known desyncs desync">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Hawkeye</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Hawkeye" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:5"></span></span></div>
+<small class="tile-stats">5 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip desync">desync 5</span></div></article>
+<article class="tile crash" data-slug="hsien-ko" data-name="hsien-ko" data-level="crash" data-sev="0" data-open="4" data-fixed="0" data-awaiting="0" data-search="hsien-ko can crash crash desync state visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Hsien-Ko</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Hsien-Ko" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:2"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">4 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 1</span><span class="type-chip desync">state 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="hulk" data-name="hulk" data-level="desync" data-sev="1" data-open="1" data-fixed="0" data-awaiting="1" data-search="hulk known desyncs desync">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Hulk</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Hulk" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span></div></article>
+<article class="tile desync" data-slug="iron-fist" data-name="iron fist" data-level="desync" data-sev="1" data-open="3" data-fixed="0" data-awaiting="1" data-search="iron fist known desyncs state visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Iron Fist</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Iron Fist" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">3 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">state 1</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile crash" data-slug="iron-man" data-name="iron man" data-level="crash" data-sev="0" data-open="3" data-fixed="2" data-awaiting="1" data-search="iron man can crash crash desync state">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Iron Man</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Iron Man" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:2"></span></span></div>
+<small class="tile-stats">3 open · 2 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 1</span><span class="type-chip desync">state 1</span></div></article>
+<article class="tile desync" data-slug="jill" data-name="jill" data-level="desync" data-sev="1" data-open="1" data-fixed="0" data-awaiting="0" data-search="jill known desyncs desync">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Jill</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Jill" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip desync">desync 1</span></div></article>
+<article class="tile crash" data-slug="m-o-d-o-k" data-name="m.o.d.o.k." data-level="crash" data-sev="0" data-open="6" data-fixed="1" data-awaiting="2" data-search="m.o.d.o.k. can crash crash desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> M.O.D.O.K.</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: M.O.D.O.K." aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">6 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">desync 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile playable" data-slug="magneto" data-name="magneto" data-level="playable" data-sev="2" data-open="3" data-fixed="0" data-awaiting="1" data-search="magneto playable effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Magneto</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Magneto" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:3"></span></span></div>
+<small class="tile-stats">3 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile crash" data-slug="morrigan" data-name="morrigan" data-level="crash" data-sev="0" data-open="3" data-fixed="1" data-awaiting="2" data-search="morrigan can crash crash effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Morrigan</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Morrigan" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">3 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile playable" data-slug="nemesis" data-name="nemesis" data-level="playable" data-sev="2" data-open="1" data-fixed="3" data-awaiting="1" data-search="nemesis playable visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Nemesis</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Nemesis" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 3 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="nova" data-name="nova" data-level="crash" data-sev="0" data-open="6" data-fixed="0" data-awaiting="1" data-search="nova can crash crash desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Nova</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Nova" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:3"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">6 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 1</span><span class="type-chip desync">desync 3</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="phoenix" data-name="phoenix" data-level="crash" data-sev="0" data-open="10" data-fixed="1" data-awaiting="2" data-search="phoenix can crash crash desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Phoenix</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Phoenix" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:8"></span><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">10 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 8</span><span class="type-chip desync">desync 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="phoenix-wright" data-name="phoenix wright" data-level="desync" data-sev="1" data-open="6" data-fixed="3" data-awaiting="3" data-search="phoenix wright known desyncs desync effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Phoenix Wright</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Phoenix Wright" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:3"></span><span class="sev-seg-playable" style="flex:3"></span></span></div>
+<small class="tile-stats">6 open · 3 fixed · <span class="tile-await">3 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 3</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile crash" data-slug="rocket-raccoon" data-name="rocket raccoon" data-level="crash" data-sev="0" data-open="10" data-fixed="6" data-awaiting="6" data-search="rocket raccoon can crash crash desync state effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Rocket Raccoon</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Rocket Raccoon" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:5"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">10 open · 6 fixed · <span class="tile-await">6 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">desync 3</span><span class="type-chip desync">state 2</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile playable" data-slug="ryu" data-name="ryu" data-level="playable" data-sev="2" data-open="1" data-fixed="1" data-awaiting="0" data-search="ryu playable effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Ryu</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Ryu" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 1 fixed</small>
+<div class="tile-types"><span class="type-chip playable">effect 1</span></div></article>
+<article class="tile playable" data-slug="sentinel" data-name="sentinel" data-level="playable" data-sev="2" data-open="1" data-fixed="0" data-awaiting="0" data-search="sentinel playable visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Sentinel</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Sentinel" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="she-hulk" data-name="she-hulk" data-level="crash" data-sev="0" data-open="1" data-fixed="0" data-awaiting="0" data-search="she-hulk can crash freeze">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> She-Hulk</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: She-Hulk" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip crash">freeze 1</span></div></article>
+<article class="tile crash" data-slug="shuma-gorath" data-name="shuma-gorath" data-level="crash" data-sev="0" data-open="6" data-fixed="0" data-awaiting="0" data-search="shuma-gorath can crash crash effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Shuma-Gorath</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Shuma-Gorath" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:4"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">6 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip crash">crash 4</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile crash" data-slug="spencer" data-name="spencer" data-level="crash" data-sev="0" data-open="5" data-fixed="2" data-awaiting="2" data-search="spencer can crash crash desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Spencer</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Spencer" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">5 open · 2 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">desync 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile desync" data-slug="spider-man" data-name="spider-man" data-level="desync" data-sev="1" data-open="2" data-fixed="1" data-awaiting="1" data-search="spider-man known desyncs state effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Spider-Man</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Spider-Man" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">2 open · 1 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">state 1</span><span class="type-chip playable">effect 1</span></div></article>
+<article class="tile crash" data-slug="storm" data-name="storm" data-level="crash" data-sev="0" data-open="3" data-fixed="0" data-awaiting="0" data-search="storm can crash freeze state effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Storm</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Storm" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:1"></span><span class="sev-seg-desync" style="flex:1"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">3 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip crash">freeze 1</span><span class="type-chip desync">state 1</span><span class="type-chip playable">effect 1</span></div></article>
+<article class="tile crash" data-slug="strider" data-name="strider" data-level="crash" data-sev="0" data-open="9" data-fixed="3" data-awaiting="1" data-search="strider can crash crash desync state effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Strider</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Strider" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:2"></span><span class="sev-seg-desync" style="flex:5"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">9 open · 3 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 2</span><span class="type-chip desync">desync 4</span><span class="type-chip desync">state 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile playable" data-slug="super-skrull" data-name="super-skrull" data-level="playable" data-sev="2" data-open="2" data-fixed="0" data-awaiting="1" data-search="super-skrull playable visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Super-Skrull</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Super-Skrull" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">2 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">visibility 2</span></div></article>
+<article class="tile untested" data-slug="taskmaster" data-name="taskmaster" data-level="untested" data-sev="3" data-open="0" data-fixed="0" data-awaiting="0" data-search="taskmaster untested ">
+<div class="tile-top"><b class="tile-name"><span class="lv-untested">○</span> Taskmaster</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Taskmaster" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level untested">Untested</span></div>
+<small class="tile-stats">0 open · 0 fixed</small>
+</article>
+<article class="tile playable" data-slug="thor" data-name="thor" data-level="playable" data-sev="2" data-open="1" data-fixed="0" data-awaiting="0" data-search="thor playable effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Thor</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Thor" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">1 open · 0 fixed</small>
+<div class="tile-types"><span class="type-chip playable">effect 1</span></div></article>
+<article class="tile crash" data-slug="trish" data-name="trish" data-level="crash" data-sev="0" data-open="4" data-fixed="2" data-awaiting="1" data-search="trish can crash crash desync">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Trish</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Trish" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:1"></span></span></div>
+<small class="tile-stats">4 open · 2 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">desync 1</span></div></article>
+<article class="tile crash" data-slug="tron" data-name="tron" data-level="crash" data-sev="0" data-open="5" data-fixed="1" data-awaiting="1" data-search="tron can crash crash state">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Tron</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Tron" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:2"></span></span></div>
+<small class="tile-stats">5 open · 1 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">state 2</span></div></article>
+<article class="tile crash" data-slug="vergil" data-name="vergil" data-level="crash" data-sev="0" data-open="12" data-fixed="3" data-awaiting="4" data-search="vergil can crash crash freeze desync state effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Vergil</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Vergil" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:7"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">12 open · 3 fixed · <span class="tile-await">4 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 2</span><span class="type-chip crash">freeze 1</span><span class="type-chip desync">desync 5</span><span class="type-chip desync">state 2</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile playable" data-slug="viewtiful-joe" data-name="viewtiful joe" data-level="playable" data-sev="2" data-open="3" data-fixed="1" data-awaiting="2" data-search="viewtiful joe playable effect">
+<div class="tile-top"><b class="tile-name"><span class="lv-playable">◐</span> Viewtiful Joe</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Viewtiful Joe" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level playable">Playable</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-playable" style="flex:3"></span></span></div>
+<small class="tile-stats">3 open · 1 fixed · <span class="tile-await">2 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip playable">effect 3</span></div></article>
+<article class="tile desync" data-slug="wesker" data-name="wesker" data-level="desync" data-sev="1" data-open="3" data-fixed="1" data-awaiting="1" data-search="wesker known desyncs desync visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-desync">▲</span> Wesker</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Wesker" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level desync">Known desyncs</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-desync" style="flex:2"></span><span class="sev-seg-playable" style="flex:1"></span></span></div>
+<small class="tile-stats">3 open · 1 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip desync">desync 2</span><span class="type-chip playable">visibility 1</span></div></article>
+<article class="tile untested" data-slug="wolverine" data-name="wolverine" data-level="untested" data-sev="3" data-open="0" data-fixed="0" data-awaiting="0" data-search="wolverine untested ">
+<div class="tile-top"><b class="tile-name"><span class="lv-untested">○</span> Wolverine</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Wolverine" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level untested">Untested</span></div>
+<small class="tile-stats">0 open · 0 fixed</small>
+</article>
+<article class="tile untested" data-slug="x-23" data-name="x-23" data-level="untested" data-sev="3" data-open="0" data-fixed="0" data-awaiting="0" data-search="x-23 untested ">
+<div class="tile-top"><b class="tile-name"><span class="lv-untested">○</span> X-23</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: X-23" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level untested">Untested</span></div>
+<small class="tile-stats">0 open · 0 fixed</small>
+</article>
+<article class="tile crash" data-slug="zero" data-name="zero" data-level="crash" data-sev="0" data-open="9" data-fixed="0" data-awaiting="1" data-search="zero can crash crash desync input state effect visibility">
+<div class="tile-top"><b class="tile-name"><span class="lv-crash">■</span> Zero</b><button type="button" class="team-add js-only inline-flex-only" aria-label="Team check: Zero" aria-pressed="false" title="Team check">+</button></div>
+<div class="tile-mid"><span class="tile-level crash">Can crash</span><span class="sev-bar" aria-hidden="true"><span class="sev-seg-crash" style="flex:3"></span><span class="sev-seg-desync" style="flex:4"></span><span class="sev-seg-playable" style="flex:2"></span></span></div>
+<small class="tile-stats">9 open · 0 fixed · <span class="tile-await">1 awaiting confirmation</span></small>
+<div class="tile-types"><span class="type-chip crash">crash 3</span><span class="type-chip desync">desync 2</span><span class="type-chip desync">input 1</span><span class="type-chip desync">state 1</span><span class="type-chip playable">effect 1</span><span class="type-chip playable">visibility 1</span></div></article>
+</div>
+<div id="char-empty" class="empty-state" hidden>0</div>
+</section>
+</div>
+<div class="panel" data-panel="shipped">
+<section id="shipped" class="shipped-section" data-mode="area">
+<div class="sec-head"><h2>Shipped</h2><span class="sec-meta">42</span></div>
+<div class="shipped-toolbar js-only flex-only">
+<div class="seg-switch" role="group" aria-label="View">
+<button type="button" class="seg-btn is-active" data-ship-mode="area" aria-pressed="true">By area</button>
+<button type="button" class="seg-btn" data-ship-mode="release" aria-pressed="false">By release</button>
+</div>
+<div class="release-chips">
+<button type="button" class="pill is-active" data-rel-filter="">All</button>
+<button type="button" class="pill" data-rel-filter="v0.6.9">v0.6.9</button>
+<button type="button" class="pill" data-rel-filter="v0.6.8">v0.6.8</button>
+<button type="button" class="pill" data-rel-filter="v0.6.7">v0.6.7</button>
+<button type="button" class="pill" data-rel-filter="v0.6.6">v0.6.6</button>
+<button type="button" class="pill" data-rel-filter="v0.6.5">v0.6.5</button>
+<button type="button" class="pill" data-rel-filter="v0.6.4">v0.6.4</button>
+<button type="button" class="pill" data-rel-filter="v0.6.3">v0.6.3</button>
+<button type="button" class="pill" data-rel-filter="v0.6.2">v0.6.2</button>
+<button type="button" class="pill" data-rel-filter="v0.6.1">v0.6.1</button>
+<button type="button" class="pill" data-rel-filter="v0.6.0">v0.6.0</button>
+<button type="button" class="pill" data-rel-filter="v0.5.0">v0.5.0</button>
+<button type="button" class="pill" data-rel-filter="v0.4.0">v0.4.0</button>
+<button type="button" class="pill" data-rel-filter="v0.3.23">v0.3.23</button>
+<button type="button" class="pill" data-rel-filter="v0.3.22">v0.3.22</button>
+<button type="button" class="pill" data-rel-filter="v0.3.10">v0.3.10</button>
+<button type="button" class="pill" data-rel-filter="earlier">Earlier</button>
+</div>
+</div>
+<div class="box-grid shipped-by-area">
+<article class="card" data-head-text="rollback itself ">
+<div class="card-head"><h3>Rollback itself</h3><span class="sec-meta">6</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">First working rewind <span class="date-tag">2026-05-24</span></span></li>
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Prediction instead of waiting for the other player&#x27;s input <span class="date-tag">2026-05-27</span></span></li>
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Random numbers and the camera rewind correctly <span class="date-tag">2026-07-29</span></span></li>
+<li class="done" data-state="done" data-release="v0.4.0"><span class="line-body">Projectiles are rewound in place <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.4.0"><span class="line-body">Saving the game state takes under 1 ms, down from 3.5 ms <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.2"><span class="line-body">Both players share one frame clock with a fixed 8-frame rollback window <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="online over steam ">
+<div class="card-head"><h3>Online over Steam</h3><span class="sec-meta">4</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Play over Steam with no port forwarding <span class="date-tag">2026-08-14</span></span></li>
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Input delay set automatically</span></li>
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Ping, jitter and packet loss shown</span></li>
+<li class="done" data-state="done" data-release="v0.3.22"><span class="line-body">Controllers end up in the right player slot <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.3.22">v0.3.22</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="in-game lobby ">
+<div class="card-head"><h3>In-game lobby</h3><span class="sec-meta">9</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="v0.6.0"><span class="line-body">Lobby inside the game: first-to 1 to 10 sets, queues, winner stays, Endless <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.0"><span class="line-body">Chat, quick chat, kick and ban, room music, every colour, Steam avatars <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.4"><span class="line-body">10 room presets and stage picks <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.5"><span class="line-body">RANDOM team member <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.6"><span class="line-body">16-player rooms (full rooms stay listed), non-English chat and input methods, host can change settings in the room, leaving a queue asks first <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.7"><span class="line-body">Room matches use the game&#x27;s own character select and result screens; RANDOM ALL; paste into text fields <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.8"><span class="line-body">Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.8">v0.6.8</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.9"><span class="line-body">Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.9"><span class="line-body">Set score display (Settings screen and F4) and improved RANDOM ALL picks <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="spectating ">
+<div class="card-head"><h3>Spectating</h3><span class="sec-meta">6</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="v0.6.0"><span class="line-body">Watch matches live, and join mid-match <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.0"><span class="line-body">Watch while you wait in the queue <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.4"><span class="line-body">F3 overlay and an Esc list of who is watching <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.4"><span class="line-body">Spectators no longer stall the players <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.7"><span class="line-body">Spectators can join at the first character select <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.9"><span class="line-body">Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="character fixes ">
+<div class="card-head"><h3>Character fixes</h3><span class="sec-meta">5</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Rollback fixes for 27 characters, including Doom&#x27;s missiles, Chris&#x27;s grenades, Vergil&#x27;s swords, Arthur&#x27;s axe, Dormammu&#x27;s Inferno, Iron Man&#x27;s Repulsor, Deadpool&#x27;s Pineapple, Tron&#x27;s Servbots, Trish, Haggar&#x27;s pipe and Wesker</span></li>
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Crash fixes for Ryu, Strider, Dark Phoenix, Doctor Strange, Morrigan and Amaterasu</span></li>
+<li class="done" data-state="done" data-release="v0.3.10"><span class="line-body">Phoenix Wright&#x27;s dog <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.3.10">v0.3.10</a></span></li>
+<li class="done" data-state="done" data-release="v0.4.0"><span class="line-body">Amaterasu&#x27;s Heavy Paper, Felicia&#x27;s Kitty Helper, Frank West&#x27;s cart <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.7"><span class="line-body">Doctor Strange&#x27;s Graces restored on rollback <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="picture and sound follow the rewind ">
+<div class="card-head"><h3>Picture and sound follow the rewind</h3><span class="sec-meta">2</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="v0.5.0"><span class="line-body">Super cut-ins, life bars, K.O. banners, the timer, music and voices all rewind correctly <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.5.0">v0.5.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.4"><span class="line-body">X-Factor looks right after a rollback <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="launcher, display and updates ">
+<div class="card-head"><h3>Launcher, display and updates</h3><span class="sec-meta">6</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="v0.3.23"><span class="line-body">Resolution and VSync settings in game <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.3.23">v0.3.23</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.0"><span class="line-body">Self-updater that checks every download <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.1"><span class="line-body">Audio, control and reserve-team settings saved properly at launch <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.1">v0.6.1</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.3"><span class="line-body">Direct3D 9Ex graphics mode <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.9"><span class="line-body">Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.7"><span class="line-body">Installer that finds the game in Steam, for Windows, Linux and Steam Deck <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></span></li>
+</ul>
+</article>
+<article class="card" data-head-text="when something breaks ">
+<div class="card-head"><h3>When something breaks</h3><span class="sec-meta">4</span></div>
+<ul class="line-list">
+<li class="done" data-state="done" data-release="earlier"><span class="line-body">Crash reports and a freeze watchdog</span></li>
+<li class="done" data-state="done" data-release="v0.4.0"><span class="line-body">Lag capture to diagnose slow matches <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.4"><span class="line-body">Performance window <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></span></li>
+<li class="done" data-state="done" data-release="v0.6.9"><span class="line-body">Cleaner logs with machine, controller, route and per-game rollback summaries <a class="rel-tag tail" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></span></li>
+</ul>
+</article>
+</div>
+<div class="box-grid shipped-by-release">
+<article class="card" data-release-group="v0.6.9">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></h3><span class="sec-meta">5</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Set score display (Settings screen and F4) and improved RANDOM ALL picks</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">When something breaks</span>Cleaner logs with machine, controller, route and per-game rollback summaries</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.8">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.8">v0.6.8</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.7">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></h3><span class="sec-meta">4</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Room matches use the game&#x27;s own character select and result screens; RANDOM ALL; paste into text fields</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>Spectators can join at the first character select</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Character fixes</span>Doctor Strange&#x27;s Graces restored on rollback</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Installer that finds the game in Steam, for Windows, Linux and Steam Deck</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.6">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>16-player rooms (full rooms stay listed), non-English chat and input methods, host can change settings in the room, leaving a queue asks first</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.5">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>RANDOM team member</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.4">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></h3><span class="sec-meta">5</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>10 room presets and stage picks</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>F3 overlay and an Esc list of who is watching</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>Spectators no longer stall the players</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Picture and sound follow the rewind</span>X-Factor looks right after a rollback</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">When something breaks</span>Performance window</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.3">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Direct3D 9Ex graphics mode</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.2">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>Both players share one frame clock with a fixed 8-frame rollback window</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.1">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.1">v0.6.1</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Audio, control and reserve-team settings saved properly at launch</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.6.0">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></h3><span class="sec-meta">5</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Lobby inside the game: first-to 1 to 10 sets, queues, winner stays, Endless</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">In-game lobby</span>Chat, quick chat, kick and ban, room music, every colour, Steam avatars</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>Watch matches live, and join mid-match</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Spectating</span>Watch while you wait in the queue</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Self-updater that checks every download</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.5.0">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.5.0">v0.5.0</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Picture and sound follow the rewind</span>Super cut-ins, life bars, K.O. banners, the timer, music and voices all rewind correctly</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.4.0">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></h3><span class="sec-meta">4</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>Projectiles are rewound in place</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>Saving the game state takes under 1 ms, down from 3.5 ms</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Character fixes</span>Amaterasu&#x27;s Heavy Paper, Felicia&#x27;s Kitty Helper, Frank West&#x27;s cart</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">When something breaks</span>Lag capture to diagnose slow matches</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.3.23">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.23">v0.3.23</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Launcher, display and updates</span>Resolution and VSync settings in game</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.3.22">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.22">v0.3.22</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Online over Steam</span>Controllers end up in the right player slot</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="v0.3.10">
+<div class="rel-card-head"><h3><a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.10">v0.3.10</a></h3><span class="sec-meta">1</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Character fixes</span>Phoenix Wright&#x27;s dog</span></li>
+</ul>
+</article>
+<article class="card" data-release-group="earlier">
+<div class="rel-card-head"><h3>Earlier</h3><span class="sec-meta">9</span></div>
+<ul class="line-list">
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>First working rewind <span class="date-tag">2026-05-24</span></span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>Prediction instead of waiting for the other player&#x27;s input <span class="date-tag">2026-05-27</span></span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Rollback itself</span>Random numbers and the camera rewind correctly <span class="date-tag">2026-07-29</span></span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Online over Steam</span>Play over Steam with no port forwarding <span class="date-tag">2026-08-14</span></span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Online over Steam</span>Input delay set automatically</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Online over Steam</span>Ping, jitter and packet loss shown</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Character fixes</span>Rollback fixes for 27 characters, including Doom&#x27;s missiles, Chris&#x27;s grenades, Vergil&#x27;s swords, Arthur&#x27;s axe, Dormammu&#x27;s Inferno, Iron Man&#x27;s Repulsor, Deadpool&#x27;s Pineapple, Tron&#x27;s Servbots, Trish, Haggar&#x27;s pipe and Wesker</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">Character fixes</span>Crash fixes for Ryu, Strider, Dark Phoenix, Doctor Strange, Morrigan and Amaterasu</span></li>
+<li class="done"><span class="line-body"><span class="area-tag">When something breaks</span>Crash reports and a freeze watchdog</span></li>
+</ul>
+</article>
 </div>
 </section>
-<section id="now">
-<h2>Now <small>(Currently working on this)</small></h2>
-<article class="card">
-<h3>Fewer desyncs and crashes <span class="size">large job</span></h3>
-<p>The biggest job. Each character&#x27;s known problems are in the character table further down.</p>
-<ul>
-<li class="now">Fix the character-specific desyncs and crashes listed in the character table</li>
-<li class="verifying">163 fixes and open bugs are marked for re-testing in recent releases. If you still hit one, report it on Discord</li>
-<li class="now">Stability hardening under the hood: memory use, crash guards, and a fallback when the graphics mode fails</li>
-</ul>
+</div>
+<div class="panel" data-panel="history">
+<section id="history" class="history-section">
+<div class="sec-head"><h2>Background</h2><span class="sec-meta">18</span></div>
+<div class="history-grid">
+<article class="card" data-head-text="how we got here ">
+<div class="card-head"><h3>How we got here</h3></div>
+<ol class="timeline">
+<li><time class="tl-date">2026-05-24</time><span class="tl-text">First rewind</span></li>
+<li><time class="tl-date">2026-05-27</time><span class="tl-text">Prediction</span></li>
+<li><time class="tl-date">2026-07-29</time><span class="tl-text">Random numbers rewind safely</span></li>
+<li><time class="tl-date">2026-08-14</time><span class="tl-text">Online over Steam</span></li>
+<li><time class="tl-date">2026-08-28</time><span class="tl-text">v0.2.2, first public build</span></li>
+<li><time class="tl-date">2026-11-11</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></span></li>
+<li><time class="tl-date">2026-11-17</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a>: in-game lobby and spectating</span></li>
+<li><time class="tl-date">2026-11-22</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></span></li>
+<li><time class="tl-date">2026-11-23</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a>: 16-player rooms</span></li>
+<li><time class="tl-date">2026-11-24</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a>: installer</span></li>
+<li><time class="tl-date">2026-11-25</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.8">v0.6.8</a>: room-match stability and sound crash fix</span></li>
+<li><time class="tl-date">2026-11-25</time><span class="tl-text"><a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a>: Settings screen, short lobby links, spectator overlay and score display</span></li>
+</ol>
 </article>
-<article class="card">
-<h3>Smoother long sessions <span class="size">large job</span></h3>
-<p>Performance over a long night of sets.</p>
-<ul>
-<li class="now">Long sets and rematches dropping from 60 to 30 FPS</li>
-<li class="verifying">Effects costing more to rewind than they used to (fix released, confirming)</li>
-</ul>
-</article>
-<article class="card">
-<h3>Lobbies and social <span class="size">medium job</span></h3>
-<p>Building on the in-game lobby from v0.6.</p>
-<ul>
-<li class="now">Return to the room you came from after a set, and keep the lobby list current</li>
-<li class="now">Private rooms with a password or a generated room code</li>
-<li class="now">Join by pasting a lobby link in game, plus an in-game invite button (Copy Lobby Link now gives a short shareable link)</li>
-<li class="now">Name each setup and give it its own set length, so a big room can mix beginner and long-set setups</li>
-<li class="now">Turn Galactus on or off per room</li>
-<li class="now">Room skill level and a casual or serious tag</li>
-<li class="now">A join sound and a &quot;player joined&quot; notice that stays on screen</li>
-<li class="now">Wired or Wi-Fi connection icon in game (network stats are on the Settings screen)</li>
-<li class="now">Discord Rich Presence: show your room and match in Discord, with an on/off setting. Built and being updated for v0.6.9; not in a release yet</li>
-</ul>
-</article>
-</section>
-<section id="next">
-<h2>Next <small>(Starts after the current work)</small></h2>
-<article class="card">
-<h3>Replays <span class="size">large job</span></h3>
-<p>The game already records each match&#x27;s inputs while you play; that is how spectating works. Saving matches as files and watching them later from a Gallery menu entry, like the Vita version, has not started yet. Replays may only play back on the version they were recorded with.</p>
-<ul>
-<li class="open">Save a match as a replay file and watch it again from the Gallery menu</li>
-</ul>
-</article>
-<article class="card">
-<h3>Matchmaking and ranked <span class="size">large job</span></h3>
-<p>The ranking server is built, though its live server needs updating; the in-game side has not started. Lobbies stay the main way to play.</p>
-<ul>
-<li class="open">Unranked quick match: one button that drops you into an open room setup with someone waiting</li>
-<li class="open">Separate ranked and unranked queues, with a rating and a leaderboard</li>
-<li class="open">Both players&#x27; results checked, with replays to settle disagreements</li>
-<li class="open">Ladder rules, such as first-to-4 sets</li>
-<li class="open">Reports, anti-cheat and anti-smurf measures</li>
-</ul>
-</article>
-<article class="card">
-<h3>Controllers and inputs <span class="size">medium job</span></h3>
-<ul>
-<li class="open">Button check in team setup and character select before a match starts</li>
-<li class="open">Pad working in menus but not in the match after leaving a room match</li>
-<li class="verifying">Pads not detected online (PS4, Brook UFB and others) (fix released, confirming)</li>
-<li class="open">Reconnect a controller after it disconnects</li>
-<li class="verifying">Button bindings resetting when a match starts (fix released, confirming)</li>
-<li class="open">Inputs freezing for a second or two in long online sets</li>
-<li class="open">Steam Deck: external controller order and player 2 input</li>
-</ul>
-</article>
-<article class="card">
-<h3>Training mode <span class="size">medium job</span></h3>
-<ul>
-<li class="open">Start training mode from Timestone directly</li>
-<li class="open">Train in an empty lobby setup while waiting, or open a training room so someone can join and coach</li>
-<li class="open">Practise with online input delay and simulated rollback</li>
-<li class="open">Save states and custom starting positions</li>
-</ul>
-</article>
-</section>
-<section id="later">
-<h2>Later <small>(Wanted, not scheduled)</small></h2>
-<article class="card">
-<h3>Launcher and HUD polish <span class="size">medium job</span></h3>
-<ul>
-<li class="verifying">Portraits and health bars follow the team order (fix released, confirming)</li>
-<li class="verifying">Timer and meter display glitches (fix released, confirming)</li>
-<li class="open">Launcher layout on small screens and high-DPI displays</li>
-<li class="verifying">Remaining non-English text edge cases (Unicode names, chat and input methods shipped in v0.6.6) (fix released, confirming)</li>
-<li class="open">Steam Deck: chat no longer grabbing launcher controls</li>
-<li class="open">Steam overlay and Recent Players</li>
-<li class="verifying">Updater reliability: errors, relaunch loops, antivirus blocks (fix released, confirming)</li>
-<li class="open">Window size, off-monitor startup and fullscreen issues (resolution, fullscreen and VSync moved to the Settings screen in v0.6.9)</li>
-<li class="open">Menu polish: wrap-around navigation and rebindable hotkeys</li>
-<li class="verifying">A fighting-game-style launcher look: portraits, colour dots, theme (fix released, confirming)</li>
-</ul>
-</article>
-<article class="card">
-<h3>Mods and cosmetics <span class="size">medium job</span></h3>
-<ul>
-<li class="open">Work alongside other UMVC3 mods such as Community Edition and colour expansions</li>
-<li class="verifying">Alternate costumes and colours in normal play (fix released, confirming)</li>
-<li class="open">Your own stage and cosmetic swaps, seen only by you</li>
-<li class="open">Classic music options</li>
-</ul>
-</article>
-<article class="card">
-<h3>Install and updates <span class="size">small job</span></h3>
-<ul>
-<li class="open">A beta channel for testers</li>
-<li class="open">Antivirus false alarms (Smart App Control, Bitdefender)</li>
-</ul>
-</article>
-<article class="card">
-<h3>Watching <span class="size">medium job</span></h3>
-<ul>
-<li class="open">Take over a replay and play on from any point</li>
-<li class="open">A public winner-stays-on broadcast</li>
-</ul>
-</article>
-</section>
-<section id="not-planned">
-<h2>Not planned <small>(Asked for, but we are not doing these)</small></h2>
-<article class="card">
-<h3>Not planned</h3>
-<ul>
-<li class="no">Voice chat. Use Discord</li>
-<li class="no">Free text chat during a match. Quick chat stays</li>
-<li class="no">Custom in-game display names. The game shows your Steam name</li>
-<li class="no">A maximum-ping filter, for now</li>
-<li class="no">Community-run rollback or tournament servers</li>
-<li class="no">Hiding character picks</li>
-<li class="no">Frame rates above 60. The game runs at 60</li>
-<li class="no">Different delay or rollback per player. Everyone shares one fixed 8-frame window since v0.6.2 (a delay-only option for private rooms is still open to consideration)</li>
-</ul>
-</article>
-</section>
-<section id="shipped" class="shipped">
-<h2>Shipped</h2>
-<article class="card shipped">
-<h3>Rollback itself</h3>
-<ul>
-<li class="done">First working rewind (2026-05-24)</li>
-<li class="done">Prediction instead of waiting for the other player&#x27;s input (2026-05-27)</li>
-<li class="done">Random numbers and the camera rewind correctly (2026-07-29)</li>
-<li class="done">Projectiles are rewound in place <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
-<li class="done">Saving the game state takes under 1 ms, down from 3.5 ms <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
-<li class="done">Both players share one frame clock with a fixed 8-frame rollback window <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>Online over Steam</h3>
-<ul>
-<li class="done">Play over Steam with no port forwarding (2026-08-14)</li>
-<li class="done">Input delay set automatically</li>
-<li class="done">Ping, jitter and packet loss shown</li>
-<li class="done">Controllers end up in the right player slot <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.22">v0.3.22</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>In-game lobby</h3>
-<ul>
-<li class="done">Lobby inside the game: first-to 1 to 10 sets, queues, winner stays, Endless <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
-<li class="done">Chat, quick chat, kick and ban, room music, every colour, Steam avatars <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
-<li class="done">10 room presets and stage picks <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
-<li class="done">RANDOM team member <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.5">v0.6.5</a></li>
-<li class="done">16-player rooms (full rooms stay listed), non-English chat and input methods, host can change settings in the room, leaving a queue asks first <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.6">v0.6.6</a></li>
-<li class="done">Room matches use the game&#x27;s own character select and result screens; RANDOM ALL; paste into text fields <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
-<li class="done">Room matches lock out mid-match restart and delay changes, and fix a menu-sound crash <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.8">v0.6.8</a></li>
-<li class="done">Short shareable Copy Lobby Link, lobby list scroll arrow, cleaner lobby sprites and round-start inputs ready earlier in the countdown <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
-<li class="done">Set score display (Settings screen and F4) and improved RANDOM ALL picks <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>Spectating</h3>
-<ul>
-<li class="done">Watch matches live, and join mid-match <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
-<li class="done">Watch while you wait in the queue <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
-<li class="done">F3 overlay and an Esc list of who is watching <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
-<li class="done">Spectators no longer stall the players <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
-<li class="done">Spectators can join at the first character select <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
-<li class="done">Spectators load alongside players, leave the result screen with them, and get a customizable overlay (full, compact or off) plus pad/keyboard spectate shortcuts <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>Character fixes</h3>
-<ul>
-<li class="done">Rollback fixes for 27 characters, including Doom&#x27;s missiles, Chris&#x27;s grenades, Vergil&#x27;s swords, Arthur&#x27;s axe, Dormammu&#x27;s Inferno, Iron Man&#x27;s Repulsor, Deadpool&#x27;s Pineapple, Tron&#x27;s Servbots, Trish, Haggar&#x27;s pipe and Wesker</li>
-<li class="done">Crash fixes for Ryu, Strider, Dark Phoenix, Doctor Strange, Morrigan and Amaterasu</li>
-<li class="done">Phoenix Wright&#x27;s dog <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.10">v0.3.10</a></li>
-<li class="done">Amaterasu&#x27;s Heavy Paper, Felicia&#x27;s Kitty Helper, Frank West&#x27;s cart <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
-<li class="done">Doctor Strange&#x27;s Graces restored on rollback <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>Picture and sound follow the rewind</h3>
-<ul>
-<li class="done">Super cut-ins, life bars, K.O. banners, the timer, music and voices all rewind correctly <a href="https://github.com/tilderain/Timestone/releases/tag/v0.5.0">v0.5.0</a></li>
-<li class="done">X-Factor looks right after a rollback <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>Launcher, display and updates</h3>
-<ul>
-<li class="done">Resolution and VSync settings in game <a href="https://github.com/tilderain/Timestone/releases/tag/v0.3.23">v0.3.23</a></li>
-<li class="done">Self-updater that checks every download <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.0">v0.6.0</a></li>
-<li class="done">Audio, control and reserve-team settings saved properly at launch <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.1">v0.6.1</a></li>
-<li class="done">Direct3D 9Ex graphics mode <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a></li>
-<li class="done">Top-menu Settings screen for resolution, fullscreen, VSync, Steam routing and network stats <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
-<li class="done">Installer that finds the game in Steam, for Windows, Linux and Steam Deck <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.7">v0.6.7</a></li>
-</ul>
-</article>
-<article class="card shipped">
-<h3>When something breaks</h3>
-<ul>
-<li class="done">Crash reports and a freeze watchdog</li>
-<li class="done">Lag capture to diagnose slow matches <a href="https://github.com/tilderain/Timestone/releases/tag/v0.4.0">v0.4.0</a></li>
-<li class="done">Performance window <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.4">v0.6.4</a></li>
-<li class="done">Cleaner logs with machine, controller, route and per-game rollback summaries <a href="https://github.com/tilderain/Timestone/releases/tag/v0.6.9">v0.6.9</a></li>
-</ul>
-</article>
-</section>
-<section id="history" class="wide">
-<h2>Background</h2>
-<article class="card">
-<h3>How we got here</h3>
+<article class="card" data-head-text="changed or removed ">
+<div class="card-head"><h3>Changed or removed</h3></div>
 <ul class="plain">
-<li>2026-05-24: First rewind</li>
-<li>2026-05-27: Prediction</li>
-<li>2026-07-29: Random numbers rewind safely</li>
-<li>2026-08-14: Online over Steam</li>
-<li>2026-08-28: v0.2.2, first public build</li>
-<li>2026-11-11: v0.4.0</li>
-<li>2026-11-17: v0.6.0: in-game lobby and spectating</li>
-<li>2026-11-22: v0.6.5</li>
-<li>2026-11-23: v0.6.6: 16-player rooms</li>
-<li>2026-11-24: v0.6.7: installer</li>
-<li>2026-11-25: v0.6.8: room-match stability and sound crash fix</li>
-<li>2026-11-25: v0.6.9: Settings screen, short lobby links, spectator overlay and score display</li>
-</ul>
-</article>
-<article class="card">
-<h3>Changed or removed</h3>
-<ul class="plain">
-<li>Choosing your own rollback frames was removed in v0.6.2. Everyone now uses the same fixed window.</li>
-<li>The RenderingThread option was removed in v0.6.3.</li>
+<li>Choosing your own rollback frames was removed in <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.2">v0.6.2</a>. Everyone now uses the same fixed window.</li>
+<li>The RenderingThread option was removed in <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.6.3">v0.6.3</a>.</li>
 <li>The Direct3D 9Ex graphics mode can still hitch for a second or two when loading on some PCs; optimization work is ongoing.</li>
-<li>Rocket Raccoon&#x27;s tail physics have been switched off online since v0.5.0 to avoid desyncs. This can change how some of his attacks connect.</li>
+<li>Rocket Raccoon&#x27;s tail physics have been switched off online since <a class="rel-tag" href="https://github.com/tilderain/Timestone/releases/tag/v0.5.0">v0.5.0</a> to avoid desyncs. This can change how some of his attacks connect.</li>
 <li>Cyrillic names cannot be displayed because the game&#x27;s built-in font has no Cyrillic glyphs.</li>
 <li>Spectating, achievements and the shared frame clock shipped before they were tested in real matches. Report anything odd on Discord.</li>
 </ul>
 </article>
+</div>
 </section>
+</div>
 </main>
-<footer><p>This page is generated from our task board every 15 minutes. Questions or bug reports: Discord.</p></footer>
+<footer class="site-footer"><p>This page is generated from our task board every 15 minutes. Questions or bug reports: Discord.</p><a href="#top" class="back-top" aria-label="Top">↑</a></footer>
+</div>
+<script>
+(() => {
+  const root = document.documentElement;
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+  // Theme toggle
+  const themeBtn = $("#theme-toggle");
+  const syncThemeLabel = () => {
+    if (!themeBtn) return;
+    const isLight = root.getAttribute("data-theme") === "light";
+    themeBtn.setAttribute("aria-pressed", String(isLight));
+    themeBtn.title = isLight ? "Dark" : "Light";
+    const span = $(".theme-label", themeBtn);
+    if (span) span.textContent = isLight ? "Dark" : "Light";
+  };
+  syncThemeLabel();
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("ts-roadmap-theme", next); } catch (_) {}
+      syncThemeLabel();
+    });
+  }
+
+  // Tabs & Panels
+  const tabs = $$(".tab[data-tab]");
+  const panels = $$(".panel[data-panel]");
+  const validTabs = new Set(tabs.map(t => t.dataset.tab));
+  let activeTab = tabs[0] ? tabs[0].dataset.tab : "all";
+
+  const showTab = (tabName, pushHash = true) => {
+    if (!validTabs.has(tabName)) tabName = tabs[0] ? tabs[0].dataset.tab : "all";
+    activeTab = tabName;
+    tabs.forEach(t => {
+      const on = t.dataset.tab === tabName;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", String(on));
+    });
+    if (!$("#global-search") || !$("#global-search").value.trim()) {
+      panels.forEach(p => {
+        p.hidden = tabName !== "all" && p.dataset.panel !== tabName;
+      });
+    }
+    if (pushHash) updateHash();
+  };
+
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener("click", () => {
+      if (searchInput && searchInput.value.trim()) clearSearch(false);
+      showTab(tab.dataset.tab, true);
+    });
+    tab.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        const next = tabs[(idx + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+        next.focus();
+        next.click();
+      }
+    });
+  });
+
+  // Roadmap filters (state & size)
+  let rmState = "";
+  let rmSize = "";
+  const rmPanel = $('.panel[data-panel="roadmap"]');
+  const legendBtns = $$(".legend li[data-filter-state]");
+  const sizeBtns = $$(".pill[data-size-filter]");
+  const rmEmpty = $("#rm-empty");
+
+  const applyRoadmapFilters = () => {
+    if (!rmPanel) return;
+    let visibleLines = 0;
+    $$(".rm-section", rmPanel).forEach(sec => {
+      let secLines = 0;
+      $$(".card", sec).forEach(card => {
+        const sizeOk = !rmSize || card.dataset.size === rmSize;
+        let cardLines = 0;
+        $$(".line-list li", card).forEach(li => {
+          const stOk = !rmState || li.dataset.state === rmState;
+          const show = sizeOk && stOk;
+          li.hidden = !show;
+          if (show) cardLines++;
+        });
+        card.hidden = cardLines === 0;
+        secLines += cardLines;
+      });
+      sec.hidden = secLines === 0;
+      visibleLines += secLines;
+    });
+    if (rmEmpty) rmEmpty.hidden = visibleLines > 0;
+  };
+
+  legendBtns.forEach(item => {
+    const toggle = () => {
+      const st = item.dataset.filterState;
+      if (st === "done" && validTabs.has("shipped") && activeTab === "roadmap" && !rmState) {
+        const hasRoadmapDone = $$('.panel[data-panel="roadmap"] li[data-state="done"]').length > 0;
+        if (!hasRoadmapDone) {
+          showTab("shipped", true);
+          return;
+        }
+      }
+      rmState = rmState === st ? "" : st;
+      legendBtns.forEach(b => {
+        const on = b.dataset.filterState === rmState;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      applyRoadmapFilters();
+    };
+    item.addEventListener("click", toggle);
+    item.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  });
+
+  sizeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      rmSize = btn.dataset.sizeFilter;
+      sizeBtns.forEach(b => b.classList.toggle("is-active", b.dataset.sizeFilter === rmSize));
+      applyRoadmapFilters();
+    });
+  });
+
+  $$(".pill[data-jump-sec]").forEach(link => {
+    link.addEventListener("click", e => {
+      const target = document.getElementById(link.dataset.jumpSec);
+      if (!target) return;
+      e.preventDefault();
+      if (activeTab !== "roadmap" && activeTab !== "all") showTab("roadmap", false);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  // Characters: filtering, sorting, and 3-character team checker
+  const charSec = $("#characters");
+  const tilesWrap = charSec ? $(".tiles", charSec) : null;
+  const tiles = tilesWrap ? $$(".tile", tilesWrap) : [];
+  const levelCards = charSec ? $$(".level-card[data-level-filter]", charSec) : [];
+  const charFilterInput = $("#char-filter");
+  const charSortSelect = $("#char-sort");
+  const charAwaitBtn = $("#char-await-btn");
+  const charResetBtn = $("#char-reset-btn");
+  const charShown = $("#char-shown-count");
+  const charEmpty = $("#char-empty");
+
+  let charLevel = "";
+  let charAwaitOnly = false;
+  let charQuery = "";
+  let charSort = "name";
+
+  const applyCharFilters = () => {
+    if (!tilesWrap) return;
+    const q = charQuery.trim().toLowerCase();
+    const visible = [];
+    tiles.forEach(tile => {
+      const lvOk = !charLevel || tile.dataset.level === charLevel;
+      const awOk = !charAwaitOnly || Number(tile.dataset.awaiting) > 0;
+      const qOk = !q || tile.dataset.search.includes(q);
+      const show = lvOk && awOk && qOk;
+      tile.hidden = !show;
+      if (show) visible.push(tile);
+    });
+    const cmp = {
+      name: (a, b) => a.dataset.name.localeCompare(b.dataset.name),
+      severity: (a, b) => Number(a.dataset.sev) - Number(b.dataset.sev) || Number(b.dataset.open) - Number(a.dataset.open) || a.dataset.name.localeCompare(b.dataset.name),
+      open_desc: (a, b) => Number(b.dataset.open) - Number(a.dataset.open) || a.dataset.name.localeCompare(b.dataset.name),
+      open_asc: (a, b) => Number(a.dataset.open) - Number(b.dataset.open) || a.dataset.name.localeCompare(b.dataset.name),
+      fixed_desc: (a, b) => Number(b.dataset.fixed) - Number(a.dataset.fixed) || a.dataset.name.localeCompare(b.dataset.name),
+      await_desc: (a, b) => Number(b.dataset.awaiting) - Number(a.dataset.awaiting) || a.dataset.name.localeCompare(b.dataset.name),
+    }[charSort] || ((a, b) => a.dataset.name.localeCompare(b.dataset.name));
+    tiles.slice().sort(cmp).forEach(t => tilesWrap.appendChild(t));
+
+    levelCards.forEach(c => {
+      const on = c.dataset.levelFilter === charLevel;
+      c.classList.toggle("is-active", on);
+      c.setAttribute("aria-pressed", String(on));
+    });
+    if (charAwaitBtn) {
+      charAwaitBtn.classList.toggle("is-active", charAwaitOnly);
+      charAwaitBtn.setAttribute("aria-pressed", String(charAwaitOnly));
+    }
+    if (charResetBtn) charResetBtn.hidden = !(charLevel || charAwaitOnly || q || charSort !== "name");
+    if (charShown) charShown.textContent = `${visible.length} / ${tiles.length}`;
+    if (charEmpty) charEmpty.hidden = visible.length > 0;
+  };
+
+  levelCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const lv = card.dataset.levelFilter;
+      charLevel = charLevel === lv ? "" : lv;
+      applyCharFilters();
+    });
+  });
+
+  if (charFilterInput) {
+    charFilterInput.addEventListener("input", () => {
+      charQuery = charFilterInput.value;
+      applyCharFilters();
+    });
+  }
+  if (charSortSelect) {
+    charSortSelect.addEventListener("change", () => {
+      charSort = charSortSelect.value;
+      applyCharFilters();
+    });
+  }
+  if (charAwaitBtn) {
+    charAwaitBtn.addEventListener("click", () => {
+      charAwaitOnly = !charAwaitOnly;
+      applyCharFilters();
+    });
+  }
+  if (charResetBtn) {
+    charResetBtn.addEventListener("click", () => {
+      charLevel = "";
+      charAwaitOnly = false;
+      charQuery = "";
+      charSort = "name";
+      if (charFilterInput) charFilterInput.value = "";
+      if (charSortSelect) charSortSelect.value = "name";
+      applyCharFilters();
+    });
+  }
+
+  // Roster pulse bar clicks -> jump to Characters tab filtered
+  $$("[data-pulse-level]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (searchInput && searchInput.value.trim()) clearSearch(false);
+      const lv = btn.dataset.pulseLevel;
+      charLevel = lv === "all" ? "" : lv;
+      showTab("characters", true);
+      applyCharFilters();
+      if (charSec) charSec.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  const pulseTeamBtn = $("#pulse-team-btn");
+  if (pulseTeamBtn) {
+    pulseTeamBtn.addEventListener("click", () => {
+      if (searchInput && searchInput.value.trim()) clearSearch(false);
+      showTab("characters", true);
+      const tb = $("#team-bar");
+      if (tb) tb.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  // Team checker (3 slots)
+  const teamBar = $("#team-bar");
+  const levelsMeta = (() => {
+    try { return JSON.parse(charSec && charSec.dataset.levels || "[]"); }
+    catch (_) { return []; }
+  })();
+  const levelByKey = Object.fromEntries(levelsMeta.map(l => [l.key, l]));
+  const tileBySlug = Object.fromEntries(tiles.map(t => [t.dataset.slug, t]));
+  const team = ["", "", ""];
+  const slotEls = teamBar ? $$(".team-slot", teamBar) : [];
+  const verdictEl = $("#team-verdict");
+  const summaryEl = $("#team-summary");
+  const copyTeamBtn = $("#team-copy");
+  const clearTeamBtn = $("#team-clear");
+
+  const renderTeam = (syncUrl = true) => {
+    if (!teamBar) return;
+    const chosen = team.filter(Boolean).map(s => tileBySlug[s]).filter(Boolean);
+    const chosenSet = new Set(team.filter(Boolean));
+
+    slotEls.forEach((slotEl, idx) => {
+      const slug = team[idx];
+      const tile = slug ? tileBySlug[slug] : null;
+      const sel = $(".slot-select", slotEl);
+      const clr = $(".slot-clear", slotEl);
+      const info = $(".slot-info", slotEl);
+      if (sel && sel.value !== slug) sel.value = slug;
+      slotEl.className = "team-slot" + (tile ? ` is-filled ${tile.dataset.level}` : "");
+      if (clr) clr.hidden = !tile;
+      if (info) {
+        if (tile) {
+          const lv = levelByKey[tile.dataset.level] || { mark: "", label: tile.dataset.level };
+          const aw = Number(tile.dataset.awaiting);
+          const awText = aw ? ` · ${aw} awaiting confirmation` : "";
+          info.innerHTML = `<span class="tile-level ${tile.dataset.level}">${lv.mark} ${lv.label}</span><span>· ${tile.dataset.open} open · ${tile.dataset.fixed} fixed${awText}</span>`;
+        } else {
+          info.textContent = "";
+        }
+      }
+    });
+
+    tiles.forEach(tile => {
+      const on = chosenSet.has(tile.dataset.slug);
+      tile.classList.toggle("in-team", on);
+      const btn = $(".team-add", tile);
+      if (btn) {
+        btn.textContent = on ? "✓" : "+";
+        btn.setAttribute("aria-pressed", String(on));
+      }
+    });
+
+    if (verdictEl) {
+      if (!chosen.length) {
+        verdictEl.className = "team-verdict";
+        verdictEl.textContent = "0 / 3";
+        if (summaryEl) summaryEl.textContent = "";
+      } else {
+        const worst = chosen.reduce((a, b) => (Number(a.dataset.sev) <= Number(b.dataset.sev) ? a : b));
+        const lv = levelByKey[worst.dataset.level] || { mark: "", label: worst.dataset.level, text: "" };
+        verdictEl.className = `team-verdict ${worst.dataset.level}`;
+        verdictEl.textContent = `${lv.mark} ${lv.label}`;
+        const totOpen = chosen.reduce((s, t) => s + Number(t.dataset.open), 0);
+        const totFixed = chosen.reduce((s, t) => s + Number(t.dataset.fixed), 0);
+        const totAw = chosen.reduce((s, t) => s + Number(t.dataset.awaiting), 0);
+        const awPart = totAw ? ` · ${totAw} awaiting confirmation` : "";
+        if (summaryEl) {
+          summaryEl.textContent = `${totOpen} open · ${totFixed} fixed${awPart}${lv.text ? " — " + lv.text : ""}`;
+        }
+      }
+    }
+    if (copyTeamBtn) copyTeamBtn.hidden = chosen.length === 0;
+    if (clearTeamBtn) clearTeamBtn.hidden = chosen.length === 0;
+    if (syncUrl) updateHash();
+  };
+
+  slotEls.forEach((slotEl, idx) => {
+    const sel = $(".slot-select", slotEl);
+    const clr = $(".slot-clear", slotEl);
+    if (sel) {
+      sel.addEventListener("change", () => {
+        const v = sel.value;
+        if (v) {
+          const dup = team.indexOf(v);
+          if (dup !== -1 && dup !== idx) team[dup] = "";
+        }
+        team[idx] = v;
+        renderTeam(true);
+      });
+    }
+    if (clr) {
+      clr.addEventListener("click", () => {
+        team[idx] = "";
+        renderTeam(true);
+      });
+    }
+  });
+
+  tiles.forEach(tile => {
+    const btn = $(".team-add", tile);
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const slug = tile.dataset.slug;
+      const existing = team.indexOf(slug);
+      if (existing !== -1) {
+        team[existing] = "";
+      } else {
+        const empty = team.indexOf("");
+        team[empty !== -1 ? empty : 2] = slug;
+      }
+      renderTeam(true);
+    });
+  });
+
+  if (clearTeamBtn) {
+    clearTeamBtn.addEventListener("click", () => {
+      team[0] = team[1] = team[2] = "";
+      renderTeam(true);
+    });
+  }
+  if (copyTeamBtn) {
+    copyTeamBtn.addEventListener("click", () => {
+      updateHash();
+      const url = location.href;
+      const done = () => {
+        const orig = copyTeamBtn.textContent;
+        copyTeamBtn.textContent = "Copied";
+        setTimeout(() => { copyTeamBtn.textContent = orig; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done, done);
+      } else {
+        done();
+      }
+    });
+  }
+
+  // Shipped: By area / By release + Release chip filter
+  const shippedSec = $("#shipped");
+  let shippedMode = "area";
+  let shippedRel = "";
+  const modeBtns = shippedSec ? $$(".seg-btn[data-ship-mode]", shippedSec) : [];
+  const relBtns = shippedSec ? $$(".pill[data-rel-filter]", shippedSec) : [];
+
+  const applyShipped = () => {
+    if (!shippedSec) return;
+    shippedSec.dataset.mode = shippedMode;
+    modeBtns.forEach(b => {
+      const on = b.dataset.shipMode === shippedMode;
+      b.classList.toggle("is-active", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+    relBtns.forEach(b => b.classList.toggle("is-active", b.dataset.relFilter === shippedRel));
+
+    $$(".shipped-by-area .card", shippedSec).forEach(card => {
+      let shown = 0;
+      $$(".line-list li", card).forEach(li => {
+        const ok = !shippedRel || li.dataset.release === shippedRel;
+        li.hidden = !ok;
+        if (ok) shown++;
+      });
+      card.hidden = shown === 0;
+    });
+    $$(".shipped-by-release .card", shippedSec).forEach(card => {
+      card.hidden = Boolean(shippedRel) && card.dataset.releaseGroup !== shippedRel;
+    });
+  };
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      shippedMode = btn.dataset.shipMode;
+      applyShipped();
+    });
+  });
+  relBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const r = btn.dataset.relFilter;
+      shippedRel = shippedRel === r ? "" : r;
+      applyShipped();
+    });
+  });
+
+  // Global Search across all panels
+  const searchInput = $("#global-search");
+  const searchClear = $("#search-clear");
+  const searchKbd = $(".search-kbd");
+  const searchStatus = $("#search-status");
+  const searchStatusText = $("#search-status-text");
+  const searchStatusClear = $("#search-status-clear");
+  const globalEmpty = $("#global-empty");
+
+  const runGlobalSearch = () => {
+    if (!searchInput) return;
+    const raw = searchInput.value;
+    const q = raw.trim().toLowerCase();
+    document.body.classList.toggle("is-searching", Boolean(q));
+    if (searchClear) searchClear.hidden = !q;
+    if (searchKbd) searchKbd.hidden = Boolean(q);
+
+    if (!q) {
+      if (searchStatus) searchStatus.hidden = true;
+      if (globalEmpty) globalEmpty.hidden = true;
+      $$('[data-panel="history"] .card, [data-panel="history"] li').forEach(el => {
+        el.hidden = false;
+      });
+      panels.forEach(p => {
+        p.hidden = activeTab !== "all" && p.dataset.panel !== activeTab;
+      });
+      applyRoadmapFilters();
+      applyCharFilters();
+      applyShipped();
+      return;
+    }
+
+    let totalMatches = 0;
+    panels.forEach(panel => {
+      const kind = panel.dataset.panel;
+      let panelMatches = 0;
+
+      if (kind === "roadmap") {
+        $$(".rm-section", panel).forEach(sec => {
+          let secMatches = 0;
+          $$(".card", sec).forEach(card => {
+            const headHit = (card.dataset.headText || "").includes(q);
+            let lineHits = 0;
+            $$(".line-list li", card).forEach(li => {
+              const hit = headHit || li.textContent.toLowerCase().includes(q);
+              li.hidden = !hit;
+              if (hit) lineHits++;
+            });
+            card.hidden = lineHits === 0;
+            secMatches += lineHits;
+          });
+          sec.hidden = secMatches === 0;
+          panelMatches += secMatches;
+        });
+      } else if (kind === "characters") {
+        tiles.forEach(tile => {
+          const hit = tile.dataset.search.includes(q);
+          tile.hidden = !hit;
+          if (hit) panelMatches++;
+        });
+        if (charEmpty) charEmpty.hidden = true;
+      } else if (kind === "shipped") {
+        if (shippedSec) shippedSec.dataset.mode = "area";
+        $$(".shipped-by-area .card", panel).forEach(card => {
+          const headHit = (card.dataset.headText || "").includes(q);
+          let lineHits = 0;
+          $$(".line-list li", card).forEach(li => {
+            const hit = headHit || li.textContent.toLowerCase().includes(q);
+            li.hidden = !hit;
+            if (hit) lineHits++;
+          });
+          card.hidden = lineHits === 0;
+          panelMatches += lineHits;
+        });
+      } else if (kind === "history") {
+        $$(".card", panel).forEach(card => {
+          const headHit = (card.dataset.headText || "").includes(q);
+          let itemHits = 0;
+          $$("li", card).forEach(li => {
+            const hit = headHit || li.textContent.toLowerCase().includes(q);
+            li.hidden = !hit;
+            if (hit) itemHits++;
+          });
+          card.hidden = itemHits === 0;
+          panelMatches += itemHits;
+        });
+      }
+
+      panel.hidden = panelMatches === 0;
+      totalMatches += panelMatches;
+    });
+
+    if (searchStatus) searchStatus.hidden = false;
+    if (searchStatusText) searchStatusText.textContent = `"${raw.trim()}" — ${totalMatches}`;
+    if (globalEmpty) globalEmpty.hidden = totalMatches > 0;
+  };
+
+  const clearSearch = (focusBack = false) => {
+    if (!searchInput) return;
+    searchInput.value = "";
+    runGlobalSearch();
+    if (focusBack) searchInput.focus();
+  };
+
+  if (searchInput) {
+    searchInput.addEventListener("input", runGlobalSearch);
+    searchInput.addEventListener("keydown", e => {
+      if (e.key === "Escape") { clearSearch(false); searchInput.blur(); }
+    });
+  }
+  if (searchClear) searchClear.addEventListener("click", () => clearSearch(true));
+  if (searchStatusClear) searchStatusClear.addEventListener("click", () => clearSearch(false));
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      const tag = (document.activeElement && document.activeElement.tagName) || "";
+      if (!["INPUT", "TEXTAREA", "SELECT"].includes(tag) && searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+  });
+
+  // Hash sync (tabs, section anchors, and shareable team links)
+  function updateHash() {
+    const activeTeam = team.filter(Boolean);
+    let h = "#" + activeTab;
+    if (activeTab === "characters" && activeTeam.length) {
+      h += "?team=" + activeTeam.map(encodeURIComponent).join(",");
+    }
+    try {
+      if (location.hash !== h) history.replaceState(null, "", h);
+    } catch (_) {}
+  }
+
+  const applyFromHash = () => {
+    const raw = (location.hash || "").replace(/^#/, "");
+    if (!raw) {
+      showTab(activeTab, false);
+      renderTeam(false);
+      return;
+    }
+    const [base, queryPart] = raw.split("?");
+    if (queryPart) {
+      const params = new URLSearchParams(queryPart);
+      const t = params.get("team");
+      if (t) {
+        team[0] = team[1] = team[2] = "";
+        t.split(",").map(s => s.trim()).filter(s => tileBySlug[s]).slice(0, 3).forEach((s, i) => { team[i] = s; });
+      }
+    }
+    if (validTabs.has(base)) {
+      showTab(base, false);
+    } else if (base && document.getElementById(base)) {
+      const el = document.getElementById(base);
+      const panel = el.closest(".panel");
+      if (panel && validTabs.has(panel.dataset.panel)) showTab(panel.dataset.panel, false);
+      requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
+    } else {
+      showTab(activeTab, false);
+    }
+    renderTeam(false);
+  };
+
+  window.addEventListener("hashchange", applyFromHash);
+  applyFromHash();
+  applyRoadmapFilters();
+  applyCharFilters();
+  applyShipped();
+})();
+</script>
 </body>
 </html>
