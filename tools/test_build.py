@@ -178,6 +178,24 @@ class CharacterLevel(unittest.TestCase):
     def test_ready_flag(self):
         self.assertEqual(build.character_level(self.char([self.issue(1, "crash")], ready=True),
                                                TYPES)[0], "ready")
+    def test_breakdown_counts_and_order(self):
+        c = self.char([
+            self.issue(1, "effect"),
+            self.issue(2, "crash"),
+            self.issue(3, "freeze"),
+            self.issue(4, "desync"),
+            self.issue(5, "desync"),
+            self.issue(6, "verify"),
+            self.issue(7, "crash", done=True),
+        ])
+        by_level, by_type = build.character_breakdown(c, TYPES)
+        self.assertEqual(by_level, {"crash": 2, "desync": 2, "playable": 1})
+        self.assertEqual(by_type, [
+            ("crash", "crash", 1),
+            ("freeze", "crash", 1),
+            ("desync", "desync", 2),
+            ("effect", "playable", 1),
+        ])
 
 
 # --- render ----------------------------------------------------------------
@@ -238,23 +256,24 @@ class Render(unittest.TestCase):
 
     def test_markup_and_counts(self):
         page = quiet(build.render, render_cfg(), snapshot())
-        self.assertIn('<span class="size">small job</span>', page)
-        self.assertIn('<li class="verifying">7 awaiting</li>', page)
-        self.assertIn('<li class="no">x</li>', page)
+        self.assertIn('<span class="size size-small">small job</span>', page)
+        self.assertIn('<li class="verifying" data-state="verifying"><span class="line-body">7 awaiting</span></li>', page)
+        self.assertIn('<li class="no" data-state="no"><span class="line-body">x</span></li>', page)
         self.assertIn('<h2>Now <small>(n)</small></h2>', page)
-        self.assertIn('<a href="https://github.com/o/r/releases/tag/v1">v1</a>', page)
-        self.assertIn('<li class="done">d (2026-01-01)</li>', page)
-        self.assertIn('<ul class="plain">', page)
-        self.assertIn("Last updated 2026-11-25 05:30 UTC · latest release v1 (2026-11-24)", page)
-        self.assertIn("Show shipped work (2)", page)
+        self.assertIn('<a class="rel-tag tail" href="https://github.com/o/r/releases/tag/v1">v1</a>', page)
+        self.assertIn('<span class="date-tag">2026-01-01</span>', page)
+        self.assertIn('<ol class="timeline">', page)
+        self.assertIn('<time class="tl-date">2026-01-01</time>', page)
+        self.assertIn('<span class="stamp">Last updated 2026-11-25 05:30 UTC</span>', page)
+        self.assertIn('latest release <strong>v1</strong> (2026-11-24)', page)
+        self.assertIn('data-tab="shipped" aria-selected="false">Shipped <span class="tab-count">2</span>', page)
         self.assertEqual(page.count('class="tile '), 2)
         self.assertIn('<p class="banner">banner</p>', page)
-        self.assertIn("<footer><p>f</p></footer>", page)
-        # body order: characters, sections, shipped, background
-        self.assertLess(page.index('id="characters"'), page.index('id="now"'))
-        self.assertLess(page.index('id="now"'), page.index('id="shipped"'))
+        self.assertIn('<footer class="site-footer"><p>f</p>', page)
+        # body panel order: roadmap, characters, shipped, background
+        self.assertLess(page.index('id="now"'), page.index('id="characters"'))
+        self.assertLess(page.index('id="characters"'), page.index('id="shipped"'))
         self.assertLess(page.index('id="shipped"'), page.index('id="history"'))
-
     def test_unknown_token_drops_the_line(self):
         cfg, board = render_cfg(), snapshot()
         board["sections"][0]["boxes"][0]["lines"][1]["text"] = "{secret} kept"
@@ -304,18 +323,20 @@ class Render(unittest.TestCase):
         for k in ("tagline", "goal", "notice", "footer", "links", "characters_banner"):
             board["page"].pop(k)
         page = quiet(build.render, cfg, board)
-        self.assertNotIn("<nav>", page)
-        self.assertNotIn("<footer>", page)
-        self.assertNotIn("<strong>", page)
-        self.assertNotIn('class="banner"', page)
-        self.assertNotIn("<p>tag</p>", page)
+        body = page.split("<body", 1)[1]
+        self.assertNotIn('<nav class="ext-links"', body)
+        self.assertNotIn("<footer", body)
+        self.assertNotIn("brief-goal", body)
+        self.assertNotIn("brief-notice", body)
+        self.assertNotIn('class="banner"', body)
+        self.assertNotIn('class="tagline"', body)
 
     def test_latest_release_null_omits_stamp_part(self):
         cfg, board = render_cfg(), snapshot()
         board["latest_release"] = None
         board["releases"] = []
         page = quiet(build.render, cfg, board)
-        self.assertIn("Last updated 2026-11-25 05:30 UTC</p>", page)
+        self.assertIn('<span class="stamp">Last updated 2026-11-25 05:30 UTC</span>', page)
         self.assertNotIn("latest release", page)
 
     def test_no_characters_block(self):
@@ -325,6 +346,8 @@ class Render(unittest.TestCase):
         self.assertEqual(page.count('class="tile '), 0)
         self.assertNotIn('id="characters"', page)
         self.assertNotIn('class="banner"', page)
+        self.assertNotIn('class="roster-pulse"', page)
+        self.assertNotIn('data-tab="characters"', page)
 
     def test_schema_must_be_2(self):
         cfg, board = render_cfg(), snapshot()
@@ -332,6 +355,88 @@ class Render(unittest.TestCase):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
             build.render(cfg, board)
 
+    def test_shipped_by_release_order(self):
+        cfg, board = render_cfg(), snapshot()
+        board["releases"] = ["v0.6.2", "v0.6.9", "v0.10.0"]
+        board["latest_release"] = {"tag": "v0.10.0", "date": "2026-11-26"}
+        board["sections"][2]["boxes"][0]["lines"] = [
+            {"id": 14, "text": "older", "done": True, "confirming": False, "not_confirming": False,
+             "release": "v0.6.2", "date": None, "cards": []},
+            {"id": 15, "text": "newest", "done": True, "confirming": False, "not_confirming": False,
+             "release": "v0.10.0", "date": None, "cards": []},
+            {"id": 16, "text": "mid", "done": True, "confirming": False, "not_confirming": False,
+             "release": "v0.6.9", "date": None, "cards": []},
+            {"id": 17, "text": "dated", "done": True, "confirming": False, "not_confirming": False,
+             "release": None, "date": "2026-05-24", "cards": []},
+        ]
+        page = quiet(build.render, cfg, board)
+        i10 = page.index('data-release-group="v0.10.0"')
+        i69 = page.index('data-release-group="v0.6.9"')
+        i62 = page.index('data-release-group="v0.6.2"')
+        iear = page.index('data-release-group="earlier"')
+        self.assertTrue(i10 < i69 < i62 < iear)
+        self.assertIn('<span class="area-tag">S</span>newest', page)
+
+    def test_background_timeline_and_plain(self):
+        cfg, board = render_cfg(), snapshot()
+        board["sections"][3]["boxes"].append({
+            "id": 5, "title": "Notes", "blurb": None, "size": None,
+            "lines": [{"id": 19, "text": "Changed in v1.", "done": False, "confirming": False,
+                       "not_confirming": False, "release": None, "date": None, "cards": []}],
+        })
+        page = quiet(build.render, cfg, board)
+        self.assertIn('<ol class="timeline">', page)
+        self.assertIn('<ul class="plain">', page)
+        self.assertIn('Changed in <a class="rel-tag" href="https://github.com/o/r/releases/tag/v1">v1</a>.', page)
+
+    def test_linkify_releases_boundaries_and_escaping(self):
+        got = build.linkify_releases("v1 & v10 <x> v1", {"v1"}, "o/r")
+        self.assertIn('<a class="rel-tag" href="https://github.com/o/r/releases/tag/v1">v1</a>', got)
+        self.assertIn("v10 &lt;x&gt;", got)
+        self.assertEqual(got.count("releases/tag/v1"), 2)
+
+    def test_no_card_ids_leak_to_html(self):
+        cfg, board = render_cfg(), snapshot()
+        board["sections"][0]["boxes"][0]["id"] = 881234
+        board["sections"][0]["boxes"][0]["lines"][0]["id"] = 882345
+        board["characters"][0]["id"] = 883456
+        board["characters"][0]["issues"][0]["id"] = 884567
+        page = quiet(build.render, cfg, board)
+        for secret_id in ("881234", "882345", "883456", "884567"):
+            self.assertNotIn(secret_id, page)
+
+    def test_real_board_all_content_reachable(self):
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(os.path.join(root, "config/roadmap.json")) as f:
+            cfg = json.load(f)
+        with open(os.path.join(root, "data/board.json")) as f:
+            board = json.load(f)
+        page = quiet(build.render, cfg, board)
+        for key in ("title", "tagline", "goal", "notice", "footer", "characters_heading", "characters_banner"):
+            self.assertIn(build.esc(board["page"][key]), page)
+        for lk in board["page"]["links"]:
+            self.assertIn(build.esc(lk["href"]), page)
+            self.assertIn(build.esc(lk["label"]), page)
+        for lv in board["levels"]:
+            self.assertIn(build.esc(lv["label"]), page)
+            self.assertIn(build.esc(lv["text"]), page)
+        for c in board["characters"]:
+            self.assertIn(build.esc(c["name"]), page)
+        for s in board["sections"]:
+            self.assertIn(build.esc(s["heading"]), page)
+            for box in s["boxes"]:
+                self.assertIn(build.esc(box["title"]), page)
+                for line in box["lines"]:
+                    expected = build.fill(line["text"], board)
+                    # Dated background lines split date and rest across <time> and <span>
+                    m = build.DATED_RE.match(expected) if s["kind"] == "background" else None
+                    if m:
+                        self.assertIn(build.esc(m.group(1)), page)
+                    else:
+                        # Check plain text stripped of release links
+                        plain_check = build.TAG_RE.split(expected)[0].strip()
+                        if plain_check:
+                            self.assertIn(build.esc(plain_check), page)
 
 # --- export ----------------------------------------------------------------
 
