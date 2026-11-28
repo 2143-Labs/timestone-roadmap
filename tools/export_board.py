@@ -323,8 +323,8 @@ def export(cfg, data, releases, latest, releases_etag=None):
         return {"id": t["id"], "title": (t.get("title") or "").strip(), "blurb": blurb,
                 "size": size, "lines": lines}
 
-    # Page text cards, keyed by title. Level and type definition cards are
-    # page-bucket subtasks without the line label, so they never reach the
+    # Page text cards, keyed by title. Level, type and word definition cards
+    # are page-bucket subtasks without the line label, so they never reach the
     # Public lines view.
     levels, types = [], {}
     page = {}
@@ -363,6 +363,20 @@ def export(cfg, data, releases, latest, releases_etag=None):
                     warn(f"type card {lid} repeats type '{word}'; skipped")
                 else:
                     types[word] = None if val in ("", "none") else val
+        elif key == "words":
+            words = {}
+            for lid in sorted(rel(t, "subtask")):
+                card = idx[lid]
+                word = re.sub(r"\s+", "_", (card.get("title") or "").strip().lower())
+                text = plain(card.get("description"))
+                if not word or text is None:
+                    warn(f"word card {lid} needs a phrase key as its title and plain text as its description; skipped")
+                elif word in words:
+                    warn(f"word card {lid} repeats phrase '{word}'; skipped")
+                else:
+                    words[word] = text
+            if words:
+                page["words"] = words
         elif key in PLAIN_PAGE_KEYS + ("characters_banner",):
             value = plain(t.get("description"))
             if value is None:
