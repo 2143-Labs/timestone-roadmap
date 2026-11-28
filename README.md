@@ -7,22 +7,26 @@ by the Argo CD Application `timestone-roadmap` in `2143-Labs/argo`
 
 ## How the page is built
 
-Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>).
-Git holds the wiring, the CSS and the guards, no prose.
+Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>),
+apart from a few connecting words kept in the config. Git holds the wiring, the CSS
+and the guards; `tools/build.py` holds no prose.
 
 - `config/roadmap.json` is the wiring: which project, which two views, which bucket
-  and label ids, the legend wording, the size words, the GitHub repo release links
-  point at. Ids are stable; column and label *names* are not used.
+  and label ids, the GitHub repo release links point at, plus the words that are not
+  board content: the legend wording, the size words and `words` (the `Last updated`
+  stamp, `{size} job`, the two `confirming` suffixes and the `open` / `fixed` /
+  `awaiting confirmation` counters on character tiles). Ids are stable; column and
+  label *names* are not used.
 - `tools/export_board.py` reads the project through a read-only link share and writes
   a trimmed snapshot (`data/board.json`, schema 2): the published boxes and lines with
   their text, the state flags, the character grid, release tags and two counts. Card
   ids never reach the page; titles and descriptions of box/line/page cards do, because
   they *are* the page text.
 - `tools/build.py` turns the snapshot plus the config into one static `site/index.html`.
-  It refuses to build on internal wording (story points, Impact, P0-P2, board links)
-  or a malformed snapshot. A mistake on a single card unpublishes that card with a
-  `warn:` line instead, because editors work on the board and cannot see a stalled
-  build.
+  It refuses to build on internal wording (story points, Impact, P0-P2, board links),
+  a malformed snapshot or a config without its `words`. A mistake on a single card
+  unpublishes that card with a `warn:` line instead, because editors work on the board
+  and cannot see a stalled build.
 
 In the cluster a `refresh` sidecar runs both tools every 15 minutes into a shared
 `/data` volume. nginx serves `/data/index.html`; until the sidecar's first good build
@@ -38,6 +42,29 @@ short proof-of-work challenge about once a week per browser, blocks known AI cra
 link unfurlers (Discord, Slack) a fixed preview card. `anubis.enabled=false` routes
 straight to nginx again. With the Anubis pod down the page answers 503. Only this
 host is covered: the lobby join links on `mm.b.hero.rehab` are not behind Anubis.
+
+## What the page shows
+
+One self-contained HTML file, no script; the filters are CSS checkboxes (`:has()`),
+and a browser without `:has()` simply shows everything.
+
+- **Header**: `Title`, `Tagline`, the `Links` as buttons, `Goal`, `Notice`, and the
+  `Last updated` stamp, whose latest release links to its changelog entry.
+- **Jump bar** (sticky): one entry per block below with its count and a thin status
+  strip (level mix for characters, line states for each column).
+- **Characters**: the `Characters heading` and `banner`, one card per level (mark,
+  label, caption, count) that doubles as a filter, a strip of the whole roster by
+  level, and a tile per character with its open issues split by level.
+- **The plan**: the legend chips (with counts) filter lines by state. Every column
+  that is not `Not planned`, `Shipped`, `Background` or `Page text` becomes a lane,
+  side by side on wide screens, in column order; `Not planned` follows as a list.
+  A line that is all done stays in its lane, struck through, and the build warns.
+- **Shipped**: a changelog grouped by release (newest first), then by date, then
+  undated lines. Each line carries its box title as an area tag; the boxes are also
+  filter chips. A shipped box's blurb or size, if it has one, is listed under the chips.
+- **Background**: a box whose lines all start `YYYY-MM-DD: ` reads as a timeline,
+  any other box as a bulleted list.
+- **Footer**.
 
 ## Edit the text on the board
 

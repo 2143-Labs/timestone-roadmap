@@ -13,7 +13,17 @@
     {"class": "now", "text": "Being worked on now"},
     {"class": "open", "text": "Planned, not started"},
     {"class": "verifying", "text": "Fix is in a release, waiting for players to confirm it"},
-    {"class": "done", "text": "Shipped (hidden until you press Show shipped)"},
+    {"class": "done", "text": "Shipped"},
     {"class": "no", "text": "Not planned"}
-  ]
+  ],
+  "words": {
+    "updated": "Last updated {date} {time} UTC",
+    "latest_release": "latest release {tag} ({date})",
+    "size": "{size} job",
+    "in_release": "(in {tag}, confirming)",
+    "fix_released": "(fix released, confirming)",
+    "open": "{n} open",
+    "fixed": "{n} fixed",
+    "awaiting": "{n} awaiting confirmation"
+  }
 }
