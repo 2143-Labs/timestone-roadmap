@@ -8,21 +8,47 @@ by the Argo CD Application `timestone-roadmap` in `2143-Labs/argo`
 ## How the page is built
 
 Every word a visitor reads is a card in Vikunja project 19 (<https://tasks.2143.me/>).
-Git holds the wiring, the CSS and the guards, no prose.
+Git holds the wiring, the CSS, the script and the guards, no prose.
 
 - `config/roadmap.json` is the wiring: which project, which two views, which bucket
-  and label ids, the legend wording, the size words, the GitHub repo release links
-  point at. Ids are stable; column and label *names* are not used.
+  and label ids, the legend wording, the size words, the page's few fixed phrases
+  (`words`), the team size and which level counts as worst (`team`), the GitHub repo
+  release links point at. Ids are stable; column and label *names* are not used.
 - `tools/export_board.py` reads the project through a read-only link share and writes
   a trimmed snapshot (`data/board.json`, schema 2): the published boxes and lines with
   their text, the state flags, the character grid, release tags and two counts. Card
   ids never reach the page; titles and descriptions of box/line/page cards do, because
   they *are* the page text.
-- `tools/build.py` turns the snapshot plus the config into one static `site/index.html`.
-  It refuses to build on internal wording (story points, Impact, P0-P2, board links)
-  or a malformed snapshot. A mistake on a single card unpublishes that card with a
-  `warn:` line instead, because editors work on the board and cannot see a stalled
-  build.
+- `tools/build.py` turns the snapshot plus the config into one static `site/index.html`:
+  markup, CSS and one inline script in a single file, nothing loaded at view time.
+  It holds no words of its own (a test fails if one slips in). It refuses to build on
+  internal wording (story points, Impact, P0-P2, board links) or a malformed snapshot.
+  A mistake on a single card unpublishes that card with a `warn:` line instead, because
+  editors work on the board and cannot see a stalled build.
+
+## How the page works
+
+The page is a status board, and every label on it is also a control. No label was
+invented for that: each control is a word the board already had.
+
+- **Section headings** are the sticky jump bar, each with its number of lines. `Now`,
+  `Next`, `Later` and `Not planned` sit side by side as lanes, in board column order;
+  `Shipped` and `Background` follow.
+- **Level rows** (`Can crash`, `Known desyncs`, …) filter the character roster; the bar
+  above them shows all characters by level. The search box, named by the `Characters
+  heading` card, narrows the roster as you type; Enter picks the first match.
+- **Character tiles** are picked into a team (`team.size`, three for UMVC3). The page
+  answers with the team's worst level (`team.worst_first` ranks the level keys) and keeps
+  the team in the address (`?team=dante,vergil,zero`, shareable) and in the browser's
+  localStorage, so a returning player sees their team first. The bar under a tile splits
+  its open issues by level. Remove `team` from the config and tiles are plain tiles.
+- **The legend** filters lines by state and counts each state.
+- **Release tags** above `Shipped` filter shipped work to one release; the latest
+  release in the stamp is a shortcut to what it shipped.
+- A `Background` box whose every line starts `YYYY-MM-DD: ` is drawn as a timeline.
+
+The script only shows, hides and copies what is already in the page. Without it the
+controls do nothing and every section still reads top to bottom.
 
 In the cluster a `refresh` sidecar runs both tools every 15 minutes into a shared
 `/data` volume. nginx serves `/data/index.html`; until the sidecar's first good build
@@ -71,13 +97,22 @@ Nothing on the page is edited in git. Two Kanban/list views of project 19 do the
   work), `Background` (each box is a card with its lines as a plain bulleted list),
   `Page text` (see below). Every other column is an ordinary section.
 - **Page text** boxes, keyed by their title: `Title`, `Tagline`, `Goal`, `Notice`,
-  `Footer`, `Characters heading` (the description is the `<h2>` text), `Characters
-  banner` (the description is the text) and `Links`, whose subtasks are one link each
-  (title = label, description = the `https://` address). Two of them carry the
+  `Footer`, `Characters heading` (the description is the `<h2>` text and the name of the
+  search box), `Characters banner` (the description is the text) and `Links`, whose
+  subtasks are one link each (title = label, description = the `https://` address; the
+  first link is the highlighted button). Two of them carry the
   character words: `Levels`, whose subtasks are the level rows in creation order
   (title = level key, description = `<mark> | <label> | <caption>`), and `Types`,
   whose subtasks map one `**Type:**` word to a level (title = the word, description =
   the level key, or `none` to leave the word uncounted). Their subtasks need no label.
+- **Words** (optional page text box, not on the board today): each subtask rewords one
+  of the page's fixed phrases (title = the key, description = the phrase, placeholders
+  kept), and wins over `words` in `config/roadmap.json`. The keys are `stamp`
+  (`Last updated {time} UTC`), `latest` (`latest release {tag} ({date})`), `counts`
+  (`{open} open · {fixed} fixed`), `awaiting` (`{n} awaiting confirmation`), `size`
+  (`{size} job`), `in release` (`(in {tag}, confirming)`), `fix released`, and
+  `legend now` / `legend open` / `legend verifying` / `legend done` / `legend no` for
+  the legend rows. Subtasks need no label; an unknown key is ignored with a `warn:`.
 - **Characters** are the cards wearing `Public: character`; their subtasks are their
   issues, and the word after `**Type:**` picks the level through `Types`. A card with
   `Public: ready` is Tournament-ready whatever its issues say; a card with no ranked
@@ -98,7 +133,8 @@ while someone is working on it.
 ## A second project on the same chart
 
 Set `config` to that board's wiring as a JSON string (same shape as
-`config/roadmap.json`: project id, view ids, bucket ids, label ids) and `baked: false`
+`config/roadmap.json`: project id, view ids, bucket ids, label ids, `legend` and
+`words`; `team` only if the board has characters to pick) and `baked: false`
 so the chart ships no Timestone snapshot and no Timestone page. The pod then starts
 unready and becomes ready when the first refresh has built the page.
 

@@ -162,6 +162,7 @@ button,input{font:inherit;color:inherit}
 button{cursor:pointer;margin:0}
 html:not(.js) button{cursor:default}
 html:not(.js) .jsonly{display:none}
+html:not(.js) .tiles{margin-top:.8rem}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 header,main,footer{max-width:1400px;margin:0 auto;padding:0 1rem}
 header{padding-top:1.5rem}
@@ -191,14 +192,15 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .banner{margin:0 0 1rem}
 .meter{display:flex;gap:2px;height:.6rem;margin-bottom:.6rem;border-radius:999px;overflow:hidden}
 .meter i,.mix i{background:var(--c)}
-.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr))}
+.levels{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
 .lv{display:grid;grid-template-columns:auto 1fr auto;gap:0 .5rem;align-items:baseline;padding:.5rem .7rem;border:1px solid var(--edge);border-radius:8px;background:var(--card);text-align:left}
 .m{color:var(--c)}
 .n,.lv em{font-weight:700;font-style:normal}
 .lv em{font-variant-numeric:tabular-nums}
 .t{color:var(--mut);font-size:.8rem}
 .lv .t{grid-column:1/-1}
-.lv:hover,.chip:enabled:hover,button.tile:hover{border-color:var(--acc)}
+.js .lv:enabled:hover,.js .chip:enabled:hover{border-color:var(--acc)}
+.lv:disabled{cursor:default}
 .lv[aria-pressed=true],.chip[aria-pressed=true]{border-color:var(--acc);background:var(--tint);box-shadow:inset 0 0 0 1px var(--acc)}
 .tools{position:sticky;top:var(--navh);z-index:4;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.3rem -.5rem;padding:.6rem .5rem;background:var(--bg)}
 #find{flex:1 1 9rem;max-width:20rem;min-width:0;height:2.3rem;padding:0 .9rem;border:1px solid var(--edge);border-radius:999px;background:var(--card)}
@@ -210,7 +212,8 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .picks{flex:1 1 auto;display:flex;gap:.4rem;min-width:0;margin:0;padding:0;overflow-x:auto;scrollbar-width:none;list-style:none}
 .picks::-webkit-scrollbar{display:none}
 .picks li{flex:none}
-.slot{width:3.2rem;height:2.3rem;border:1px dashed var(--edge);border-radius:999px}
+.slot{display:grid;place-items:center;width:3.2rem;height:2.3rem;border:1px dashed var(--edge);border-radius:999px;color:var(--mut)}
+.slot::before{content:"+"}
 .pick{display:block;height:2.3rem;padding:0 .8rem;border:1px solid var(--c);border-radius:999px;background:var(--card);white-space:nowrap}
 .pick::after{content:"✕";margin-left:.5rem;color:var(--mut);font-size:.8em}
 .pick i,.tile b i{font-style:normal;color:var(--c)}
@@ -220,7 +223,8 @@ h3{margin:0 0 .35rem;font-size:1.05rem;line-height:1.3}
 .tile small{color:var(--mut);font-size:.75rem}
 .tile .mix{display:flex;gap:2px;height:4px;margin-top:auto;border-radius:2px;overflow:hidden}
 .tile small{margin-bottom:.4rem}
-.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c);background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
+.js .tile:hover,.tile[aria-pressed=true]{border-color:var(--acc);border-left-color:var(--c)}
+.tile[aria-pressed=true]{background:var(--tint);box-shadow:0 0 0 1px var(--acc)}
 .legend,.rels{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem}
 .chip{display:inline-flex;gap:.45rem;align-items:baseline;padding:.3rem .75rem;border:1px solid var(--edge);border-radius:999px;background:var(--card);font-size:.9rem;text-align:left}
 .chip:disabled{opacity:.5;cursor:default}
@@ -324,7 +328,7 @@ draw();link();
 try{localStorage.setItem("team",team.join(","))}catch(e){}
 };
 var m=/[?&]team=([^&#]*)/.exec(location.search),s=null;
-if(m)s=decodeURIComponent(m[1]);else try{s=localStorage.getItem("team")}catch(e){}
+try{s=m?decodeURIComponent(m[1]):localStorage.getItem("team")}catch(e){}
 (s||"").split(",").forEach(function(v){if(by[v]&&team.indexOf(v)<0&&team.length<size)team.push(v)});
 draw();link();
 }
@@ -402,8 +406,9 @@ def characters(cfg, board, words):
     b('<div class="levels">\n')
     for lv in levels:
         key = esc(lv["key"])
-        b(f'<button type="button" class="lv l-{key}" data-f="level" value="{key}" aria-pressed="false">'
-          f'<b class="m">{esc(lv["mark"])}</b> <span class="n">{esc(lv["label"])}</span> '
+        off = "" if counts[lv["key"]] else " disabled"
+        b(f'<button type="button" class="lv l-{key}" data-f="level" value="{key}" '
+          f'aria-pressed="false"{off}><b class="m">{esc(lv["mark"])}</b> <span class="n">{esc(lv["label"])}</span> '
           f'<em>{counts[lv["key"]]}</em> <small class="t">{esc(lv["text"])}</small></button>\n')
     b('</div>\n<div class="tools jsonly">\n'
       f'<input type="search" id="find" aria-label="{heading}" placeholder="{heading}" '
@@ -419,8 +424,9 @@ def characters(cfg, board, words):
         if awaiting:
             tally += " · " + put(words["awaiting"], n=str(awaiting))
         low = name.lower()
+        bare = re.sub(r"[^a-z0-9]+", "", low)  # so "modok" finds M.O.D.O.K.
         attrs = (f'class="tile l-{esc(level)}" data-level="{esc(level)}" '
-                 f'data-name="{esc(low + " " + re.sub(r"[^a-z0-9]+", "", low))}"')
+                 f'data-name="{esc(low if bare == low else low + " " + bare)}"')
         if size > 0:
             attrs = f'type="button" {attrs} value="{slug(name, used)}" aria-pressed="false"'
         bar = "".join(f'<i class="l-{esc(k)}" style="flex:{n}"></i>' for k, n in mix)
@@ -625,7 +631,7 @@ def main(argv=None):
         page = render(cfg, board, a.strict_releases)
         types = board.get("types") or {}
         levels = [character_level(c, types)[0] for c in (board.get("characters") or [])]
-    except (KeyError, TypeError) as e:
+    except (KeyError, TypeError, ValueError) as e:
         fail(f"malformed input: {e!r}")
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     tmp = a.out + ".tmp"

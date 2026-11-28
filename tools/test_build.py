@@ -549,9 +549,9 @@ class Roster(unittest.TestCase):
         page = quiet(build.render, render_cfg(), self.board())
         tiles = re.findall(r'<button type="button" class="tile l-(\w+)" data-level="(\w+)" '
                            r'data-name="([^"]+)" value="([^"]+)" aria-pressed="false">', page)
-        self.assertEqual(tiles, [("ready", "ready", "abe abe", "abe"),
+        self.assertEqual(tiles, [("ready", "ready", "abe", "abe"),
                                  ("untested", "untested", "c. viper cviper", "c-viper"),
-                                 ("crash", "crash", "zed zed", "zed")])
+                                 ("crash", "crash", "zed", "zed")])
         self.assertIn("<b><i>■</i> Zed</b><span>Can crash</span>"
                       "<small>2 open · 1 fixed · 1 awaiting confirmation</small>", page)
         self.assertIn("<b><i>○</i> C. Viper</b><span>Untested</span><small>0 open · 0 fixed</small>",
@@ -564,13 +564,15 @@ class Roster(unittest.TestCase):
     def test_levels_are_the_roster_filter_and_the_bar(self):
         page = quiet(build.render, render_cfg(), self.board())
         chips = re.findall(r'<button type="button" class="lv l-(\w+)" data-f="level" value="(\w+)" '
-                           r'aria-pressed="false"><b class="m">(.)</b> <span class="n">([^<]+)</span> '
-                           r'<em>(\d+)</em> <small class="t">([^<]+)</small></button>', page)
-        self.assertEqual(chips, [("ready", "ready", "●", "Tournament-ready", "1", "clean"),
-                                 ("playable", "playable", "◐", "Playable", "0", "visual"),
-                                 ("desync", "desync", "▲", "Known desyncs", "0", "desync"),
-                                 ("crash", "crash", "■", "Can crash", "1", "crash"),
-                                 ("untested", "untested", "○", "Untested", "1", "none")])
+                           r'aria-pressed="false"( disabled)?><b class="m">(.)</b> '
+                           r'<span class="n">([^<]+)</span> <em>(\d+)</em> '
+                           r'<small class="t">([^<]+)</small></button>', page)
+        # a level nobody is at cannot be filtered on, but its row still reads in full
+        self.assertEqual(chips, [("ready", "ready", "", "●", "Tournament-ready", "1", "clean"),
+                                 ("playable", "playable", " disabled", "◐", "Playable", "0", "visual"),
+                                 ("desync", "desync", " disabled", "▲", "Known desyncs", "0", "desync"),
+                                 ("crash", "crash", "", "■", "Can crash", "1", "crash"),
+                                 ("untested", "untested", "", "○", "Untested", "1", "none")])
         self.assertIn('<div class="meter" aria-hidden="true"><i class="l-ready" style="flex:1"></i>'
                       '<i class="l-crash" style="flex:1"></i><i class="l-untested" style="flex:1"></i>'
                       "</div>", page)
@@ -737,6 +739,28 @@ class Baked(unittest.TestCase):
             with open(out) as f:
                 self.assertEqual(f.read(), self.page)
         self.assertRegex(said.getvalue(), r"^ok: \d+ upcoming, \d+ shipped, characters tiles=\d+ ")
+
+    def test_markup_is_balanced_and_ids_are_unique(self):
+        void = {"meta", "input", "br", "hr", "img", "link"}
+        stack, ids = [], []
+
+        class Check(html.parser.HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                ids.extend(v for k, v in attrs if k == "id")
+                if tag not in void:
+                    stack.append(tag)
+
+            def handle_endtag(self, tag):
+                assert stack and stack.pop() == tag, f"unbalanced </{tag}> at line {self.getpos()[0]}"
+
+        p = Check()
+        p.feed(self.page)
+        p.close()
+        self.assertEqual(stack, [])
+        self.assertEqual(len(ids), len(set(ids)))
+        # nothing interactive is nested inside a button
+        for inner in re.findall(r"<button\b[^>]*>(.*?)</button>", self.page, re.S):
+            self.assertIsNone(re.search(r"<(a|button|input|div|p|ul|ol)\b", inner))
 
     def has(self, text):
         self.assertIn(" ".join(text.split()), self.seen)
