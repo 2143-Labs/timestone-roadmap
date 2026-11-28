@@ -382,7 +382,6 @@ a.ref:hover{color:var(--ink);border-color:var(--line-2)}
 .plain{list-style:none;margin:0;padding:0}
 .plain li{position:relative;padding:.3rem 0 .3rem 1rem;color:var(--ink-2);font-size:.9rem}
 .plain li::before{content:"";position:absolute;left:0;top:.85rem;width:5px;height:5px;border-radius:50%;background:var(--line-2)}
-.cards.duo{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
 
 footer{padding:1.4rem 0 2.6rem;border-top:1px solid var(--line);color:var(--ink-3);font-size:.85rem}
 footer p{margin:0}
@@ -479,15 +478,19 @@ def render(cfg, board, strict_releases=False):
     chars = board.get("characters") or []
     groups = character_groups(board) if (board.get("levels") and chars) else []
     marks = {entry["class"]: entry.get("mark", "") for entry in cfg["legend"]}
+    words = {entry["class"]: entry.get("text", "") for entry in cfg["legend"]}
     latest = board.get("latest_release")
     if latest and not release_mentioned(board, latest["tag"]):
         if strict_releases:
             fail(f"latest release {latest['tag']} not mentioned in shipped")
         print(f"warn: latest release {latest['tag']} is not listed in shipped", file=sys.stderr)
 
-    def mark_html(state, glyph=None):
+    def mark_html(state, glyph=None, label=None):
         glyph = marks.get(state, "") if glyph is None else glyph
-        return (f'<span class="mark {esc(state)}" aria-hidden="true">{esc(glyph)}</span>')
+        if label:
+            return (f'<span class="mark {esc(state)}" role="img" aria-label="{esc(label)}">'
+                    f'{esc(glyph)}</span>')
+        return f'<span class="mark {esc(state)}" aria-hidden="true">{esc(glyph)}</span>'
 
     def head_html(heading, note, count):
         note_html = f'<p class="note">{esc(note)}</p>' if note else ""
@@ -509,7 +512,8 @@ def render(cfg, board, strict_releases=False):
             tail = ""
         tail_html = f'<small class="tail">{esc(tail)}</small>' if tail else ""
         return (f'<li class="line {state}" data-find="{esc(find_text(text, tail))}">'
-                f'{mark_html(state)}<span class="lt">{esc(text)}</span>{tail_html}</li>\n')
+                f'{mark_html(state, label=words.get(state))}'
+                f'<span class="lt">{esc(text)}</span>{tail_html}</li>\n')
 
     body = []
     b = body.append
@@ -622,7 +626,7 @@ def render(cfg, board, strict_releases=False):
         count = sum(len(box["lines"]) for box in s["boxes"])
         b(f'<section class="block kind-background" id="{esc(s["id"])}" data-group>\n')
         b(head_html(s["heading"], s.get("note"), count))
-        b('<div class="cards duo">\n')
+        b('<div class="cards">\n')
         for box in s["boxes"]:
             b(f'<article class="card" data-group data-find="'
               f'{esc(find_text(box["title"], box.get("blurb")))}">\n')

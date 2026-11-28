@@ -389,11 +389,14 @@ class Render(unittest.TestCase):
     def test_marks_and_state_tails(self):
         page = quiet(build.render, render_cfg(), snapshot())
         self.assertIn('<li class="line verifying" data-find="7 awaiting">'
-                      '<span class="mark verifying" aria-hidden="true">◷</span>'
+                      '<span class="mark verifying" role="img" aria-label="confirming">◷</span>'
                       '<span class="lt">7 awaiting</span></li>', page)
         self.assertIn('<li class="line no" data-find="x">'
-                      '<span class="mark no" aria-hidden="true">✕</span>', page)
-        self.assertIn('<span class="mark now" aria-hidden="true">▶</span>', page)
+                      '<span class="mark no" role="img" aria-label="not planned">✕</span>', page)
+        self.assertIn('<span class="mark now" role="img" aria-label="now">▶</span>', page)
+        # the legend's own marks stay decorative: its wording sits next to them
+        self.assertIn('<li class="now"><span class="mark now" aria-hidden="true">▶</span>now</li>',
+                      page)
 
     def test_release_tail_comes_from_config(self):
         cfg, board = render_cfg(), snapshot()
